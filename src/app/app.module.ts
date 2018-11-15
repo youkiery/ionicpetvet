@@ -4,27 +4,56 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 
+import { HttpClientModule } from '@angular/common/http';
+import { IonicStorageModule } from '@ionic/storage';
+
+
+import { File } from '@ionic-native/file';
+import { FileTransfer } from '@ionic-native/file-transfer';
+import { FilePath } from '@ionic-native/file-path';
+import { Camera } from '@ionic-native/camera';
+
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
+import { DetailPage, Order } from '../pages/detail/detail';
+import { UserPage } from '../pages/user/user';
+import { SalePage, Post } from '../pages/sale/sale';
+
+import { LangProvider } from '../providers/lang/lang';
+import { ServiceProvider } from '../providers/service/service';
 
 @NgModule({
   declarations: [
     MyApp,
-    HomePage
+    HomePage,
+    DetailPage, Order,
+    UserPage,
+    SalePage, Post
   ],
   imports: [
     BrowserModule,
-    IonicModule.forRoot(MyApp)
+    HttpClientModule,
+    IonicModule.forRoot(MyApp),
+    IonicStorageModule.forRoot()
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    DetailPage,, Order,
+    UserPage,
+    SalePage, Post
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    LangProvider,
+    ServiceProvider,
+    File,
+    FileTransfer,
+    Camera,
+    FilePath,
   ]
 })
 export class AppModule {}

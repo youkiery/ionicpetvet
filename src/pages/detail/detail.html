@@ -1,0 +1,52 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title> {{data.name}} </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div>
+    <h1>
+      {{data.name}}
+    </h1>
+    <div>
+      <span class="left">
+        {{data.species}}
+      </span>
+      <span class="right">
+        {{data.price}}
+      </span>
+    </div>
+    <ion-slides>
+      <ion-slide *ngFor="let image of data.image">
+        <img src="{{image}}" class="gallery">
+      </ion-slide>
+    </ion-slides>
+    <p>
+      <b>{{lang.timeago}}</b>
+      {{data.timer}}
+    </p>
+    <p>
+      <b>{{lang.age}}</b>
+      {{data.age}}
+    </p>
+    <p>
+      <b>{{lang.description}}</b>
+      {{data.description}}
+    </p>
+  </div>
+  <div>
+    <p>
+      {{lang.call}} {{owner.name}} 
+    </p>
+    <p>
+      {{lang.address}} {{owner.address}}
+    </p>
+    <p>
+      {{lang.phone}} {{owner.phone}}
+    </p>
+    <button ion-button block (click)="order()">
+      {{lang.buy}}
+    </button>
+  </div>
+</ion-content>

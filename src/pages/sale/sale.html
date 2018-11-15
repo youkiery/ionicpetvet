@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>
+      {{lang.sale_manager}}
+      <ion-icon name="add-circle" class="nav-icon" (click)="post()"></ion-icon>
+    </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+  <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
+    <div>
+      <div class="pet-box-option">
+        <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.date, pet.price, pet.description)"></ion-icon>
+        <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
+      </div>
+      <img class="thumb" src="{{pet.image[0]}}">
+      <p>
+        {{pet.name}}
+      </p>
+      <p>
+        {{pet.price}}
+      </p>
+    </div>
+  </div>
+</ion-content>

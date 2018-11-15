@@ -1,0 +1,51 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title> {{lang.user}} </ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content class="panel" padding>
+  <form method="POST" (ngSubmit)="submit()">
+    <img src="../../assets/imgs/pet-logo.png" class="logo">
+    <ion-item>
+      <ion-label> {{lang.username}} </ion-label>
+      <ion-input type="text" [(ngModel)]="this.user.username" name="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label> {{lang.password}} </ion-label>
+      <ion-input type="password" [(ngModel)]="this.user.password" name="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.vpassword}} </ion-label>
+      <ion-input type="password" [(ngModel)]="this.user.vpassword" name="vpassword"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.fullname}} </ion-label>
+      <ion-input type="text" [(ngModel)]="this.user.name" name="name"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.phone}} </ion-label>
+      <ion-input type="text" [(ngModel)]="this.user.phone" name="phone"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.address}} </ion-label>
+      <ion-input type="text" [(ngModel)]="this.user.address" name="address"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.provide}} </ion-label>
+      <ion-select [(ngModel)]="this.user.provide" name="provide">
+        <ion-option *ngFor="let option of service.provides; let i = index" value="{{i}}">
+          {{option}}
+        </ion-option>
+      </ion-select>
+      <ion-input type="text"></ion-input>
+    </ion-item>
+    <button ion-button color="secondary" type="submit" class="button-half"> {{submitButton[submitType]}} </button>
+    <button ion-button type="button" class="button-half" *ngIf="!submitType" (click)="nousername()">
+      {{lang.nousername}}
+    </button>
+    <button ion-button type="button" class="button-half" *ngIf="submitType" (click)="haveusername()">
+      {{lang.haveusername}}
+    </button>
+  </form>
+</ion-content>

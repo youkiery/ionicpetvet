@@ -65,7 +65,6 @@ export class LangProvider {
   ordernote: string = "Nhắc nhở: cung cấp thông tin chính xác để đảo bảo quyền lợi bản thân";
   call: string = "Liên hệ với";
   vaccine_per: string = "mũi";
-  inbox: string = "Quản lý chung";
   constructor() {
 
   }

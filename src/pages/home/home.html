@@ -1,4 +1,4 @@
-<ion-menu side="overlay" [content]="mycontent" class="toggle-menu">
+<ion-menu side="right" [content]="mycontent" class="toggle-menu">
   <ion-content class="list-menu">
     <ion-list *ngIf="!this.service.islogged">
       <ion-item color="secondary">
@@ -29,9 +29,6 @@
       </ion-item>
       <ion-item>
         {{lang.account_manager}}
-      </ion-item>
-      <ion-item (click)="inbox()">
-        {{lang.inbox}}
       </ion-item>
       <ion-item (click)="sale()">
         {{lang.sale_manager}}
@@ -66,6 +63,7 @@
       </span>
       <ion-icon name="menu" class="nav-icon" menuToggle></ion-icon>
       <ion-icon name="refresh" class="nav-icon" (click)="refresh()"></ion-icon>
+      <ion-icon name="main" class="nav-icon" (click)="inbox()"></ion-icon>
       <ion-icon name="contact" class="nav-icon" *ngIf="!this.service.islogged" (click)="login()"></ion-icon>
       <span style="float: right; line-height: 32px;" *ngIf="this.service.islogged">
         {{this.service.name}}

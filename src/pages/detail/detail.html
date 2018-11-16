@@ -5,48 +5,77 @@
 </ion-header>
 
 <ion-content padding>
-  <div>
-    <h1>
-      {{data.name}}
-    </h1>
-    <div>
-      <span class="left">
-        {{data.species}}
-      </span>
-      <span class="right">
-        {{data.price}}
-      </span>
-    </div>
-    <ion-slides>
-      <ion-slide *ngFor="let image of data.image">
-        <img src="{{image}}" class="gallery">
-      </ion-slide>
-    </ion-slides>
-    <p>
-      <b>{{lang.timeago}}</b>
-      {{data.timer}}
-    </p>
-    <p>
-      <b>{{lang.age}}</b>
-      {{data.age}}
-    </p>
-    <p>
-      <b>{{lang.description}}</b>
-      {{data.description}}
-    </p>
-  </div>
-  <div>
-    <p>
-      {{lang.call}} {{owner.name}} 
-    </p>
-    <p>
-      {{lang.address}} {{owner.address}}
-    </p>
-    <p>
-      {{lang.phone}} {{owner.phone}}
-    </p>
-    <button ion-button block (click)="order()">
-      {{lang.buy}}
-    </button>
-  </div>
+  <ion-grid>
+    <ion-row>
+      <ion-col col-md-7>
+        <h1>
+          {{data.name}}
+        </h1>
+        <div class="pet-subinfo">
+          <span class="left">
+            {{data.species}}
+          </span>
+          <span class="right">
+            {{data.price}}
+          </span>
+        </div>
+        <ion-slides>
+          <ion-slide *ngFor="let image of data.image">
+            <img src="{{image}}" class="gallery">
+          </ion-slide>
+        </ion-slides>
+        <p>
+          <b>{{lang.timeago}}</b>
+          <span class="right">
+            {{data.timer}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.age}}</b>
+          <span class="right">
+            {{data.age}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.vaccine}}</b>
+          <span class="right">
+            {{data.vaccine}} {{lang.vaccine_per}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.description}}</b>
+        </p>
+        <p>
+          {{data.description}}
+        </p>
+      </ion-col>
+      <ion-col col-md-5>
+        <p>
+          <b>
+            {{lang.call}}
+            {{owner.name}} 
+          </p>
+        </b>
+        <p>
+          <b>
+            {{lang.address}}
+          </b>
+        </p>
+        <p>
+          {{owner.address}}
+        </p>
+        <p>
+          <b>
+            {{lang.phone}}
+          </b>
+        </p>
+        <p>
+          {{owner.phone}}
+        </p>
+        <button ion-button block (click)="order()" disabled="{{disabled}}">
+          {{lang.buy}}
+        </button>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 </ion-content>

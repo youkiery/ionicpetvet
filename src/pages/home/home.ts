@@ -15,6 +15,19 @@ import { SalePage } from '../sale/sale';
   templateUrl: 'home.html'
 })
 export class HomePage {
+  filter: object = {
+    keyword: "",
+    sort: 0,
+    price: {
+      lower: 0,
+      upper: 73
+    },
+    kind: 0,
+    species: 0
+  }
+  rangeSettings: number = 20;
+  setdage: any;
+  banner: string = ""
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events) {
       this.service.loadstart()
@@ -36,6 +49,8 @@ export class HomePage {
       this.http.get(this.service.url + "?action=getlogin&id=" + logindata).subscribe(data => {
         if (data["status"]) {
           // login
+          console.log(data);
+          
           this.service.logged(data["data"], this.navCtrl, false);
         }
         this.refresh(resolve)
@@ -48,13 +63,17 @@ export class HomePage {
 
   refresh(resolve = null) {
     this.http.get(this.service.url + "?action=getinit").subscribe(data => {
-      this.service.newpet = data["data"]["post"]
+      console.log(data);
+      this.service.kind = data["data"]["kind"]
       this.service.species = data["data"]["species"]
       this.service.config = data["data"]["config"]
-      this.service.loadend()
-      if (resolve) {
-        resolve()
-      }
+      this.banner = this.service.baseurl + this.service.config["banner"]
+      this.filterall().then(() => {
+        this.service.loadend()
+        if (resolve) {
+          resolve()
+        }
+      })
     })
   }
 
@@ -73,4 +92,25 @@ export class HomePage {
   sale() {
     this.navCtrl.push(SalePage);
   }
+
+  unit(price) {
+    var formatter = new Intl.NumberFormat('vi-VI', {
+      style: 'currency',
+      currency: 'VND',
+   });
+
+   return formatter.format(price)
+  }
+  filterall() {
+    return new Promise((resolve) => {
+      this.http.get(this.service.url + "?action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&price=" + this.filter["price"]["lower"] + "-" + this.filter["price"]["upper"]).subscribe(data => {
+        console.log(data);
+        if (data["status"]) {
+          this.service.newpet = data["data"]
+          resolve()
+        }
+      })
+    })
+  }
+
 }

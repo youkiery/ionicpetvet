@@ -58,6 +58,13 @@ export class LangProvider {
   buy: string = "Mua";
   orderfail: string = "Lỗi mạng, chưa thể đặt";
   ordersuccess: string = "Đã đặt xong";
+  keyword: string = "Từ khóa";
+  sort: string = "Sắp xếp theo";
+  filter: string = "Lọc";
+  kind: string = "Loại";
+  ordernote: string = "Nhắc nhở: cung cấp thông tin chính xác để đảo bảo quyền lợi bản thân";
+  call: string = "Liên hệ với";
+  vaccine_per: string = "mũi";
   constructor() {
 
   }

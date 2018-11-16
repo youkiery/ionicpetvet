@@ -51,8 +51,11 @@
 }
 
 .modal-wrapper {
-  overflow-y: scroll !important;
   background: white;
+}
+
+.ion-page.show-page {
+  overflow-y: scroll !important;
 }
 
 form.sale {

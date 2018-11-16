@@ -7,12 +7,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 
-
-import { File } from '@ionic-native/file';
-import { FileTransfer } from '@ionic-native/file-transfer';
-import { FilePath } from '@ionic-native/file-path';
-import { Camera } from '@ionic-native/camera';
-
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DetailPage, Order } from '../pages/detail/detail';
@@ -40,7 +34,7 @@ import { ServiceProvider } from '../providers/service/service';
   entryComponents: [
     MyApp,
     HomePage,
-    DetailPage,, Order,
+    DetailPage, Order,
     UserPage,
     SalePage, Post
   ],
@@ -49,11 +43,7 @@ import { ServiceProvider } from '../providers/service/service';
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     LangProvider,
-    ServiceProvider,
-    File,
-    FileTransfer,
-    Camera,
-    FilePath,
+    ServiceProvider
   ]
 })
 export class AppModule {}

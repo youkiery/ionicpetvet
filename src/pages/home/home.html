@@ -30,6 +30,9 @@
       <ion-item>
         {{lang.account_manager}}
       </ion-item>
+      <ion-item (click)="inbox()">
+        {{lang.inbox}}
+      </ion-item>
       <ion-item (click)="sale()">
         {{lang.sale_manager}}
       </ion-item>
@@ -38,18 +41,6 @@
       </ion-item>
       <ion-item (click)="service.logout()">
         {{lang.logout}}
-      </ion-item>
-      <ion-item color="secondary">
-        {{lang.menu}}
-      </ion-item>
-      <ion-item>
-        {{lang.dog}}
-      </ion-item>
-      <ion-item>
-        {{lang.cat}}
-      </ion-item>
-      <ion-item>
-        {{lang.other}}
       </ion-item>
       <ion-item color="secondary">
         {{lang.support}}
@@ -84,9 +75,69 @@
 </ion-header>
 
 <ion-content padding>
-  <div *ngIf="service.config">
-    <img src="{{service.config.banner}}" class="banner">
+  <div *ngIf="service.config.banner">
+    <img src="{{service.baseurl + service.config.banner}}" class="banner">
   </div>
+  <form (ngSubmit)="filterall()">
+    <ion-item>
+      <ion-label>
+        {{lang.keyword}}
+      </ion-label>
+      <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        {{lang.sort}}
+      </ion-label>
+      <ion-select [(ngModel)]="filter.sort" name="sort">
+        <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
+          {{option}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        {{lang.kind}}
+      </ion-label>
+      <ion-select [(ngModel)]="filter.kind" name="kind">
+        <ion-option *ngFor="let option of service.kind" value="{{option.id}}">
+          {{option.name}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item *ngIf="filter.kind">
+      <ion-label>
+        {{lang.species}}
+      </ion-label>
+      <ion-select [(ngModel)]="filter.species" name="species">
+        <ion-option *ngFor="let option of service.species[filter.kind]" value="{{option.id}}">
+          {{option.name}}
+        </ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>
+        {{lang.price}}: {{unit(service.price[filter.price.lower] * 1000)}} - {{unit(service.price[filter.price.upper] * 1000)}} 
+      </ion-label>
+      <ion-range dualKnobs="true" min="0" max="73" step="1" [(ngModel)]="filter.price" name="price"></ion-range>
+    </ion-item>
+    <!-- <ion-item>
+      <ion-label> {{lang.price}} </ion-label>
+      <ion-range min="18" max="100" dualKnobs="true" pin="true" [(ngModel)]="setdage" name="setdage" color="danger">
+        <ion-label range-left>18</ion-label>
+        <ion-label range-right>100+</ion-label>
+      </ion-range>
+    </ion-item> -->
+    <button ion-button block>
+      {{lang.filter}}
+    </button>
+    <!-- <ion-item>
+      <ion-label>
+        {{lang.species}}
+      </ion-label>
+      <ion-input type="text" [(ngModel)]="filter.species" name="species"></ion-input>
+    </ion-item> -->
+  </form>
   <div *ngFor="let pet of service.newpet; let i = index" class="pet_box">
     <div (click)="detail(i)">
       <img class="thumb" src="{{pet.image[0]}}">

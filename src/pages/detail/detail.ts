@@ -12,17 +12,31 @@ import { LangProvider } from '../../providers/lang/lang';
 })
 export class DetailPage {
   data: object
-  owner: object
+  owner: object = {
+    name: "",
+    address: "",
+    phone: ""
+  }
+  disabled: string = "false"
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController) {
     this.data = this.navParams.get("data");
-    this.http.get(this.service.url + "&action=getinfo&id=" + this.data["id"]).subscribe(data => {
-      this.owner = data
+    this.service.loadstart()
+    console.log(this.data);
+    this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.data["user"]).subscribe(data => {
+      console.log(data);
+      
+      this.owner = data["data"]["owner"]
+      if (data["data"]["order"]) {
+        this.disabled = "true"
+      }
+      this.owner = data["data"]["owner"]
+      this.service.loadend()
     })
   }
 
   order() {
-    let modal = this.modalCtrl.create(Order, {id: this.service.uid, name: this.service.name, address: this.service.address, phone: this.service.phone})
+    let modal = this.modalCtrl.create(Order, {pid: this.data["id"]})
     modal.present()
   }
 }
@@ -37,19 +51,19 @@ export class DetailPage {
         <ion-label>
           {{lang.name}}
         </ion-label>
-        <ion-input type="text" [(ngModel)]="order.name" name="name" {{disabled}}></ion-input>
+        <ion-input type="text" [(ngModel)]="order.name" name="name" disabled="{{disabled}}"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>
           {{lang.address}}
         </ion-label>
-        <ion-input type="text" [(ngModel)]="order.address" name="address" {{disabled}}></ion-input>
+        <ion-input type="text" [(ngModel)]="order.address" name="address" disabled="{{disabled}}"></ion-input>
       </ion-item>
       <ion-item>
         <ion-label>
           {{lang.phone}}
         </ion-label>
-        <ion-input type="text" [(ngModel)]="order.phone" name="phone" {{disabled}}></ion-input>
+        <ion-input type="text" [(ngModel)]="order.phone" name="phone" disabled="{{disabled}}"></ion-input>
       </ion-item>
       <button ion-button block>
         {{lang.buy}}
@@ -58,17 +72,19 @@ export class DetailPage {
   `
 })
 export class Order {
-  disabled: string = ""
-  order: object
+  disabled: string = "false"
+  order: object = {}
   constructor(public navParam: NavParams, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public viewCtrl: ViewController) {
-    var data = this.navParam.get("data")
-    if (data) {
-      this.order["id"] = data["id"]
-      this.order["name"] = data["name"]
-      this.order["address"] = data["address"]
-      this.order["phone"] = data["phone"]
-      this.disabled = "disabled"
+    var data = this.navParam.get("pid")
+    
+    this.order["pid"] = data
+    this.order["id"] = this.service.uid
+    this.order["name"] = this.service.name
+    this.order["address"] = this.service.address
+    this.order["phone"] = this.service.phone
+    if (this.service.uid) {
+      this.disabled = "true"
     }
   }
   buy() {
@@ -79,7 +95,7 @@ export class Order {
           // cannot insert
           this.service.showMsg(this.lang["orderfail"])
           break;
-        case 1:
+        case 2:
           // insert success
           this.service.showMsg(this.lang["ordersuccess"])
           this.viewCtrl.dismiss()

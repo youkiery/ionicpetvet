@@ -20,8 +20,9 @@ export class SalePage {
     public lang: LangProvider, public alert: AlertController) {
       this.service.loadstart()
       this.http.get(this.service.url + "?action=getuserpet&id=" + this.service.uid).subscribe(data => {
-        var pet = this.service.parsepet(data["data"])
-        this.service.userpet = pet
+        console.log(data);
+        
+        this.service.userpet = data["data"]
         this.service.loadend()
       })
   }
@@ -31,8 +32,8 @@ export class SalePage {
     x.present()
   }
 
-  edit(id, name, date, price, description) {
-    let x = this.modalCtrl.create(Post, {data: {id: id, name: name, date: date, price: price, description: description}});
+  edit(id, name, date, price, description, kind, species) {
+    let x = this.modalCtrl.create(Post, {data: {id: id, name: name, date: date, price: price, description: description, kind: kind, species: species}});
     x.present()
   }
 
@@ -74,15 +75,21 @@ export class SalePage {
         <ion-input type="text" [(ngModel)]="this.post.name" name="name"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label> {{lang.kind}} </ion-label>
+        <ion-select [(ngModel)]="post.kind" name="kind">
+          <ion-option *ngFor="let option of this.service.kind" value="{{option.id}}">{{option.name}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="post.kind">
         <ion-label> {{lang.species}} </ion-label>
         <ion-select [(ngModel)]="post.species" name="species">
-          <ion-option *ngFor="let option of this.service.config.species" value="{{option.id}}">{{option.name}}</ion-option>
+          <ion-option *ngFor="let option of this.service.species" value="{{option.id}}">{{option.name}}</ion-option>
         </ion-select>
       </ion-item>
       <ion-item>
         <ion-label> {{lang.age}} </ion-label>
         <ion-select [(ngModel)]="post.age" name="age">
-          <ion-option *ngFor="let option of service.config.date; let i = index" value="{{i}}">{{option}}</ion-option>
+          <ion-option *ngFor="let option of service.config.age; let i = index" value="{{i}}">{{option}}</ion-option>
         </ion-select>
       </ion-item>
       <ion-item>
@@ -126,11 +133,15 @@ export class Post {
       this.post.description = data["description"]
       this.post.price = data["price"]
       this.post.id = data["id"]
+      this.post.kind = data["kind"]
+      this.post.species = data["species"]
     } else {
       this.post.name = ""
       this.post.date = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() 
       this.post.description = ""
       this.post.price = 0
+      this.post.kind = 0
+      this.post.species = 0
     }
   }
 

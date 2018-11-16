@@ -56,6 +56,7 @@ export class LangProvider {
   timeago: string = "Đã đăng";
   order: string = "Đặt hàng";
   buy: string = "Mua";
+  sell: string = "Bán";
   orderfail: string = "Lỗi mạng, chưa thể đặt";
   ordersuccess: string = "Đã đặt xong";
   keyword: string = "Từ khóa";
@@ -65,6 +66,8 @@ export class LangProvider {
   ordernote: string = "Nhắc nhở: cung cấp thông tin chính xác để đảo bảo quyền lợi bản thân";
   call: string = "Liên hệ với";
   vaccine_per: string = "mũi";
+  list: string = "Hiển thị danh sách";
+  notice: string = "Thông báo";
   constructor() {
 
   }

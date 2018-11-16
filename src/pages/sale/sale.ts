@@ -16,6 +16,12 @@ export class SalePage {
   //   description: string,
   //   files: any
   // } = {}
+  filter: object = {
+    keyword: "",
+    sort: 0,
+    type: 0
+  }
+  type: 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController) {
       this.service.loadstart()
@@ -25,6 +31,44 @@ export class SalePage {
         this.service.userpet = data["data"]
         this.service.loadend()
       })
+  }
+
+  filterall() {
+    this.service.loadstart()
+    this.http.get(this.service.url + "?action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
+      console.log(response);
+      if (response["status"]) {
+        this.service.userpet = response["data"]
+        this.type = this.filter["type"]
+      }
+      this.service.loadend()
+    })
+  }
+
+  disorder(id) {
+    var alert = this.alert.create({
+      title: this.lang["notice"],
+      message: this.lang["removequest"],
+      buttons: [
+        {
+          text: this.lang["remove"],
+          handler: () => {
+            this.service.loadstart()
+            this.http.get(this.service.url + "?action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
+              console.log(response);
+              if (response["status"]) {
+                this.service.userpet = response["data"]
+              }
+              this.service.loadend()
+            })
+          }
+        },
+        {
+          text: this.lang["cancel"]
+        }
+      ]
+    })
+    alert.present()
   }
 
   post() {

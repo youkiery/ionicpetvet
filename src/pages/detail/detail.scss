@@ -2,9 +2,28 @@
   margin: 10px 0px;
   font-size: 1.1em;
 }
-.pet-subinfo .right {
+.price {
   color: #d22;
 }
 .slides {
   height: auto !important;
+}
+.h1l {
+  clear: both;
+  float: left;
+  width: 49%;
+}
+.h1r {
+  float: right;
+  width: 49%;
+}
+.h2 {
+  clear: both;
+}
+
+@media screen and (max-width: 480px) {
+  .h1l, .h1r {
+    width: 100%;
+    float: none;
+  }
 }

@@ -9,6 +9,7 @@ import { Storage } from '@ionic/storage';
 import {DetailPage} from '../detail/detail'
 import {UserPage} from '../user/user'
 import { SalePage } from '../sale/sale';
+import { InboxPage } from '../inbox/inbox';
 
 @Component({
   selector: 'page-home',
@@ -99,7 +100,11 @@ export class HomePage {
       currency: 'VND',
    });
 
+   
    return formatter.format(price)
+  }
+  inbox() {
+    this.navCtrl.push(InboxPage)
   }
   filterall() {
     return new Promise((resolve) => {

@@ -28,7 +28,7 @@ export class DetailPage {
       
       this.owner = data["data"]["owner"]
       if (data["data"]["order"]) {
-        this.disabled = "true"
+        this.disabled = "x"
       }
       this.owner = data["data"]["owner"]
       this.service.loadend()

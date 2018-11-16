@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController, Events } from 'ionic-angular';
 
 import { HttpClient } from '@angular/common/http'
 import { ServiceProvider } from '../../providers/service/service';
@@ -17,22 +17,25 @@ export class DetailPage {
     address: "",
     phone: ""
   }
-  disabled: string = "false"
+  disabled: string = ""
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
-    public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController) {
+    public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
+    public event: Events) {
     this.data = this.navParams.get("data");
     this.service.loadstart()
     console.log(this.data);
     this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.data["user"]).subscribe(data => {
-      console.log(data);
-      
       this.owner = data["data"]["owner"]
       if (data["data"]["order"]) {
-        this.disabled = "x"
+        document.getElementById("buy").setAttribute("disabled", "true")
       }
       this.owner = data["data"]["owner"]
       this.service.loadend()
     })
+    this.event.subscribe("ordered", () => {
+      document.getElementById("buy").setAttribute("disabled", "true")
+    })
+
   }
 
   order() {
@@ -75,7 +78,7 @@ export class Order {
   disabled: string = "false"
   order: object = {}
   constructor(public navParam: NavParams, public service: ServiceProvider, public http: HttpClient,
-    public lang: LangProvider, public viewCtrl: ViewController) {
+    public lang: LangProvider, public viewCtrl: ViewController, public event: Events) {
     var data = this.navParam.get("pid")
     
     this.order["pid"] = data
@@ -98,6 +101,7 @@ export class Order {
         case 2:
           // insert success
           this.service.showMsg(this.lang["ordersuccess"])
+          this.event.publish("ordered");
           this.viewCtrl.dismiss()
           break;
         default:

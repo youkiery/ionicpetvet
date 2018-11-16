@@ -21,16 +21,27 @@ export class SalePage {
     sort: 0,
     type: 0
   }
-  type: 0
+  type: number = 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController) {
-      this.service.loadstart()
-      this.http.get(this.service.url + "?action=getuserpet&id=" + this.service.uid).subscribe(data => {
-        console.log(data);
-        
-        this.service.userpet = data["data"]
-        this.service.loadend()
-      })
+      this.filterall()
+  }
+
+  sell() {
+    this.filter["type"] = 0;
+    this.filterall();
+  }
+  buy() {
+    this.filter["type"] = 1;
+    this.filterall();
+  }
+  bought() {
+    this.filter["type"] = 2;
+    this.filterall();
+  }
+  sold() {
+    this.filter["type"] = 3;
+    this.filterall();
   }
 
   filterall() {

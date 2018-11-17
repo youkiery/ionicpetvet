@@ -76,7 +76,7 @@
   <div *ngIf="service.config.banner">
     <img src="{{service.baseurl + service.config.banner}}" class="banner">
   </div>
-  <form (ngSubmit)="filterall()">
+  <form (ngSubmit)="filterall()" class="h2l">
     <ion-item>
       <ion-label>
         {{lang.keyword}}
@@ -136,15 +136,32 @@
       <ion-input type="text" [(ngModel)]="filter.species" name="species"></ion-input>
     </ion-item> -->
   </form>
-  <div *ngFor="let pet of service.newpet; let i = index" class="pet_box">
-    <div (click)="detail(i)">
+  <div class="h2r">
+    <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
       <img class="thumb" src="{{pet.image[0]}}">
-      <p>
-        {{pet.name}}
-      </p>
-      <p>
-        {{pet.price}}
-      </p>
+      <div>
+        <p>
+          &#9; {{pet.name}}
+        </p>
+        <p>
+          &#9; {{pet.provide}}
+        </p>
+        <p>
+          &#9; {{lang.poster}} {{pet.owner}}
+        </p>
+        <p class="description">
+          &#9; {{pet.description}}
+        </p>
+        <p>
+          &#9; {{lang.age}} {{pet.age}}
+        </p>
+        <span class="price">
+          &#9; {{pet.price}}
+        </span>
+        <span class="timer right">
+          {{pet.timer}}
+        </span>
+      </div>
     </div>
   </div>
 </ion-content>

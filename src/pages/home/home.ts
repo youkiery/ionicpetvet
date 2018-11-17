@@ -109,7 +109,7 @@ export class HomePage {
   }
   filterall() {
     return new Promise((resolve) => {
-      this.http.get(this.service.url + "?action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service[this.filter["price"]["upper"]]).subscribe(data => {
+      this.http.get(this.service.url + "?action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
         console.log(data);
         if (data["status"]) {
           this.service.newpet = data["data"]

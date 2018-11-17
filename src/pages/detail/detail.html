@@ -5,77 +5,80 @@
 </ion-header>
 
 <ion-content padding>
-  <div class="h1l">
-    <ion-slides>
-      <ion-slide *ngFor="let image of data.image">
-        <img src="{{image}}" class="gallery">
-      </ion-slide>
-    </ion-slides>
-  </div>
-  <div class="h1r">
-    <p>
-      <b>{{lang.species}}</b>
-      <span class="right">
-        {{data.species}}
-      </span>
-    </p>
-    <p>
-      <b>{{lang.price}}</b>
-      <span class="right price">
-        {{data.price}}
-      </span>
-    </p>
-    <p>
-      <b>{{lang.timeago}}</b>
-      <span class="right">
-        {{data.timer}}
-      </span>
-    </p>
-    <p>
-      <b>{{lang.age}}</b>
-      <span class="right">
-        {{data.age}}
-      </span>
-    </p>
-    <p>
-      <b>{{lang.vaccine}}</b>
-      <span class="right">
-        {{data.vaccine}} {{lang.vaccine_per}}
-      </span>
-    </p>
-    <p>
-      <b>{{lang.description}}</b>
-    </p>
-    <p>
-      {{data.description}}
-    </p>
-  </div>
-  <div class="h2">
-    <p>
-      <b>
-        {{lang.call}}
-        {{owner.name}} 
-      </b>
-    </p>
-    <p>
-      <b>
-        {{lang.address}}
-      </b>
-    </p>
-    <p>
-      {{owner.address}}
-    </p>
-    <p>
-      <b>
-        {{lang.phone}}
-      </b>
-    </p>
-    <p>
-      {{owner.phone}}
-    </p>
-    <button ion-button block (click)="order()" id="buy">
-      {{lang.buy}}
-    </button>
+  <div class="h1h2">
+
+    <div class="h1l">
+      <ion-slides>
+        <ion-slide *ngFor="let image of data.image">
+          <img src="{{image}}" class="gallery">
+        </ion-slide>
+      </ion-slides>
+    </div>
+    <div class="h1r">
+      <p>
+        <b>{{lang.species}}</b>
+        <span class="right">
+          {{data.species}}
+        </span>
+      </p>
+      <p>
+        <b>{{lang.price}}</b>
+        <span class="right price">
+          {{data.price}}
+        </span>
+      </p>
+      <p>
+        <b>{{lang.timeago}}</b>
+        <span class="right">
+          {{data.timer}}
+        </span>
+      </p>
+      <p>
+        <b>{{lang.age}}</b>
+        <span class="right">
+          {{data.age}}
+        </span>
+      </p>
+      <p>
+        <b>{{lang.vaccine}}</b>
+        <span class="right">
+          {{data.vaccine}} {{lang.vaccine_per}}
+        </span>
+      </p>
+      <p>
+        <b>{{lang.description}}</b>
+      </p>
+      <p>
+        {{data.description}}
+      </p>
+    </div>
+    <div class="h2">
+      <p>
+        <b>
+          {{lang.call}}
+          {{owner.name}} 
+        </b>
+      </p>
+      <p>
+        <b>
+          {{lang.address}}
+        </b>
+      </p>
+      <p>
+        {{owner.address}}
+      </p>
+      <p>
+        <b>
+          {{lang.phone}}
+        </b>
+      </p>
+      <p>
+        {{owner.phone}}
+      </p>
+      <button ion-button block (click)="order()" id="buy">
+        {{lang.buy}}
+      </button>
+    </div>
   </div>
   <div class="h3">
     <div class="h3l">
@@ -90,9 +93,6 @@
       <ion-list>
         <ion-item *ngFor="let c of comment">
           <div class="{{c.user === service.uid ? 'green' : 'blue'}}">
-            <h1>
-              {{c.name}}
-            </h1>
             <p>
               {{c.comment}}
             </p>

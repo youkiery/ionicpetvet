@@ -3,17 +3,20 @@
     <ion-title>
       {{lang.sale_manager}}
       <ion-icon name="add-circle" class="nav-icon" (click)="post()"></ion-icon>
-      <span class="nav-icon" (click)="sell()">
-        Bán
+      <span class="nav-icon {{active[0]}}" (click)="sell()">
+        {{lang.sell}}
       </span>
-      <span class="nav-icon" (click)="buy()">
-        Mua
+      <span class="nav-icon {{active[1]}}" (click)="buy()">
+        {{lang.buy}}
       </span>
-      <span class="nav-icon" (click)="sold()">
-        Đã bán
+      <span class="nav-icon {{active[2]}}" (click)="sold()">
+        {{lang.sold}}
       </span>
-      <span class="nav-icon" (click)="bought()">
-        Đã mua
+      <span class="nav-icon {{active[3]}}" (click)="bought()">
+        {{lang.bought}}
+      </span>
+      <span class="nav-icon {{active[3]}}" (click)="order()">
+        {{lang.order}}
       </span>
       <!-- <ion-icon name="logo-usd" class="nav-icon" (click)="sell()"></ion-icon>
       <ion-icon name="cart" class="nav-icon" (click)="buy()"></ion-icon>
@@ -24,49 +27,72 @@
 </ion-header>
 
 <ion-content padding>
-  <form (ngSubmit)="filterall()">
-    <ion-item>
-      <ion-label>
-        {{lang.keyword}}
-      </ion-label>
-      <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        {{lang.sort}}
-      </ion-label>
-      <ion-select [(ngModel)]="filter.sort" name="sort">
-        <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
-          {{option}}
-        </ion-option>
-      </ion-select>
-    </ion-item>
-    <button ion-button block>
-      {{lang.filter}}
-    </button>
-  </form>
-  <div>
+  <div class="h2l">
+    <form (ngSubmit)="filterall()">
+      <ion-item>
+        <ion-label>
+          {{lang.keyword}}
+        </ion-label>
+        <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          {{lang.sort}}
+        </ion-label>
+        <ion-select [(ngModel)]="filter.sort" name="sort">
+          <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
+            {{option}}
+          </ion-option>
+        </ion-select>
+      </ion-item>
+      <button ion-button block>
+        {{lang.filter}}
+      </button>
+    </form>
+  </div>
+  <div class="h2r">
     <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
       <div class="pet-box-option" *ngIf="type == 0">
+        <!-- sell -->
         <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.date, pet.price, pet.description, pet.kind, pet.species)"></ion-icon>
         <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
       </div>
       <div class="pet-box-option" *ngIf="type == 1">
+        <!-- buy -->
         <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
       </div>
-      <div class="pet-box-option" *ngIf="type == 2">
+      <!-- bought -->
+      <!-- <div class="pet-box-option" *ngIf="type == 2">
         <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
-      </div>
-      <div class="pet-box-option" *ngIf="type == 3">
+      </div> -->
+      <!-- sold -->
+      <!-- <div class="pet-box-option" *ngIf="type == 3">
         <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
-      </div>
+      </div> -->
       <img class="thumb" src="{{pet.image[0]}}">
-      <p>
-        {{pet.name}}
-      </p>
-      <p>
-        {{pet.price}}
-      </p>
+      <div>
+        <p>
+          &#9; {{pet.name}}
+        </p>
+        <p>
+          &#9; {{pet.provide}}
+        </p>
+        <p>
+          &#9; {{lang.poster}} {{pet.owner}}
+        </p>
+        <p class="description">
+          &#9; {{pet.description}}
+        </p>
+        <p>
+          &#9; {{lang.age}} {{pet.age}}
+        </p>
+        <span class="price">
+          &#9; {{pet.price}}
+        </span>
+        <span class="timer right">
+          {{pet.timer}}
+        </span>
+      </div>
     </div>
   </div>
 </ion-content>

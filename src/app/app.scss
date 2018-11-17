@@ -42,3 +42,194 @@
 .right {
   float: right;
 }
+.timer {
+  right: 20px;
+  position: absolute;
+}
+.pet-subinfo {
+  margin: 10px 0px;
+  font-size: 1.1em;
+}
+.price {
+  color: #d22;
+}
+.slides {
+  height: auto !important;
+}
+.h1l {
+  clear: both;
+  float: left;
+  width: 49%;
+}
+.h1r {
+  float: right;
+  width: 49%;
+  margin: 0;
+  padding: 2px 0 0 12px;
+  position: sticky;
+  top: 0px;
+}
+.h2l {
+  float: left;
+  width: 29%;
+  margin: 0;
+  padding: 2px 0 0 12px;
+  position: sticky;
+  top: 0px;
+}
+.h2r {
+  float: right;
+  width: 69%;
+}
+.h2 {
+  clear: both;
+}
+.green {
+  background: #afa;
+  padding: 10px;
+  border-radius: 10px;
+  width: fit-content;
+}
+.blue {
+  background: #aaf;
+  padding: 10px;
+  border-radius: 10px;
+  width: fit-content;
+}
+
+@media screen and (max-width: 480px) {
+  .h1l, .h1r {
+    width: 100%;
+    float: none;
+  }
+}
+.thumb {
+  display: inline-block;
+  width: 200px;
+  height: 100px;
+}
+.banner {
+  width: 100%;
+  max-height: 20em;
+}
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.upload-btn {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.upload-input {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+.pet_box {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  width: 100%;
+  border: 1px solid #ddd;
+  margin: 10px;
+  padding: 10px
+}
+
+.pet_box .thumb, .pet_box div {
+  float: left;
+}
+.pet_box div {
+  margin-left: 10px;
+}
+
+.pet-box-option {
+  text-align: right;
+  display: none;
+  font-size: 20px;
+  background: red;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0.75;
+  margin: 0px !important;
+}
+.pet-box-option ion-icon {
+  text-align: center;
+  width: 40px;
+  height: 40px;
+  padding: 5px;
+}
+.pet-box-option ion-icon:hover {
+  background: white;
+}
+.pet_box:hover .pet-box-option {
+  display: block;
+  transition-duration: 500ms;
+}
+
+.modal-wrapper {
+  background: white;
+}
+
+.ion-page.show-page {
+  overflow-y: scroll !important;
+}
+
+form.sale {
+  width: 100%;
+  margin: 0px;
+}
+ion-content.panel {
+  background: #eee !important;
+}
+.panel form {
+  background: #fff;
+  width: 400px;
+  margin: 50px auto;
+  border: 1px solid #ddd;
+  padding: 20px 10px;
+  border-radius: 10px;
+  text-align: center;
+}
+.logo {
+  margin: 30px 0px;
+}
+.button-half {
+  width: 46%;
+  margin: 20px 0px 0px 0px;
+}
+
+.active {
+  color: #f84;
+}
+
+@media screen and (max-width: 480px) {
+  form {
+    width: 100%;
+    margin: auto;
+  }
+}
+@media screen and (max-width: 640px) {
+  .h2l, .h2r {
+    float: none;
+    width: 100%;
+  }
+  .h2l {
+    position: static;
+  }
+  .h1r {
+    position: static;
+  }
+}

@@ -69,6 +69,9 @@ export class LangProvider {
   list: string = "Hiển thị danh sách";
   notice: string = "Thông báo";
   chat: string = "Trò chuyện với gian hàng";
+  poster: string = "Người đăng: ";
+  sold: string = "Đã bán";
+  bought: string = "Đã mua";
   constructor() {
 
   }

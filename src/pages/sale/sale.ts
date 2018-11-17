@@ -22,25 +22,37 @@ export class SalePage {
     type: 0
   }
   type: number = 0
+  active = ["active", "", "", ""]
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController) {
       this.filterall()
   }
 
   sell() {
-    this.filter["type"] = 0;
-    this.filterall();
+    this.setActive(0)
   }
   buy() {
-    this.filter["type"] = 1;
-    this.filterall();
-  }
-  bought() {
-    this.filter["type"] = 2;
-    this.filterall();
+    this.setActive(1)
   }
   sold() {
-    this.filter["type"] = 3;
+    this.setActive(2)
+  }
+  bought() {
+    this.setActive(3)
+  }
+  order() {
+    this.setActive(4)
+  }
+  
+  setActive(type: number) {
+    this.filter["type"] = type;
+    this.active.forEach((activevalue, index) => {
+      if (index === type) {
+        this.active[index] = "active"
+      } else {
+        this.active[index] = ""
+      }
+    });
     this.filterall();
   }
 

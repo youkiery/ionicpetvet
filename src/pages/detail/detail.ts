@@ -28,7 +28,7 @@ export class DetailPage {
     this.data = this.navParams.get("data");
     this.service.loadstart()
     console.log(this.data);
-    this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.data["user"]).subscribe(data => {
+    this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.data["user"] + "&puid=" + this.data["user"]).subscribe(data => {
       this.owner = data["data"]["owner"]
       this.comment = data["data"]["comment"]
       if (data["data"]["order"]) {
@@ -53,7 +53,7 @@ export class DetailPage {
     this.service.loadstart()
     console.log(this.chattext);
     
-    this.http.get(this.service.url + "?action=postchat&id=" + this.data["id"] + "&uid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+    this.http.get(this.service.url + "?action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
       console.log(response);
       if (response["status"]) {
         this.comment = response["data"]

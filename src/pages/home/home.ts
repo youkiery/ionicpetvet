@@ -35,6 +35,7 @@ export class HomePage {
       this.getlogin().then(logindata => {
         this.checklogin(logindata)
       })
+      
   }
 
   getlogin() {

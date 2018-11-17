@@ -77,4 +77,31 @@
       {{lang.buy}}
     </button>
   </div>
+  <div class="h3">
+    <div class="h3l">
+      <form (ngSubmit)="postchat()">
+        <ion-textarea [(ngModel)]="chattext" name="chattext"></ion-textarea>
+        <button ion-button>
+          {{lang.post}}
+        </button>
+      </form>
+    </div>
+    <div class="h3r">
+      <ion-list>
+        <ion-item *ngFor="let c of comment">
+          <div class="{{c.user === service.uid ? 'green' : 'blue'}}">
+            <h1>
+              {{c.name}}
+            </h1>
+            <p>
+              {{c.comment}}
+            </p>
+            <p>
+              {{c.time}}
+            </p>
+          </div>
+        </ion-item>
+      </ion-list>
+    </div>
+  </div>
 </ion-content>

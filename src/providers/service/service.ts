@@ -74,7 +74,11 @@ export class ServiceProvider {
     if (!this.isloading) {
       this.loading = this.loadCtrl.create({
         content: "Vui lòng chờ",
+        duration: 5000,
       })
+      setTimeout(() => {
+        this.loadend()
+      }, 3000);
       this.loading.present()
       this.isloading = true;
     }

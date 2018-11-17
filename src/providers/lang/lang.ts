@@ -68,6 +68,7 @@ export class LangProvider {
   vaccine_per: string = "mũi";
   list: string = "Hiển thị danh sách";
   notice: string = "Thông báo";
+  chat: string = "Trò chuyện với gian hàng";
   constructor() {
 
   }

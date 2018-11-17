@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http'
 import { ServiceProvider } from '../../providers/service/service';
 import { LangProvider } from '../../providers/lang/lang';
 
+import { InboxPage } from '../inbox/inbox';
+
 @IonicPage()
 @Component({
   selector: 'page-detail',
@@ -12,12 +14,14 @@ import { LangProvider } from '../../providers/lang/lang';
 })
 export class DetailPage {
   data: object
+  comment: object = []
   owner: object = {
     name: "",
     address: "",
     phone: ""
   }
   disabled: string = ""
+  chattext: string = ""
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
     public event: Events) {
@@ -26,10 +30,10 @@ export class DetailPage {
     console.log(this.data);
     this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.data["user"]).subscribe(data => {
       this.owner = data["data"]["owner"]
+      this.comment = data["data"]["comment"]
       if (data["data"]["order"]) {
         document.getElementById("buy").setAttribute("disabled", "true")
       }
-      this.owner = data["data"]["owner"]
       this.service.loadend()
     })
     this.event.subscribe("ordered", () => {
@@ -41,6 +45,21 @@ export class DetailPage {
   order() {
     let modal = this.modalCtrl.create(Order, {pid: this.data["id"]})
     modal.present()
+  }
+  chat() {
+    this.navCtrl.push(InboxPage, {id: this.data["id"]})
+  }
+  postchat() {
+    this.service.loadstart()
+    console.log(this.chattext);
+    
+    this.http.get(this.service.url + "?action=postchat&id=" + this.data["id"] + "&uid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+      console.log(response);
+      if (response["status"]) {
+        this.comment = response["data"]
+      }
+      this.service.loadend()
+    })
   }
 }
 @Component({

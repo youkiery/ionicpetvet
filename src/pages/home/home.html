@@ -63,7 +63,7 @@
       </span>
       <ion-icon name="menu" class="nav-icon" menuToggle></ion-icon>
       <ion-icon name="refresh" class="nav-icon" (click)="refresh()"></ion-icon>
-      <ion-icon name="main" class="nav-icon" (click)="inbox()"></ion-icon>
+      <ion-icon name="mail" class="nav-icon" (click)="inbox()"></ion-icon>
       <ion-icon name="contact" class="nav-icon" *ngIf="!this.service.islogged" (click)="login()"></ion-icon>
       <span style="float: right; line-height: 32px;" *ngIf="this.service.islogged">
         {{this.service.name}}

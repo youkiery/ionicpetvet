@@ -55,7 +55,7 @@ export class ServiceProvider {
       this.storage.set(dataname, data)
     }
   }
-  logged(logdata, navCtrl, redirect = true) {
+  logged(logdata, navCtrl = null, redirect = true) {
     this.setData("login", logdata["uid"]);
     this.uid = logdata["uid"];
     this.name = logdata["name"];
@@ -63,12 +63,15 @@ export class ServiceProvider {
     this.address = logdata["address"];
     
     this.islogged = true;
-    if (redirect) navCtrl.pop();
+    if (navCtrl && redirect) navCtrl.pop();
   }
   logout() {
     this.storage.remove("login");
     this.islogged = false
     this.uid = null
+    this.name = ""
+    this.phone = ""
+    this.address = ""
   }
   loadstart() {
     if (!this.isloading) {

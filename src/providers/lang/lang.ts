@@ -72,6 +72,12 @@ export class LangProvider {
   poster: string = "Người đăng: ";
   sold: string = "Đã bán";
   bought: string = "Đã mua";
+  changepass: string = "Đổi mật khẩu";
+  infomation: string = "Thông tin";
+  // home: string = "trang chủ";
+  // user: string = "người dùng";
+  // messenger: string = "thông báo";
+  // menu: string = "bảng chọn";
   constructor() {
 
   }

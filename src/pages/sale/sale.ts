@@ -22,10 +22,16 @@ export class SalePage {
     type: 0
   }
   type: number = 0
-  active = ["active", "", "", ""]
+  active: string[] = ["", "active"]
+  activebar: number[] = [1, 0, 0, 0, 0]
+  actindex = 0
+  prvindex = 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
-    public lang: LangProvider, public alert: AlertController) {
+    public lang: LangProvider, public alert: AlertController, public navCtrl: NavController) {
       this.filterall()
+      // setInterval(() => {
+      //   console.log(this.service.userpet);
+      // }, 3000)
   }
 
   sell() {
@@ -34,27 +40,30 @@ export class SalePage {
   buy() {
     this.setActive(1)
   }
-  sold() {
+  order() {
     this.setActive(2)
   }
-  bought() {
+  sold() {
     this.setActive(3)
   }
-  order() {
+  bought() {
     this.setActive(4)
   }
-  
-  setActive(type: number) {
-    this.filter["type"] = type;
-    this.active.forEach((activevalue, index) => {
-      if (index === type) {
-        this.active[index] = "active"
-      } else {
-        this.active[index] = ""
-      }
-    });
-    this.filterall();
+
+  back() {
+    this.navCtrl.pop()
   }
+  
+  setActive(index) {
+    console.log(index);
+    
+    this.activebar[this.actindex] = 0
+    this.prvindex = this.actindex
+    this.actindex = index
+    this.activebar[this.actindex] = 1
+    this.filter["type"] = index
+    this.filterall()
+  } 
 
   filterall() {
     this.service.loadstart()
@@ -64,6 +73,7 @@ export class SalePage {
         this.service.userpet = response["data"]
         this.type = this.filter["type"]
       }
+      
       this.service.loadend()
     })
   }
@@ -95,7 +105,7 @@ export class SalePage {
   }
 
   post() {
-    let x = this.modalCtrl.create(Post);
+    let x = this.modalCtrl.create(Post, {filter: this.filter});
     x.present()
   }
 
@@ -111,7 +121,7 @@ export class SalePage {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.http.get(this.service.url + "?action=removepost&id=" + id + "&uid=" + this.service.uid).subscribe(data => {
+            this.http.get(this.service.url + "?action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(data => {
               switch (data["status"]) {
                 case 1:
                   this.service.showMsg(this.lang["removesuccess"])
@@ -150,7 +160,7 @@ export class SalePage {
       <ion-item *ngIf="post.kind">
         <ion-label> {{lang.species}} </ion-label>
         <ion-select [(ngModel)]="post.species" name="species">
-          <ion-option *ngFor="let option of this.service.species" value="{{option.id}}">{{option.name}}</ion-option>
+          <ion-option *ngFor="let option of this.service.species[post.kind]" value="{{option.id}}">{{option.name}}</ion-option>
         </ion-select>
       </ion-item>
       <ion-item>
@@ -187,6 +197,11 @@ export class SalePage {
 export class Post {
   post: any = {}
   images: string[] = []
+  filter: object = {
+    keyword: "",
+    sort: 0,
+    type: 0
+  }
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
     public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController) {
@@ -194,6 +209,9 @@ export class Post {
     
     var now = new Date();
     var data = this.navParams.get("data")
+    this.filter = this.navParams.get("filter")
+    console.log(data);
+    
     if (data) {
       this.post.name = data["name"]
       this.post.date = data["date"]
@@ -207,8 +225,6 @@ export class Post {
       this.post.date = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() 
       this.post.description = ""
       this.post.price = 0
-      this.post.kind = 0
-      this.post.species = 0
     }
   }
 
@@ -248,6 +264,7 @@ export class Post {
     fd.append("price", this.post.price);
     fd.append("description", this.post.description);
     fd.append("species", this.post.species);
+    fd.append("kind", this.post.kind);
     fd.append("vaccine", this.post.vaccine);
     fd.append("id", this.post.id);
     var xhttp = new XMLHttpRequest();
@@ -286,7 +303,7 @@ export class Post {
         }
       }
     };
-    xhttp.open("POST", this.service.url + "?action=savepost", true);
+    xhttp.open("POST", this.service.url + "?action=savepost&uid=" + this.service.uid + "&" + this.service.toparam(this.filter), true);
     xhttp.send(fd);
         // this.http.post("http://linesrc.netne.net/index.php?action=uploadimage", files, {headers}).subscribe(data => {
     //   console.log(data);

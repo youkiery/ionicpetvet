@@ -1,5 +1,5 @@
 <ion-menu side="right" [content]="mycontent" class="toggle-menu">
-  <ion-content class="list-menu">
+  <ion-content class="list-menu" menuClose>
     <ion-list *ngIf="!this.service.islogged">
       <ion-item color="secondary">
         {{lang.menu}}
@@ -55,113 +55,181 @@
 <ion-nav #mycontent [root]="rootPage"></ion-nav>
 
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      <img src="../../assets/imgs/pet-logo.png" class="mini-icon main-logo" (click)="home()">
-      <span>
-        {{lang.logo}}
-      </span>
-      <ion-icon name="menu" class="nav-icon" menuToggle></ion-icon>
-      <ion-icon name="refresh" class="nav-icon" (click)="refresh()"></ion-icon>
-      <ion-icon name="mail" class="nav-icon" (click)="inbox()"></ion-icon>
-      <ion-icon name="contact" class="nav-icon" *ngIf="!this.service.islogged" (click)="login()"></ion-icon>
-      <span style="float: right; line-height: 32px;" *ngIf="this.service.islogged">
-        {{this.service.name}}
-      </span>
-    </ion-title>
-  </ion-navbar>
+  <ion-row>
+    <ion-col col-4 (click)="refresh()" class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]">
+      <ion-icon name="home"></ion-icon>
+      <!-- {{lang.home}} -->
+    </ion-col>
+    <ion-col col-2 (click)="refresh()" class="{{active[activebar[0]]}} navcol" *ngIf="!activebar[0]">
+      <ion-icon name="home"></ion-icon>
+      <!-- {{lang.home}} -->
+    </ion-col>
+    <ion-col col-4 class="searchbar {{active[activebar[4]]}} navcol" (click)="search()" *ngIf="activebar[4]">
+      <ion-icon name="search"></ion-icon>
+      <!-- {{lang.home}} -->
+    </ion-col>
+    <ion-col col-2 class="searchbar {{active[activebar[4]]}} navcol" (click)="search()" *ngIf="!activebar[4]">
+      <ion-icon name="search"></ion-icon>
+      <!-- {{lang.home}} -->
+    </ion-col>
+    <ion-col col-4 (click)="login()" class="{{active[activebar[1]]}} navcol" *ngIf="activebar[1]">
+      <ion-icon name="contact"></ion-icon>
+      <!-- {{lang.user}} -->
+    </ion-col>
+    <ion-col col-2 (click)="login()" class="{{active[activebar[1]]}} navcol" *ngIf="!activebar[1]">
+      <ion-icon name="contact"></ion-icon>
+      <!-- {{lang.user}} -->
+    </ion-col>
+    <ion-col col-4 (click)="inbox()" class="{{active[activebar[2]]}} navcol" *ngIf="activebar[2]">
+      <ion-icon name="mail"></ion-icon>
+      <!-- {{lang.messenger}} -->
+    </ion-col>
+    <ion-col col-2 (click)="inbox()" class="{{active[activebar[2]]}} navcol" *ngIf="!activebar[2]">
+      <ion-icon name="mail"></ion-icon>
+      <!-- {{lang.messenger}} -->
+    </ion-col>
+    <ion-col col-4 menuToggle class="{{active[activebar[3]]}} navcol" *ngIf="activebar[3]">
+      <ion-icon name="menu"></ion-icon>
+      <!-- {{lang.menu}} -->
+    </ion-col>
+    <ion-col col-2 menuToggle class="{{active[activebar[3]]}} navcol" *ngIf="!activebar[3]">
+      <ion-icon name="menu"></ion-icon>
+      <!-- {{lang.menu}} -->
+    </ion-col>
+  </ion-row>
+  <!-- <span style="float: right; line-height: 32px;" *ngIf="this.service.islogged">
+    {{this.service.name}}
+  </span> -->
 </ion-header>
 
-<ion-content padding>
-  <div *ngIf="service.config.banner">
-    <img src="{{service.baseurl + service.config.banner}}" class="banner">
+<ion-content>
+  <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
+  <div class="searchpanel" *ngIf="activebar[4]" style="background: white; z-index: 5;">
+    <form (ngSubmit)="filtersuball()">
+      <ion-item>
+        <ion-label> {{lang.keyword}} </ion-label>
+        <ion-input #input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label> {{lang.sort}} </ion-label>
+        <ion-select [(ngModel)]="filter.sort" name="sort">
+          <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}"> {{option}} </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label> {{lang.kind}} </ion-label>
+        <ion-select [(ngModel)]="filter.kind" name="kind">
+          <ion-option *ngFor="let option of service.kind" value="{{option.id}}"> {{option.name}} </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item *ngIf="filter.kind">
+        <ion-label> {{lang.species}} </ion-label>
+        <ion-select [(ngModel)]="filter.species" name="species">
+          <ion-option *ngFor="let option of service.species[filter.kind]" value="{{option.id}}">
+            {{option.name}}
+          </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
+        <ion-label>
+          {{lang.price}}: {{unit(service.price[filter.price.lower] * 1000)}} - {{unit(service.price[filter.price.upper] * 1000)}} 
+        </ion-label>
+        <ion-range dualKnobs="true" min="0" max="73" step="1" [(ngModel)]="filter.price" name="price"></ion-range>
+      </ion-item>
+      <button ion-button block> {{lang.filter}} </button>
+    </form>
   </div>
-  <form (ngSubmit)="filterall()" class="h2l">
-    <ion-item>
-      <ion-label>
-        {{lang.keyword}}
-      </ion-label>
-      <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        {{lang.sort}}
-      </ion-label>
-      <ion-select [(ngModel)]="filter.sort" name="sort">
-        <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
-          {{option}}
-        </ion-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        {{lang.kind}}
-      </ion-label>
-      <ion-select [(ngModel)]="filter.kind" name="kind">
-        <ion-option *ngFor="let option of service.kind" value="{{option.id}}">
-          {{option.name}}
-        </ion-option>
-      </ion-select>
-    </ion-item>
-    <ion-item *ngIf="filter.kind">
-      <ion-label>
-        {{lang.species}}
-      </ion-label>
-      <ion-select [(ngModel)]="filter.species" name="species">
-        <ion-option *ngFor="let option of service.species[filter.kind]" value="{{option.id}}">
-          {{option.name}}
-        </ion-option>
-      </ion-select>
-    </ion-item>
-    <ion-item>
-      <ion-label>
-        {{lang.price}}: {{unit(service.price[filter.price.lower] * 1000)}} - {{unit(service.price[filter.price.upper] * 1000)}} 
-      </ion-label>
-      <ion-range dualKnobs="true" min="0" max="73" step="1" [(ngModel)]="filter.price" name="price"></ion-range>
-    </ion-item>
-    <!-- <ion-item>
-      <ion-label> {{lang.price}} </ion-label>
-      <ion-range min="18" max="100" dualKnobs="true" pin="true" [(ngModel)]="setdage" name="setdage" color="danger">
-        <ion-label range-left>18</ion-label>
-        <ion-label range-right>100+</ion-label>
-      </ion-range>
-    </ion-item> -->
-    <button ion-button block>
-      {{lang.filter}}
-    </button>
-    <!-- <ion-item>
-      <ion-label>
-        {{lang.species}}
-      </ion-label>
-      <ion-input type="text" [(ngModel)]="filter.species" name="species"></ion-input>
-    </ion-item> -->
-  </form>
-  <div class="h2r">
+  <div *ngIf="activebar[0]">
+    
+    <div *ngIf="service.config.banner">
+      <img src="{{service.baseurl + service.config.banner}}" class="banner">
+    </div>
     <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
-      <img class="thumb" src="{{pet.image[0]}}">
       <div>
-        <p>
-          &#9; {{pet.name}}
-        </p>
-        <p>
-          &#9; {{pet.provide}}
-        </p>
-        <p>
-          &#9; {{lang.poster}} {{pet.owner}}
-        </p>
-        <p class="description">
-          &#9; {{pet.description}}
-        </p>
-        <p>
-          &#9; {{lang.age}} {{pet.age}}
-        </p>
-        <span class="price">
-          &#9; {{pet.price}}
-        </span>
-        <span class="timer right">
-          {{pet.timer}}
-        </span>
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
       </div>
     </div>
   </div>
+  <div *ngIf="activebar[1]">
+    <div *ngIf="service.uid">
+      <div class="h1l">
+        <ion-list>
+          <ion-item color="primary">
+            {{lang.infomation}}
+          </ion-item>
+          <ion-item>
+            {{lang.name}}: {{service.name}}
+          </ion-item>
+          <ion-item>
+            {{lang.phone}}: {{service.phone}}
+          </ion-item>
+          <ion-item>
+            {{lang.address}}: {{service.address}}
+          </ion-item>
+        </ion-list>
+      </div>
+      <div class="h1r">
+        <ion-list>
+          <ion-item color="primary">
+            {{lang.account_manager}}
+          </ion-item>
+          <ion-item>
+            {{lang.changepass}}
+          </ion-item>
+          <ion-item>
+            {{lang.logout}}
+          </ion-item>
+        </ion-list>
+      </div>
+    </div>
+    <form (ngSubmit)="submit()" class="panel" *ngIf="!service.uid">
+      <img src="../../assets/imgs/pet-logo.png" class="logo">
+      <ion-item>
+        <ion-label> {{lang.username}} </ion-label>
+        <ion-input type="text" [(ngModel)]="this.user.username" name="username"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label> {{lang.password}} </ion-label>
+        <ion-input type="password" [(ngModel)]="this.user.password" name="password"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submitType">
+        <ion-label> {{lang.vpassword}} </ion-label>
+        <ion-input type="password" [(ngModel)]="this.user.vpassword" name="vpassword"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submitType">
+        <ion-label> {{lang.fullname}} </ion-label>
+        <ion-input type="text" [(ngModel)]="this.user.name" name="name"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submitType">
+        <ion-label> {{lang.phone}} </ion-label>
+        <ion-input type="text" [(ngModel)]="this.user.phone" name="phone"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submitType">
+        <ion-label> {{lang.address}} </ion-label>
+        <ion-input type="text" [(ngModel)]="this.user.address" name="address"></ion-input>
+      </ion-item>
+      <ion-item *ngIf="submitType">
+        <ion-label> {{lang.provide}} </ion-label>
+        <ion-select [(ngModel)]="this.user.provide" name="provide">
+          <ion-option *ngFor="let option of service.provides; let i = index" value="{{i}}">
+            {{option}}
+          </ion-option>
+        </ion-select>
+        <ion-input type="text"></ion-input>
+      </ion-item>
+      <button ion-button color="secondary" type="submit" class="button-half"> {{submitButton[submitType]}} </button>
+      <button ion-button type="button" class="button-half" *ngIf="!submitType" (click)="nousername()">
+        {{lang.nousername}}
+      </button>
+      <button ion-button type="button" class="button-half" *ngIf="submitType" (click)="haveusername()">
+        {{lang.haveusername}}
+      </button>
+    </form>
+  </div>
+  <ion-list *ngIf="activebar[2]">
+
+  </ion-list>
 </ion-content>

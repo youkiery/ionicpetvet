@@ -1,33 +1,35 @@
 <ion-header>
-  <ion-navbar>
-    <ion-title>
-      {{lang.sale_manager}}
-      <ion-icon name="add-circle" class="nav-icon" (click)="post()"></ion-icon>
-      <span class="nav-icon {{active[0]}}" (click)="sell()">
-        {{lang.sell}}
-      </span>
-      <span class="nav-icon {{active[1]}}" (click)="buy()">
-        {{lang.buy}}
-      </span>
-      <span class="nav-icon {{active[2]}}" (click)="sold()">
-        {{lang.sold}}
-      </span>
-      <span class="nav-icon {{active[3]}}" (click)="bought()">
-        {{lang.bought}}
-      </span>
-      <span class="nav-icon {{active[3]}}" (click)="order()">
-        {{lang.order}}
-      </span>
-      <!-- <ion-icon name="logo-usd" class="nav-icon" (click)="sell()"></ion-icon>
-      <ion-icon name="cart" class="nav-icon" (click)="buy()"></ion-icon>
-      <ion-icon name="logo-usd" class="nav-icon" (click)="sold()"></ion-icon>
-      <ion-icon name="logo-usd" class="nav-icon" (click)="bought()"></ion-icon> -->
-    </ion-title>
-  </ion-navbar>
+  <ion-row>
+    <ion-col (click)="back()" class="navcol">
+      <ion-icon name="arrow-round-back"></ion-icon>
+    </ion-col>
+    <ion-col col-2 (click)="sell()" class="{{active[activebar[0]]}} navcol">
+      <ion-icon name="home"></ion-icon>
+      <p class="subtitle"> {{lang.sell}} </p>
+    </ion-col>
+    <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
+      <ion-icon name="contact"></ion-icon>
+      <p class="subtitle"> {{lang.buy}} </p>
+    </ion-col>
+    <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
+      <ion-icon name="mail"></ion-icon>
+      <p class="subtitle"> {{lang.order}} </p>
+    </ion-col>
+    <ion-col col-2 (click)="sold()" class="{{active[activebar[3]]}} navcol">
+      <ion-icon name="menu"></ion-icon>
+      <p class="subtitle"> {{lang.sold}} </p>
+    </ion-col>
+    <ion-col col-2 class="searchbar {{active[activebar[4]]}} navcol" (click)="bought()">
+      <ion-icon name="search"></ion-icon>
+      <p class="subtitle"> {{lang.bought}} </p>
+    </ion-col>
+  </ion-row>
 </ion-header>
 
-<ion-content padding>
-  <div class="h2l">
+<ion-content>
+  <div>
+  <!-- <div class="h2l"> -->
+    <ion-icon class="nav-icon" name="add-circle" (click)="post()"></ion-icon>
     <form (ngSubmit)="filterall()">
       <ion-item>
         <ion-label>
@@ -50,48 +52,25 @@
       </button>
     </form>
   </div>
-  <div class="h2r">
+  <div>
+  <!-- <div class="h2r"> -->
     <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
-      <div class="pet-box-option" *ngIf="type == 0">
-        <!-- sell -->
-        <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.date, pet.price, pet.description, pet.kind, pet.species)"></ion-icon>
-        <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
-      </div>
-      <div class="pet-box-option" *ngIf="type == 1">
-        <!-- buy -->
-        <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
-      </div>
-      <!-- bought -->
-      <!-- <div class="pet-box-option" *ngIf="type == 2">
-        <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
-      </div> -->
-      <!-- sold -->
-      <!-- <div class="pet-box-option" *ngIf="type == 3">
-        <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
-      </div> -->
-      <img class="thumb" src="{{pet.image[0]}}">
       <div>
-        <p>
-          &#9; {{pet.name}}
-        </p>
-        <p>
-          &#9; {{pet.provide}}
-        </p>
-        <p>
-          &#9; {{lang.poster}} {{pet.owner}}
-        </p>
-        <p class="description">
-          &#9; {{pet.description}}
-        </p>
-        <p>
-          &#9; {{lang.age}} {{pet.age}}
-        </p>
-        <span class="price">
-          &#9; {{pet.price}}
-        </span>
-        <span class="timer right">
-          {{pet.timer}}
-        </span>
+        <div class="pet-box-option" *ngIf="type == 0">
+          <!-- sell -->
+          <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.date, pet.price, pet.description, pet.kind, pet.species)"></ion-icon>
+          <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
+        </div>
+        <div class="pet-box-option" *ngIf="type == 1">
+          <!-- buy -->
+          <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
+        </div>
+        <div>
+          <img class="thumb" src="{{pet.image[0]}}">
+          <p> &#9; {{pet.name}} </p>
+          <span class="price"> &#9; {{pet.price}} </span>
+          <span class="timer right"> {{pet.timer}} </span>
+        </div>
       </div>
     </div>
   </div>

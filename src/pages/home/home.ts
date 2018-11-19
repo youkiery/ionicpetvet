@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
@@ -7,15 +7,16 @@ import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 
 import {DetailPage} from '../detail/detail'
-import {UserPage} from '../user/user'
 import { SalePage } from '../sale/sale';
-import { InboxPage } from '../inbox/inbox';
 
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
 })
 export class HomePage {
+  @ViewChild('input') myInput;
+
+  // main
   filter: object = {
     keyword: "",
     sort: 0,
@@ -29,8 +30,35 @@ export class HomePage {
   rangeSettings: number = 20;
   setdage: any;
   banner: string = ""
+  active: string[] = ["", "active"]
+  activebar: number[] = [1, 0, 0, 0, 0]
+  actindex = 0
+  prvindex = 0
+  issearch: boolean = false
+  // user
+  submitButton: string[]
+  submitType: number = 0 // 0: login, 1: signup
+  user: {
+    username: string,
+    password: string,
+    vpassword: string,
+    name: string,
+    phone: string,
+    address: string,
+    provide: number,
+  } = {
+    username: "",
+    password: "",
+    vpassword: "",
+    name: "",
+    phone: "",
+    address: "",
+    provide: 0
+  }
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events) {
+      this.submitButton = [lang.login, lang.signup];
+
       this.service.loadstart()
       this.getlogin().then(logindata => {
         this.checklogin(logindata)
@@ -64,6 +92,8 @@ export class HomePage {
   }
 
   refresh(resolve = null) {
+    this.service.loadstart()
+    this.setActive(0)
     this.http.get(this.service.url + "?action=getinit").subscribe(data => {
       console.log(data);
       this.service.kind = data["data"]["kind"]
@@ -79,12 +109,36 @@ export class HomePage {
     })
   }
 
+  search() {
+    console.log(1);
+    
+    this.issearch = true
+    this.setActive(4)
+    setTimeout(() => {
+      this.myInput.setFocus()
+    }, 500)
+  }
+  bsearch() {
+    console.log(2);
+    this.issearch = false
+    this.setActive(this.prvindex)
+  }
+
+  setActive(index) {
+    console.log(index);
+    
+    this.activebar[this.actindex] = 0
+    this.prvindex = this.actindex
+    this.actindex = index
+    this.activebar[this.actindex] = 1
+  } 
+
   home() {
     // remove all pushed page, set root to home
   }
 
   login() {
-    this.navCtrl.push(UserPage);
+    this.setActive(1)
   }
 
   detail(index) {
@@ -105,8 +159,14 @@ export class HomePage {
    return formatter.format(price)
   }
   inbox() {
-    this.navCtrl.push(InboxPage)
+    this.setActive(2);
   }
+
+  filtersuball() {
+    this.bsearch()
+    this.filterall()
+  }
+
   filterall() {
     return new Promise((resolve) => {
       this.http.get(this.service.url + "?action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
@@ -118,5 +178,59 @@ export class HomePage {
       })
     })
   }
+
+  submit() {
+    // check username and password
+    if (this.submitType) {
+      // signup
+      this.http.get(this.service.url + "?action=signup&" + this.service.toparam(this.user)).subscribe(data => {
+        switch (data["status"]) {
+          case 1: // username existed
+            this.service.showMsg(this.lang["existedusername"]);            
+          break;
+          case 2: // success
+            this.service.logged(data["data"])
+          break;
+          default:
+            // undefined error
+            this.service.showMsg(this.lang["undefined"]);            
+        }
+      }, (e) => {
+        // undefined error
+        this.service.showMsg(this.lang["undefined"]);            
+      })
+    } else {
+      // login
+      this.http.get(this.service.url + "?action=login&" + this.service.toparam(this.user)).subscribe(data => {
+        console.log(data);
+        
+        switch (data["status"]) {
+          case 1: // no username
+            this.service.showMsg(this.lang["haventusername"]);
+          break;
+          case 2: // incorrect password
+            this.service.showMsg(this.lang["incorrectpassword"]);            
+          break;
+          case 3: // success
+            console.log(data);
+            this.service.logged(data["data"])
+          break;
+          default: // undefined error
+            this.service.showMsg(this.lang["undefined"]);            
+        }
+      }, (e) => {
+        // undefined error
+        this.service.showMsg(this.lang["undefined"]);            
+      })
+    }
+  }
+
+  nousername() {
+    this.submitType = 1;
+  }
+  haveusername() {
+    this.submitType = 0;
+  }
+
 
 }

@@ -27,8 +27,9 @@ export class DetailPage {
     public event: Events) {
     this.data = this.navParams.get("data");
     this.service.loadstart()
-    console.log(this.data);
     this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
+      console.log(data);
+      
       this.owner = data["data"]["owner"]
       this.comment = data["data"]["comment"]
       if (data["data"]["order"]) {

@@ -74,6 +74,17 @@ export class LangProvider {
   bought: string = "Đã mua";
   changepass: string = "Đổi mật khẩu";
   infomation: string = "Thông tin";
+  thank: string = "Cảm ơn quý khách đã sử dụng hệ thống bình chọn";
+  orderdetail: string = "Thông tin đặt hàng";
+  customer: string = "Người đặt mua";
+  public: string = "Công khai";
+  unpublic: string = "Không công khai";
+  nonameallow: string = "Không được bỏ trống tên";
+  type: string = "Loại";
+  vender: string = "Gian hàng của";
+  home: string = "Trang chính";
+  provider: string = "Chủ gian hàng";
+  viewmore: string = "Chi tiết gian hàng";
   // home: string = "trang chủ";
   // user: string = "người dùng";
   // messenger: string = "thông báo";

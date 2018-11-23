@@ -6,6 +6,7 @@ import { ServiceProvider } from '../../providers/service/service';
 import { LangProvider } from '../../providers/lang/lang';
 
 import { InboxPage } from '../inbox/inbox';
+import { ProviderPage } from '../provider/provider';
 
 @IonicPage()
 @Component({
@@ -15,23 +16,42 @@ import { InboxPage } from '../inbox/inbox';
 export class DetailPage {
   data: object
   comment: object = []
+  rate: number = 0
+  ratedisabled: boolean = false
   owner: object = {
     name: "",
     address: "",
     phone: ""
   }
   disabled: string = ""
+  public: string
+  name: string = ""
   chattext: string = ""
+  classhover: string[] = ["nhover", "shover"]
+  shover: number[] = [0, 0, 0, 0, 0]
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
     public event: Events) {
     this.data = this.navParams.get("data");
+    this.service.getData("public").then(data => {
+      console.log(1);
+      this.public = String(data)
+    }, () => {
+      this.public = "false"
+    })
     this.service.loadstart()
-    this.http.get(this.service.url + "?action=getinfo&id=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
+    this.http.get(this.service.url + "&action=getinfo&id=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
       console.log(data);
       
       this.owner = data["data"]["owner"]
       this.comment = data["data"]["comment"]
+      this.rate = data["data"]["rate"]
+      if (!this.service.uid) {
+        this.ratedisabled = true
+      } else if (this.rate) {
+        this.onhover(this.rate)
+        this.ratedisabled = true
+      }
       if (data["data"]["order"]) {
         document.getElementById("buy").setAttribute("disabled", "true")
       }
@@ -41,6 +61,44 @@ export class DetailPage {
       document.getElementById("buy").setAttribute("disabled", "true")
     })
 
+  }
+
+  onhover(index) {
+    if (!this.ratedisabled) {
+      this.shover.fill(0)
+      for (let i = 0; i < index; i++) {
+        this.shover[i] = 1;
+      }
+      console.log(index);
+    }
+  }
+
+  onuhover() {
+    if (!this.ratedisabled) {
+      this.shover.fill(0)
+    }
+  }
+
+  crate(index) {
+    if (!this.ratedisabled) {
+      this.http.get(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(response => {
+        console.log(response);
+        switch (response["status"]) {
+          case 1:
+          // success
+          this.service.showMsg(this.lang["thank"])
+          this.onhover(index)
+          this.ratedisabled = true
+          break;
+          default:
+          // undefined error
+        }
+      })
+    }
+  }
+
+  provider() {
+    this.navCtrl.push(ProviderPage, {provider: this.owner})
   }
 
   order() {
@@ -53,15 +111,23 @@ export class DetailPage {
   postchat() {
     this.service.loadstart()
     console.log(this.chattext);
+    this.service.setData("public", this.public)
+    // var cid = 0;
+    if (!this.service.uid && !this.name.length) {
+      this.service.showMsg(this.lang["nonameallow"]);
+    } 
+    else {
+      // this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&public=" + this.public + "&chattext=" + this.chattext).subscribe(response => {
+      this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&chattext=" + this.chattext).subscribe(response => {
+        console.log(response);
+        if (response["status"]) {
+          this.comment = response["data"]
+          this.chattext = ""
+        }
+        this.service.loadend()
+      })
+    }
     
-    this.http.get(this.service.url + "?action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
-      console.log(response);
-      if (response["status"]) {
-        this.comment = response["data"]
-        this.chattext = ""
-      }
-      this.service.loadend()
-    })
   }
 }
 @Component({
@@ -113,7 +179,7 @@ export class Order {
   }
   buy() {
     this.service.loadstart()
-    this.http.get(this.service.url + "?action=order&" + this.service.toparam(this.order)).subscribe(response => {
+    this.http.get(this.service.url + "&action=order&" + this.service.toparam(this.order)).subscribe(response => {
       switch (response["status"]) {
         case 1:
           // cannot insert

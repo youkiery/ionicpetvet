@@ -1,0 +1,103 @@
+<ion-menu side="right" [content]="mycontent" class="toggle-menu">
+  <ion-content class="list-menu" menuClose>
+    <ion-list *ngIf="!this.service.islogged">
+      <ion-item color="secondary">
+        {{lang.menu}}
+      </ion-item>
+      <ion-item (click)="home()">
+        {{lang.home}}
+      </ion-item>
+    </ion-content>
+  </ion-list>
+</ion-menu>
+
+<ion-nav #mycontent [root]="rootPage"></ion-nav>
+<ion-header>
+  <ion-col col-2 class="navcol" (click)="back()">
+    <ion-icon name="arrow-round-back"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-2 class="{{active[activebar[0]]}} navcol" *ngIf="!activebar[0]" (click)="refresh()">
+    <ion-icon name="main"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-4 class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]" (click)="refresh()">
+    <ion-icon name="main"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-2 class="{{active[activebar[1]]}} navcol" *ngIf="!activebar[1]" (click)="info()">
+    <ion-icon name="info"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-4 class="{{active[activebar[1]]}} navcol" *ngIf="activebar[1]" (click)="info()">
+    <ion-icon name="info"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-2 class="{{active[activebar[2]]}} navcol" *ngIf="!activebar[2]" (click)="crate()">
+    <ion-icon name="star"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-4 class="{{active[activebar[2]]}} navcol" *ngIf="activebar[2]" (click)="crate()">
+    <ion-icon name="star"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+  <ion-col col-2 menuToggle>
+    <ion-icon name="menu"></ion-icon>
+    <!-- {{lang.menu}} -->
+  </ion-col>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="activebar[0]">
+    <ion-item color="secondary">
+      {{lang.vender}} {{provider.name}}
+    </ion-item>
+    <div *ngIf="service.config.banner">
+      <img src="{{service.baseurl + service.config.banner}}" class="banner">
+    </div>
+    <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
+      <div class="petboxintro i{{pet.typeid}}">
+        {{service.type[pet.typeid]}}
+      </div>
+      <img class="thumb" src="{{pet.image[0]}}">
+      <p> &#9; {{pet.name}} </p>
+      <span class="price"> &#9; {{pet.price}} </span>
+      <span class="timer right"> {{pet.timer}} </span>
+    </div>
+  </div>
+
+  <div *ngIf="activebar[1]">
+    <p>
+      <b> {{lang.provider}} </b>
+      {{provider.name}}
+    </p>
+    <p>
+      <b> {{lang.phone}} </b>
+      {{provider.phone}}
+    </p>
+    <p>
+      <b> {{lang.address}} </b>
+      {{provider.address}}
+    </p>
+    <p>
+      <b> {{lang.description}} </b>
+      {{provider.description}}
+    </p>
+  </div>
+
+  <div *ngIf="activebar[2]">
+    <p>
+      <b> {{lang.totalrate}} </b>
+      {{rate.total}}
+    </p>
+    <p>
+      <b> {{lang.averagerate}} </b>
+      {{rate.average}}
+    </p>
+    <ion-item color="secondary">
+      <p *ngFor="let comment of rate.comment">
+        {{comment.msg}}
+      </p>
+    </ion-item>
+  </div>
+</ion-content>

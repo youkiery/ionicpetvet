@@ -58,12 +58,17 @@
       <div>
         <div class="pet-box-option" *ngIf="type == 0">
           <!-- sell -->
-          <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.date, pet.price, pet.description, pet.kind, pet.species)"></ion-icon>
+          <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image)"></ion-icon>
           <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
         </div>
         <div class="pet-box-option" *ngIf="type == 1">
           <!-- buy -->
           <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
+        </div>
+        <div class="pet-box-option" *ngIf="type == 2">
+          <!-- order -->
+          <ion-icon name="create" (click)="orderdetail(pet.user)"></ion-icon>
+          <ion-icon name="checkmark" (click)="submitorder(pet.oid, pet.id)"></ion-icon>
         </div>
         <div>
           <img class="thumb" src="{{pet.image[0]}}">

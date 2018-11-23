@@ -28,10 +28,11 @@ export class SalePage {
   prvindex = 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController) {
-      this.filterall()
+      this.filterall()  
       // setInterval(() => {
       //   console.log(this.service.userpet);
       // }, 3000)
+    
   }
 
   sell() {
@@ -67,7 +68,7 @@ export class SalePage {
 
   filterall() {
     this.service.loadstart()
-    this.http.get(this.service.url + "?action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
+    this.http.get(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
       console.log(response);
       if (response["status"]) {
         this.service.userpet = response["data"]
@@ -87,7 +88,7 @@ export class SalePage {
           text: this.lang["remove"],
           handler: () => {
             this.service.loadstart()
-            this.http.get(this.service.url + "?action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
+            this.http.get(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
               console.log(response);
               if (response["status"]) {
                 this.service.userpet = response["data"]
@@ -109,8 +110,8 @@ export class SalePage {
     x.present()
   }
 
-  edit(id, name, date, price, description, kind, species) {
-    let x = this.modalCtrl.create(Post, {data: {id: id, name: name, date: date, price: price, description: description, kind: kind, species: species}});
+  edit(id, name, timer, price, description, kind, species, type, age, vaccine, image) {
+    let x = this.modalCtrl.create(Post, {data: {id: id, name: name, timer: timer, price: price, description: description, kind: kind, species: species, type: type, age: age, vaccine: vaccine, image: image}});
     x.present()
   }
 
@@ -121,7 +122,7 @@ export class SalePage {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.http.get(this.service.url + "?action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(data => {
+            this.http.get(this.service.url + "&action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(data => {
               switch (data["status"]) {
                 case 1:
                   this.service.showMsg(this.lang["removesuccess"])
@@ -141,6 +142,37 @@ export class SalePage {
     })
     alert.present()
   }
+
+  orderdetail(puid) {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=getlogin&id=" + puid).subscribe(response => {
+      console.log(response);
+      if (response["status"]) {
+        let modal = this.modalCtrl.create(OrderDetail, {data: response["data"]})
+        modal.present()
+      }
+      else {
+        this.service.showMsg(this.lang["undefined"])
+      }
+      this.service.loadstart()
+    })
+  }
+
+  submitorder(oid, pid) {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + pid).subscribe(response => {
+      console.log(response);
+      switch (response["status"]) {
+        case 1:
+          // success
+          this.filterall()
+        break;
+        default:
+          this.service.showMsg(this.lang["undefined"])
+      }
+      this.service.loadend()
+    })
+  }
 }
 
 @Component({
@@ -157,7 +189,7 @@ export class SalePage {
           <ion-option *ngFor="let option of this.service.kind" value="{{option.id}}">{{option.name}}</ion-option>
         </ion-select>
       </ion-item>
-      <ion-item *ngIf="post.kind">
+      <ion-item *ngIf="post.kind > 0">
         <ion-label> {{lang.species}} </ion-label>
         <ion-select [(ngModel)]="post.species" name="species">
           <ion-option *ngFor="let option of this.service.species[post.kind]" value="{{option.id}}">{{option.name}}</ion-option>
@@ -176,6 +208,12 @@ export class SalePage {
         </ion-select>
       </ion-item>
       <ion-item>
+        <ion-label> {{lang.type}} </ion-label>
+        <ion-select [(ngModel)]="post.typeid" name="typeid">
+          <ion-option *ngFor="let option of service.type; let i = index" value="{{i}}">{{option}}</ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label> {{lang.price}} </ion-label>
         <ion-input type="number" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}"></ion-input>
       </ion-item>
@@ -186,7 +224,7 @@ export class SalePage {
       <div class="upload-btn-wrapper">
         <ion-label class="upload-btn">{{lang.upload}}</ion-label>
         <input class="upload-input" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
-        <span *ngFor="let image of images">
+        <span *ngFor="let image of post.image">
           <img class="thumb" src="{{image}}">
         </span>
       </div>
@@ -213,31 +251,32 @@ export class Post {
     console.log(data);
     
     if (data) {
-      this.post.name = data["name"]
-      this.post.date = data["date"]
-      this.post.description = data["description"]
-      this.post.price = data["price"]
-      this.post.id = data["id"]
-      this.post.kind = data["kind"]
-      this.post.species = data["species"]
+      this.post = data
+      console.log(this.post);
+      console.log(this.service.config);
     } else {
       this.post.name = ""
       this.post.date = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() 
       this.post.description = ""
+      this.post.kind = 0
+      this.post.species = 0
+      this.post.vaccine = 0
+      this.post.typeid = 0
+      this.post.age = 0
       this.post.price = 0
     }
   }
 
   change() {
     var input = document.getElementById("files")
-    this.images = []
+    this.post.image = []
     if (input["files"] && input["files"][0]) {
       var length = input["files"].length;
       for (var i = 0; i < length; i ++) {
         var reader = new FileReader();
 
         reader.onload = (e) => {
-          this.images.push(e.target["result"])
+          this.post.image.push(e.target["result"])
         };
   
         reader.readAsDataURL(input["files"][i]);  
@@ -266,12 +305,12 @@ export class Post {
     fd.append("species", this.post.species);
     fd.append("kind", this.post.kind);
     fd.append("vaccine", this.post.vaccine);
+    fd.append("typeid", this.post.typeid);
     fd.append("id", this.post.id);
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
         var response = JSON.parse(xhttp.responseText)
-        console.log(response);
         
         switch (response["status"]) {
           case 1:
@@ -303,10 +342,36 @@ export class Post {
         }
       }
     };
-    xhttp.open("POST", this.service.url + "?action=savepost&uid=" + this.service.uid + "&" + this.service.toparam(this.filter), true);
+    xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&" + this.service.toparam(this.filter), true);
+    // xhttp.setRequestHeader('Content-type', 'multipart/form-data;');
     xhttp.send(fd);
-        // this.http.post("http://linesrc.netne.net/index.php?action=uploadimage", files, {headers}).subscribe(data => {
+        // this.http.post("http://linesrc.netne.net/index.php&action=uploadimage", files, {headers}).subscribe(data => {
     //   console.log(data);
     // })
   }
 }
+@Component({
+  template: `
+    <ion-list>
+      <ion-item color="primary">
+        {{lang["orderdetail"]}}
+      </ion-item>
+      <ion-item>
+        <b> {{lang["customer"]}} </b> {{data["name"]}}<p>
+      </ion-item>
+      <ion-item>
+        <b> {{lang["phone"]}} </b> {{data["phone"]}}<p>
+      </ion-item>
+      <ion-item>
+        <b> {{lang["address"]}} </b> {{data["address"]}}<p>
+      </ion-item>
+    </ion-list>
+  `
+})
+export class OrderDetail {
+  data: object = {}
+  constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
+    this.data = this.navParams.get("data")
+  }
+}
+

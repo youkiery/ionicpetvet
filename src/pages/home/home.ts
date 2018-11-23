@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, Events } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
@@ -20,6 +20,7 @@ export class HomePage {
   filter: object = {
     keyword: "",
     sort: 0,
+    type: 0,
     price: {
       lower: 0,
       upper: 73
@@ -45,7 +46,7 @@ export class HomePage {
     name: string,
     phone: string,
     address: string,
-    provide: number,
+    province: number,
   } = {
     username: "",
     password: "",
@@ -53,7 +54,7 @@ export class HomePage {
     name: "",
     phone: "",
     address: "",
-    provide: 0
+    province: 0
   }
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events) {
@@ -76,7 +77,7 @@ export class HomePage {
 
   checklogin(logindata) {
     return new Promise((resolve) => {
-      this.http.get(this.service.url + "?action=getlogin&id=" + logindata).subscribe(data => {
+      this.http.get(this.service.url + "&action=getlogin&id=" + logindata).subscribe(data => {
         if (data["status"]) {
           // login
           console.log(data);
@@ -86,6 +87,7 @@ export class HomePage {
         this.refresh(resolve)
       }, (e) => {
         // network error
+        this.service.showMsg(e)
         this.refresh(resolve)
       })
     })
@@ -94,24 +96,24 @@ export class HomePage {
   refresh(resolve = null) {
     this.service.loadstart()
     this.setActive(0)
-    this.http.get(this.service.url + "?action=getinit").subscribe(data => {
+    this.http.get(this.service.url + "&action=getinit").subscribe(data => {
       console.log(data);
-      this.service.kind = data["data"]["kind"]
-      this.service.species = data["data"]["species"]
-      this.service.config = data["data"]["config"]
-      this.banner = this.service.baseurl + this.service.config["banner"]
       this.filterall().then(() => {
         this.service.loadend()
         if (resolve) {
           resolve()
         }
       })
+      this.service.kind = data["data"]["kind"]
+      this.service.species = data["data"]["species"]
+      this.service.config = data["data"]["config"]
+      this.service.type = data["data"]["type"]
+      this.banner = this.service.baseurl + this.service.config["banner"]
     })
   }
 
   search() {
     console.log(1);
-    
     this.issearch = true
     this.setActive(4)
     setTimeout(() => {
@@ -154,10 +156,9 @@ export class HomePage {
       style: 'currency',
       currency: 'VND',
    });
-
-   
    return formatter.format(price)
   }
+
   inbox() {
     this.setActive(2);
   }
@@ -169,9 +170,11 @@ export class HomePage {
 
   filterall() {
     return new Promise((resolve) => {
-      this.http.get(this.service.url + "?action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
         console.log(data);
         if (data["status"]) {
+          this.service.newpet = data["data"]
+          this.service.newpet = data["data"]
           this.service.newpet = data["data"]
           resolve()
         }
@@ -183,7 +186,7 @@ export class HomePage {
     // check username and password
     if (this.submitType) {
       // signup
-      this.http.get(this.service.url + "?action=signup&" + this.service.toparam(this.user)).subscribe(data => {
+      this.http.get(this.service.url + "&action=signup&" + this.service.toparam(this.user)).subscribe(data => {
         switch (data["status"]) {
           case 1: // username existed
             this.service.showMsg(this.lang["existedusername"]);            
@@ -201,7 +204,7 @@ export class HomePage {
       })
     } else {
       // login
-      this.http.get(this.service.url + "?action=login&" + this.service.toparam(this.user)).subscribe(data => {
+      this.http.get(this.service.url + "&action=login&" + this.service.toparam(this.user)).subscribe(data => {
         console.log(data);
         
         switch (data["status"]) {

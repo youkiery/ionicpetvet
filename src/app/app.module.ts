@@ -11,7 +11,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DetailPage, Order } from '../pages/detail/detail';
 import { UserPage } from '../pages/user/user';
-import { SalePage, Post } from '../pages/sale/sale';
+import { SalePage, Post, OrderDetail } from '../pages/sale/sale';
 import { InboxPage } from '../pages/inbox/inbox';
 
 import { LangProvider } from '../providers/lang/lang';
@@ -21,9 +21,11 @@ import { ServiceProvider } from '../providers/service/service';
   declarations: [
     MyApp,
     HomePage,
-    DetailPage, Order,
+    Order,
+    Post, OrderDetail,
+    DetailPage, 
     UserPage,
-    SalePage, Post,
+    SalePage, 
     InboxPage
   ],
   imports: [
@@ -38,7 +40,7 @@ import { ServiceProvider } from '../providers/service/service';
     HomePage,
     DetailPage, Order,
     UserPage,
-    SalePage, Post,
+    SalePage, Post, OrderDetail,
     InboxPage
   ],
   providers: [

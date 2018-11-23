@@ -16,9 +16,12 @@
     </div>
     <div class="h1r">
       <p>
+        <b> {{data.type}} </b>
+      </p>
+      <p>
         <b>{{lang.species}}</b>
         <span class="right">
-          {{data.species}}
+          {{data.typename}}
         </span>
       </p>
       <p>
@@ -75,6 +78,26 @@
       <p>
         {{owner.phone}}
       </p>
+      <span (mouseout)="onuhover()" class="star">
+        <span class="{{classhover[shover[0]]}}">
+          <ion-icon name="star" (click)="crate(1)" (mouseover)="onhover(1)"> </ion-icon>
+        </span>
+        <span class="{{classhover[shover[1]]}}">
+          <ion-icon name="star" (click)="crate(2)" (mouseover)="onhover(2)"> </ion-icon>
+        </span>
+        <span class="{{classhover[shover[2]]}}">
+          <ion-icon name="star" (click)="crate(3)" (mouseover)="onhover(3)"> </ion-icon>
+        </span>
+        <span class="{{classhover[shover[3]]}}">
+          <ion-icon name="star" (click)="crate(4)" (mouseover)="onhover(4)"> </ion-icon>
+        </span>
+        <span class="{{classhover[shover[4]]}}">
+          <ion-icon name="star" (click)="crate(5)" (mouseover)="onhover(5)"> </ion-icon>
+        </span>
+      </span>
+      <button ion-button (click)="provider()">
+        {{lang.viewmore}}
+      </button>
       <button ion-button block (click)="order()" id="buy">
         {{lang.buy}}
       </button>
@@ -83,7 +106,16 @@
   <div class="h3">
     <div class="h3l">
       <form (ngSubmit)="postchat()">
+        <ion-input type="text" [(ngModel)]="name" name="name" *ngIf="!service.uid"></ion-input>
         <ion-textarea [(ngModel)]="chattext" name="chattext"></ion-textarea>
+        <!-- <ion-select [(ngModel)]="public" name="public">
+          <ion-option value="true">
+            {{lang.public}}
+          </ion-option>
+          <ion-option value="false">
+            {{lang.unpublic}}
+          </ion-option>
+        </ion-select> -->
         <button ion-button>
           {{lang.post}}
         </button>
@@ -94,9 +126,12 @@
         <ion-item *ngFor="let c of comment">
           <div class="{{c.user === service.uid ? 'green' : 'blue'}}">
             <p>
-              {{c.comment}}
+              {{c.name}}
             </p>
             <p>
+              {{c.comment}}
+            </p>
+            <p class="ctime">
               {{c.time}}
             </p>
           </div>

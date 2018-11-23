@@ -111,6 +111,12 @@
         <ion-input #input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
       </ion-item>
       <ion-item>
+        <ion-label> {{lang.type}} </ion-label>
+        <ion-select [(ngModel)]="filter.type" name="type">
+          <ion-option *ngFor="let option of service.type; let i = index" value="{{i}}"> {{option}} </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label> {{lang.sort}} </ion-label>
         <ion-select [(ngModel)]="filter.sort" name="sort">
           <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}"> {{option}} </ion-option>
@@ -139,20 +145,22 @@
       <button ion-button block> {{lang.filter}} </button>
     </form>
   </div>
+
   <div *ngIf="activebar[0]">
-    
     <div *ngIf="service.config.banner">
       <img src="{{service.baseurl + service.config.banner}}" class="banner">
     </div>
     <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
-      <div>
-        <img class="thumb" src="{{pet.image[0]}}">
-        <p> &#9; {{pet.name}} </p>
-        <span class="price"> &#9; {{pet.price}} </span>
-        <span class="timer right"> {{pet.timer}} </span>
+      <div class="petboxintro i{{pet.typeid}}">
+        {{service.type[pet.typeid]}}
       </div>
+      <img class="thumb" src="{{pet.image[0]}}">
+      <p> &#9; {{pet.name}} </p>
+      <span class="price"> &#9; {{pet.price}} </span>
+      <span class="timer right"> {{pet.timer}} </span>
     </div>
   </div>
+
   <div *ngIf="activebar[1]">
     <div *ngIf="service.uid">
       <div class="h1l">
@@ -212,9 +220,9 @@
         <ion-input type="text" [(ngModel)]="this.user.address" name="address"></ion-input>
       </ion-item>
       <ion-item *ngIf="submitType">
-        <ion-label> {{lang.provide}} </ion-label>
-        <ion-select [(ngModel)]="this.user.provide" name="provide">
-          <ion-option *ngFor="let option of service.provides; let i = index" value="{{i}}">
+        <ion-label> {{lang.province}} </ion-label>
+        <ion-select [(ngModel)]="this.user.province" name="province">
+          <ion-option *ngFor="let option of service.config.province; let i = index" value="{{i}}">
             {{option}}
           </ion-option>
         </ion-select>

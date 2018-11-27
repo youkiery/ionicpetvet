@@ -13,6 +13,7 @@ import { DetailPage, Order } from '../pages/detail/detail';
 import { UserPage } from '../pages/user/user';
 import { SalePage, Post, OrderDetail } from '../pages/sale/sale';
 import { InboxPage } from '../pages/inbox/inbox';
+import { ProviderPage } from '../pages/provider/provider';
 
 import { LangProvider } from '../providers/lang/lang';
 import { ServiceProvider } from '../providers/service/service';
@@ -26,7 +27,8 @@ import { ServiceProvider } from '../providers/service/service';
     DetailPage, 
     UserPage,
     SalePage, 
-    InboxPage
+    InboxPage,
+    ProviderPage
   ],
   imports: [
     BrowserModule,
@@ -41,7 +43,8 @@ import { ServiceProvider } from '../providers/service/service';
     DetailPage, Order,
     UserPage,
     SalePage, Post, OrderDetail,
-    InboxPage
+    InboxPage,
+    ProviderPage
   ],
   providers: [
     StatusBar,

@@ -39,8 +39,10 @@ export class DetailPage {
     }, () => {
       this.public = "false"
     })
+    console.log(this.data);
+    
     this.service.loadstart()
-    this.http.get(this.service.url + "&action=getinfo&id=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
+    this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
       console.log(data);
       
       this.owner = data["data"]["owner"]
@@ -81,7 +83,7 @@ export class DetailPage {
 
   crate(index) {
     if (!this.ratedisabled) {
-      this.http.get(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(response => {
+      this.http.get(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&pid=" + this.data["id"]).subscribe(response => {
         console.log(response);
         switch (response["status"]) {
           case 1:

@@ -85,6 +85,10 @@ export class LangProvider {
   home: string = "Trang chính";
   provider: string = "Chủ gian hàng";
   viewmore: string = "Chi tiết gian hàng";
+  totalrate: string = "Tổng lượt đánh giá";
+  averagerate: string = "Đánh giá";
+  totalsale: string = "Tổng giao dịch thành công";
+  review: string = "Đánh giá từ khách hàng";
   // home: string = "trang chủ";
   // user: string = "người dùng";
   // messenger: string = "thông báo";

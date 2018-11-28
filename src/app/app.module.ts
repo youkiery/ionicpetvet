@@ -11,7 +11,7 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { DetailPage, Order } from '../pages/detail/detail';
 import { UserPage } from '../pages/user/user';
-import { SalePage, Post, OrderDetail } from '../pages/sale/sale';
+import { SalePage, Post, OrderDetail, OrderDetailList } from '../pages/sale/sale';
 import { InboxPage } from '../pages/inbox/inbox';
 import { ProviderPage } from '../pages/provider/provider';
 
@@ -23,7 +23,7 @@ import { ServiceProvider } from '../providers/service/service';
     MyApp,
     HomePage,
     Order,
-    Post, OrderDetail,
+    Post, OrderDetail, OrderDetailList,
     DetailPage, 
     UserPage,
     SalePage, 
@@ -42,7 +42,7 @@ import { ServiceProvider } from '../providers/service/service';
     HomePage,
     DetailPage, Order,
     UserPage,
-    SalePage, Post, OrderDetail,
+    SalePage, Post, OrderDetail, OrderDetailList,
     InboxPage,
     ProviderPage
   ],

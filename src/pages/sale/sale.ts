@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, AlertController, ViewController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, AlertController, ViewController, Events } from 'ionic-angular';
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
 import { HttpClient } from '@angular/common/http';
@@ -28,12 +28,15 @@ export class SalePage {
   prvindex = 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
-    public navParam: NavParams) {
+    public navParam: NavParams, public ev: Events) {
       var type = this.navParam.get("type")
       if (type) {
         this.setActive(type.value)
       }
       this.filterall()  
+      this.ev.subscribe("submitorder-finish", (data) => {
+        this.service.userpet = data["vender"]
+      })
       // setInterval(() => {
       //   console.log(this.service.userpet);
       // }, 3000)
@@ -110,6 +113,17 @@ export class SalePage {
     alert.present()
   }
 
+  viewdetail(oid) {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=getvender&oid=" + oid).subscribe(response => {
+        if (response["status"]) {
+        
+        this.modalCtrl.create(OrderDetail, {data: response["data"]}).present()
+      }
+      this.service.loadend()
+    })
+  }
+
   post() {
     let x = this.modalCtrl.create(Post, {filter: this.filter});
     x.present()
@@ -148,36 +162,21 @@ export class SalePage {
     alert.present()
   }
 
-  orderdetail(puid) {
+  orderdetail(pid) {
     this.service.loadstart()
-    this.http.get(this.service.url + "&action=getlogin&id=" + puid).subscribe(response => {
+    this.http.get(this.service.url + "&action=getorderlist&pid=" + pid).subscribe(response => {
       console.log(response);
       if (response["status"]) {
-        let modal = this.modalCtrl.create(OrderDetail, {data: response["data"]})
+        let modal = this.modalCtrl.create(OrderDetailList, {data: response["data"], filter: this.filter, pid: pid})
         modal.present()
       }
       else {
         this.service.showMsg(this.lang["undefined"])
       }
-      this.service.loadstart()
-    })
-  }
-
-  submitorder(oid, pid) {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + pid + "&uid=" + this.service.uid).subscribe(response => {
-      console.log(response);
-      switch (response["status"]) {
-        case 1:
-          // success
-          this.filterall()
-        break;
-        default:
-          this.service.showMsg(this.lang["undefined"])
-      }
       this.service.loadend()
     })
   }
+
 }
 
 @Component({
@@ -374,9 +373,74 @@ export class Post {
   `
 })
 export class OrderDetail {
-  data: object = {}
+  data: object = {
+    name: "",
+    phone: "",
+    address: ""
+  }
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
-    this.data = this.navParams.get("data")
+    var data = this.navParams.get("data")
+    console.log(data);
+    if (data["vender"] && data["vender"]["name"]) {
+      this.data = data["vender"]
+    }
+  }
+}
+
+@Component({
+  template: `
+    <ion-list>
+      <div *ngFor="let vender of data">
+        <ion-item color="primary" (click)="submitorder(vender['oid'])">
+          {{lang["orderdetail"]}}
+        </ion-item>
+        <ion-item>
+          <b> {{lang["customer"]}} </b> {{vender["name"]}}<p>
+        </ion-item>
+        <ion-item>
+          <b> {{lang["phone"]}} </b> {{vender["phone"]}}<p>
+        </ion-item>
+        <ion-item>
+          <b> {{lang["address"]}} </b> {{vender["address"]}}<p>
+        </ion-item>
+      </div>
+    </ion-list>
+  `
+})
+export class OrderDetailList {
+  data: object[] = [{
+    name: "",
+    phone: "",
+    address: ""
+  }]
+  pid: number = -1
+  filter: object = {}
+  constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider,
+    public http: HttpClient, public ev: Events, public viewCtrl: ViewController) {
+    var data = this.navParams.get("data")
+    this.filter = this.navParams.get("filter")
+    this.pid = this.navParams.get("pid")
+    console.log(data);
+    console.log(this.filter);
+    if (data["vender"] && data["vender"].length) {
+      this.data = data["vender"]
+    }
+  }
+  submitorder(oid) {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
+      console.log(response);
+      switch (response["status"]) {
+        case 1:
+          // success
+          this.ev.publish("submitorder-finish", response["data"])
+          this.viewCtrl.dismiss()
+        break;
+        default:
+          this.service.showMsg(this.lang["undefined"])
+      }
+      this.service.loadend()
+    })
   }
 }
 

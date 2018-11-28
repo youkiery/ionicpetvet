@@ -390,13 +390,13 @@ form.sale {
     float: right;
     width: calc(100% - 240px);
   }
+  .subtitle {
+    font-size: 15px;
+  }
 }
 @media screen and (min-width: 786px) {
   .pet_box {
     width: 25%;
-  }
-  .subtitle {
-    font-size: 15px;
   }
 }
 @media screen and (min-width: 992px) {

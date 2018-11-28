@@ -63,12 +63,12 @@
         </div>
         <div class="pet-box-option" *ngIf="type == 1">
           <!-- buy -->
+          <ion-icon name="create" (click)="viewdetail(pet.oid)"></ion-icon>
           <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
         </div>
         <div class="pet-box-option" *ngIf="type == 2">
           <!-- order -->
-          <ion-icon name="create" (click)="orderdetail(pet.user)"></ion-icon>
-          <ion-icon name="checkmark" (click)="submitorder(pet.oid, pet.id)"></ion-icon>
+          <ion-icon name="create" (click)="orderdetail(pet.id)"></ion-icon>
         </div>
         <div>
           <img class="thumb" src="{{pet.image[0]}}">

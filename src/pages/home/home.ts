@@ -247,6 +247,7 @@ export class HomePage {
   submit() {
     // check username and password
     if (this.submitType) {
+      this.service.loadstart()
       // signup
       this.http.get(this.service.url + "&action=signup&" + this.service.toparam(this.user)).subscribe(data => {
         switch (data["status"]) {
@@ -259,9 +260,11 @@ export class HomePage {
           default:
             // undefined error
             this.service.showMsg(this.lang["undefined"]);            
-        }
+          }
+          this.service.loadend()
       }, (e) => {
         // undefined error
+        this.service.loadend()
         this.service.showMsg(this.lang["undefined"]);            
       })
     } else {
@@ -282,9 +285,11 @@ export class HomePage {
           break;
           default: // undefined error
             this.service.showMsg(this.lang["undefined"]);            
-        }
+          }
+          this.service.loadend()
       }, (e) => {
         // undefined error
+        this.service.loadend()
         this.service.showMsg(this.lang["undefined"]);            
       })
     }

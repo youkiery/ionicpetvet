@@ -27,7 +27,12 @@ export class SalePage {
   actindex = 0
   prvindex = 0
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
-    public lang: LangProvider, public alert: AlertController, public navCtrl: NavController) {
+    public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
+    public navParam: NavParams) {
+      var type = this.navParam.get("type")
+      if (type) {
+        this.setActive(type.value)
+      }
       this.filterall()  
       // setInterval(() => {
       //   console.log(this.service.userpet);
@@ -160,7 +165,7 @@ export class SalePage {
 
   submitorder(oid, pid) {
     this.service.loadstart()
-    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + pid).subscribe(response => {
+    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + pid + "&uid=" + this.service.uid).subscribe(response => {
       console.log(response);
       switch (response["status"]) {
         case 1:

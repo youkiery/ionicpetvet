@@ -98,12 +98,12 @@
   text-align: right;
   display: none;
   font-size: 20px;
-  background: red;
+  background: lightgreen;
   position: absolute !important;
   top: 0;
   left: 0;
   width: 100%;
-  opacity: 0.75;
+  opacity: 0.85;
   margin: 0px !important;
   z-index: 10;
 }
@@ -299,7 +299,7 @@ ion-header {
 
 .subtitle {
   color: white;
-  font-size: 15px;
+  font-size: 10px;
   margin: 0px;
   line-height: 0px;
 }
@@ -336,6 +336,25 @@ form.sale {
 
 .cmttime {
   float: right;
+}
+
+.menu {
+  width: 50%;
+  top: 0px;
+  right: 0px;
+  position: absolute;
+  z-index: 7;
+  border: 2px solid #fff;
+}
+.relay {
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background: #000;
+  opacity: 0.75;
+  height: -webkit-fill-available;
+  position: absolute;
+  z-index: 6;
 }
 
 @media screen and (min-width: 576px) {
@@ -375,6 +394,9 @@ form.sale {
 @media screen and (min-width: 786px) {
   .pet_box {
     width: 25%;
+  }
+  .subtitle {
+    font-size: 15px;
   }
 }
 @media screen and (min-width: 992px) {

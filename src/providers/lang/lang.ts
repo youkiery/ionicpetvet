@@ -89,6 +89,13 @@ export class LangProvider {
   averagerate: string = "Đánh giá";
   totalsale: string = "Tổng giao dịch thành công";
   review: string = "Đánh giá từ khách hàng";
+  noti1: string = "vừa đặt đơn tại";
+  noti2: string = "vừa hủy đơn ";
+  noti3: string = "Bạn vừa đánh giá chủ đề";
+  noti4: string = "Bạn vừa bình luận trong chủ đề";
+  noti5: string = "Bạn vừa xóa chủ đề";
+  noti6: string = "Bạn đã giao dịch thành công";
+  noti7: string = "Bạn đã giao dịch thành công";
   // home: string = "trang chủ";
   // user: string = "người dùng";
   // messenger: string = "thông báo";

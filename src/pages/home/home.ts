@@ -56,6 +56,8 @@ export class HomePage {
     address: "",
     province: 0
   }
+  menu: boolean = false
+  notifice: object[] = []
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events) {
       this.submitButton = [lang.login, lang.signup];
@@ -64,7 +66,6 @@ export class HomePage {
       this.getlogin().then(logindata => {
         this.checklogin(logindata)
       })
-      
   }
 
   getlogin() {
@@ -84,31 +85,33 @@ export class HomePage {
           
           this.service.logged(data["data"], this.navCtrl, false);
         }
-        this.refresh(resolve)
+        this.refresh().then(() => {
+          resolve()
+        })
       }, (e) => {
         // network error
-        this.service.showMsg(e)
-        this.refresh(resolve)
+        this.service.showMsg(this.lang["undefined"])
+        this.refresh().then(() => {
+          resolve()
+        })
       })
     })
   }
 
-  refresh(resolve = null) {
-    this.service.loadstart()
-    this.setActive(0)
-    this.http.get(this.service.url + "&action=getinit").subscribe(data => {
-      console.log(data);
-      this.filterall().then(() => {
-        this.service.loadend()
-        if (resolve) {
-          resolve()
-        }
+  refresh() {
+    return new Promise((resolve) => {
+      this.service.loadstart()
+      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+        console.log(data);
+        this.service.kind = data["data"]["kind"]
+        this.service.species = data["data"]["species"]
+        this.service.config = data["data"]["config"]
+        this.service.type = data["data"]["type"]
+        this.service.newpet = data["data"]["newpet"]
+        this.banner = this.service.baseurl + this.service.config["banner"]
+        this.service.loadend
+        resolve()
       })
-      this.service.kind = data["data"]["kind"]
-      this.service.species = data["data"]["species"]
-      this.service.config = data["data"]["config"]
-      this.service.type = data["data"]["type"]
-      this.banner = this.service.baseurl + this.service.config["banner"]
     })
   }
 
@@ -147,6 +150,13 @@ export class HomePage {
     this.navCtrl.push(DetailPage, {data: this.service.newpet[index]});
   }
 
+  open() {
+    this.menu = !this.menu
+  }
+  close() {
+    this.menu = false
+  }
+
   sale() {
     this.navCtrl.push(SalePage);
   }
@@ -161,6 +171,55 @@ export class HomePage {
 
   inbox() {
     this.setActive(2);
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=getnotify&uid=" + this.service.uid).subscribe((response) => {
+      console.log(response);
+      if (response["status"]) {
+        this.notifice = response["data"]
+      }
+      this.service.loadend()
+    })
+  }
+
+  tonotify(type, pid) {
+    
+    type = parseInt(type)
+    switch (type) {
+      case 1:
+        // to order
+      case 2:
+        // to order
+      case 5:
+        // to order
+        this.navCtrl.push(SalePage, {type: {
+          value: 2,
+          pid: pid
+        }})
+        break;
+      case 3:
+        // to detail
+      case 4:
+        // to detail
+        this.navCtrl.push(DetailPage, {type: {
+          value: 1,
+          pid: pid
+        }})
+        break;
+      case 6:
+        // to bought
+        this.navCtrl.push(SalePage, {type: {
+          value: 4,
+          pid: pid
+        }})
+        break;
+      case 7:
+        // to sold
+        this.navCtrl.push(SalePage, {type: {
+          value: 3,
+          pid: pid
+        }})
+        break;
+    }
   }
 
   filtersuball() {
@@ -169,15 +228,18 @@ export class HomePage {
   }
 
   filterall() {
+    this.service.loadstart()
     return new Promise((resolve) => {
       this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
         console.log(data);
         if (data["status"]) {
           this.service.newpet = data["data"]
-          this.service.newpet = data["data"]
-          this.service.newpet = data["data"]
+          // this.service.newpet = data["data"]
+          // this.service.newpet = data["data"]
           resolve()
         }
+        this.setActive(0)
+        this.service.loadend()
       })
     })
   }

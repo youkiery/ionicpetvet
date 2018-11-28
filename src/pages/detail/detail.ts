@@ -32,7 +32,17 @@ export class DetailPage {
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
     public event: Events) {
-    this.data = this.navParams.get("data");
+    var type = this.navParams.get("type");
+    this.service.loadstart()
+    if (type) {
+      this.http.get(this.service.url + "&action=getdatainfo&pid=" + type.pid).subscribe(response => {
+        this.data = response
+        this.service.loadend()
+      })
+    }
+    else {
+      this.data = this.navParams.get("data");
+    }
     this.service.getData("public").then(data => {
       console.log(1);
       this.public = String(data)
@@ -42,7 +52,11 @@ export class DetailPage {
     console.log(this.data);
     
     this.service.loadstart()
-    this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"]).subscribe(data => {
+    var uid = "0"
+    if (this.service.uid) {
+      uid = this.service.uid
+    }
+    this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + uid + "&puid=" + this.data["user"]).subscribe(data => {
       console.log(data);
       
       this.owner = data["data"]["owner"]
@@ -184,10 +198,6 @@ export class Order {
     this.http.get(this.service.url + "&action=order&" + this.service.toparam(this.order)).subscribe(response => {
       switch (response["status"]) {
         case 1:
-          // cannot insert
-          this.service.showMsg(this.lang["orderfail"])
-          break;
-        case 2:
           // insert success
           this.service.showMsg(this.lang["ordersuccess"])
           this.event.publish("ordered");

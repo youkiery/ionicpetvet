@@ -1,6 +1,6 @@
-<ion-menu side="right" [content]="mycontent" class="toggle-menu">
-  <ion-content class="list-menu" menuClose>
-    <ion-list *ngIf="!this.service.islogged">
+<ion-header>
+    <div class="relay" (click)="close()" *ngIf="menu"></div>
+    <ion-list *ngIf="!this.service.islogged && menu" class="menu" (click)="close()">
       <ion-item color="secondary">
         {{lang.menu}}
       </ion-item>
@@ -23,7 +23,7 @@
         {{lang.contact}}
       </ion-item>
     </ion-list>
-    <ion-list *ngIf="this.service.islogged">
+    <ion-list *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
       <ion-item color="secondary">
         {{lang.account}}
       </ion-item>
@@ -49,18 +49,12 @@
         {{lang.contact}}
       </ion-item>
     </ion-list>
-  </ion-content>
-</ion-menu>
-
-<ion-nav #mycontent [root]="rootPage"></ion-nav>
-
-<ion-header>
   <ion-row>
-    <ion-col col-4 (click)="refresh()" class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]">
+    <ion-col col-4 (click)="filterall()" class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]">
       <ion-icon name="home"></ion-icon>
       <!-- {{lang.home}} -->
     </ion-col>
-    <ion-col col-2 (click)="refresh()" class="{{active[activebar[0]]}} navcol" *ngIf="!activebar[0]">
+    <ion-col col-2 (click)="filterall()" class="{{active[activebar[0]]}} navcol" *ngIf="!activebar[0]">
       <ion-icon name="home"></ion-icon>
       <!-- {{lang.home}} -->
     </ion-col>
@@ -88,11 +82,11 @@
       <ion-icon name="mail"></ion-icon>
       <!-- {{lang.messenger}} -->
     </ion-col>
-    <ion-col col-4 menuToggle class="{{active[activebar[3]]}} navcol" *ngIf="activebar[3]">
+    <ion-col col-4 (click)="open()" class="{{active[activebar[3]]}} navcol" *ngIf="activebar[3]" >
       <ion-icon name="menu"></ion-icon>
       <!-- {{lang.menu}} -->
     </ion-col>
-    <ion-col col-2 menuToggle class="{{active[activebar[3]]}} navcol" *ngIf="!activebar[3]">
+    <ion-col col-2 (click)="open()" class="{{active[activebar[3]]}} navcol" *ngIf="!activebar[3]">
       <ion-icon name="menu"></ion-icon>
       <!-- {{lang.menu}} -->
     </ion-col>
@@ -103,6 +97,7 @@
 </ion-header>
 
 <ion-content>
+
   <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
   <div class="searchpanel" *ngIf="activebar[4]" style="background: white; z-index: 5;">
     <form (ngSubmit)="filtersuball()">
@@ -238,6 +233,35 @@
     </form>
   </div>
   <ion-list *ngIf="activebar[2]">
-
+    <ion-list>
+      <ion-item *ngFor="let noti of notifice" (click)="tonotify(noti.type, noti.pid)">
+        <div>
+          {{noti.name}}
+          <span *ngIf="noti.type == '1'">
+            {{lang.noti1}}
+          </span>
+          <span *ngIf="noti.type == '2'">
+            {{lang.noti2}}
+          </span>
+          <span *ngIf="noti.type == '3'">
+            {{lang.noti3}}
+          </span>
+          <span *ngIf="noti.type == '4'">
+            {{lang.noti4}}
+          </span>
+          <span *ngIf="noti.type == '5'">
+            {{lang.noti5}}
+          </span>
+          <span *ngIf="noti.type == '6'">
+            {{lang.noti6}}
+          </span>
+          <span *ngIf="noti.type == '7'">
+            {{lang.noti7}}
+          </span>
+          {{noti.title}}
+          <span class="cmttime">{{noti.time}}</span>
+        </div>
+      </ion-item>
+    </ion-list>
   </ion-list>
 </ion-content>

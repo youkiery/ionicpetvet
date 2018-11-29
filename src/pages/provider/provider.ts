@@ -35,14 +35,14 @@ export class ProviderPage {
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
     public navParam: NavParams) {
       this.provider = this.navParam.get('provider')
-      console.log(this.provider);
+      // console.log(this.provider);
       
       this.provider["description"] = "Chưa có"
       this.refresh()
   }
 
   setActive(index) {
-    console.log(index);
+    // console.log(index);
     this.activebar[this.actindex] = 0
     this.prvindex = this.actindex
     this.actindex = index
@@ -54,15 +54,15 @@ export class ProviderPage {
     this.service.loadstart()
     this.http.get(
       this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"]).subscribe(response => {
-        console.log(response);
+        // console.log(response);
         if (response["status"]) {
           this.propet = response["data"]["propet"]
           this.rate["total"] = response["data"]["total"]
           this.rate["average"] = response["data"]["average"]
           this.rate["totalsale"] = response["data"]["totalsale"]
           this.rate["comment"] = response["data"]["rate"]
-          console.log(response["data"]["rate"]);
-          console.log(this.rate["comment"]);
+          // console.log(response["data"]["rate"]);
+          // console.log(this.rate["comment"]);
           
         }
         this.service.loadend()

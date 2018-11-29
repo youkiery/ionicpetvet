@@ -12,6 +12,7 @@ export class ServiceProvider {
   name: string = ""
   phone: string = ""
   address: string = ""
+  province: number = 0
   islogged: boolean = false
   loading: any
   isloading: boolean = false
@@ -36,11 +37,13 @@ export class ServiceProvider {
     public loadCtrl: LoadingController) {
   }
   showMsg(msg) {
-    this.toastCtrl.create({
-      message: msg,
-      duration: 2000,
-      position: "top"
-    }).present();
+    if (msg) {
+      this.toastCtrl.create({
+        message: msg,
+        duration: 2000,
+        position: "bottom"
+      }).present();
+    }
   }
   getData(dataname) {
     return new Promise((resolve, reject) => {
@@ -64,6 +67,7 @@ export class ServiceProvider {
     this.name = logdata["name"];
     this.phone = logdata["phone"];
     this.address = logdata["address"];
+    this.province = logdata["province"];
     
     this.islogged = true;
     if (navCtrl && redirect) navCtrl.pop();

@@ -30,6 +30,7 @@ export class LangProvider {
   unit: string = "x.000 VNĐ";
   post: string = "Đăng bài";
   password: string = "Mật khẩu";
+  npassword: string = "Mật khẩu mới";
   vpassword: string = "Xác nhận mật khẩu";
   nousername: string = "Đăng ký ngay";
   haveusername: string = "Đã có tài khoản";
@@ -73,6 +74,8 @@ export class LangProvider {
   sold: string = "Đã bán";
   bought: string = "Đã mua";
   changepass: string = "Đổi mật khẩu";
+  changeprovince: string = "Đổi vùng";
+  changeinfo: string = "Sửa thông tin";
   infomation: string = "Thông tin";
   thank: string = "Cảm ơn quý khách đã sử dụng hệ thống bình chọn";
   orderdetail: string = "Thông tin đặt hàng";
@@ -85,10 +88,12 @@ export class LangProvider {
   home: string = "Trang chính";
   provider: string = "Chủ gian hàng";
   viewmore: string = "Chi tiết gian hàng";
+  rate: string = "Đánh giá";
   totalrate: string = "Tổng lượt đánh giá";
   averagerate: string = "Đánh giá";
   totalsale: string = "Tổng giao dịch thành công";
   review: string = "Đánh giá từ khách hàng";
+  province: string = "Vùng";
   noti1: string = "vừa đặt đơn tại";
   noti2: string = "vừa hủy đơn ";
   noti3: string = "Bạn vừa đánh giá chủ đề";

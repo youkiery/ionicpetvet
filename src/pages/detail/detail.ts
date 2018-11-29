@@ -5,7 +5,6 @@ import { HttpClient } from '@angular/common/http'
 import { ServiceProvider } from '../../providers/service/service';
 import { LangProvider } from '../../providers/lang/lang';
 
-import { InboxPage } from '../inbox/inbox';
 import { ProviderPage } from '../provider/provider';
 
 @IonicPage()
@@ -23,9 +22,13 @@ export class DetailPage {
     address: "",
     phone: ""
   }
+  anyone: object = {
+    name: "",
+    address: "",
+    phone: ""
+  } 
   disabled: string = ""
   public: string
-  name: string = ""
   chattext: string = ""
   classhover: string[] = ["nhover", "shover"]
   shover: number[] = [0, 0, 0, 0, 0]
@@ -44,12 +47,12 @@ export class DetailPage {
       this.data = this.navParams.get("data");
     }
     this.service.getData("public").then(data => {
-      console.log(1);
+      // console.log(1);
       this.public = String(data)
     }, () => {
       this.public = "false"
     })
-    console.log(this.data);
+    // console.log(this.data);
     
     this.service.loadstart()
     var uid = "0"
@@ -57,7 +60,7 @@ export class DetailPage {
       uid = this.service.uid
     }
     this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + uid + "&puid=" + this.data["user"]).subscribe(data => {
-      console.log(data);
+      // console.log(data);
       
       this.owner = data["data"]["owner"]
       this.comment = data["data"]["comment"]
@@ -85,7 +88,7 @@ export class DetailPage {
       for (let i = 0; i < index; i++) {
         this.shover[i] = 1;
       }
-      console.log(index);
+      // console.log(index);
     }
   }
 
@@ -98,7 +101,7 @@ export class DetailPage {
   crate(index) {
     if (!this.ratedisabled) {
       this.http.get(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&pid=" + this.data["id"]).subscribe(response => {
-        console.log(response);
+        // console.log(response);
         switch (response["status"]) {
           case 1:
           // success
@@ -121,21 +124,39 @@ export class DetailPage {
     let modal = this.modalCtrl.create(Order, {pid: this.data["id"]})
     modal.present()
   }
-  chat() {
-    this.navCtrl.push(InboxPage, {id: this.data["id"]})
+  back() {
+    this.navCtrl.pop()
   }
   postchat() {
-    this.service.loadstart()
-    console.log(this.chattext);
+    // console.log(this.chattext);
     this.service.setData("public", this.public)
     // var cid = 0;
-    if (!this.service.uid && !this.name.length) {
-      this.service.showMsg(this.lang["nonameallow"]);
+    if (!this.service.uid) {
+      var msg = ""
+      if (!this.anyone["name"]) {
+        msg = this.lang["nonameallow"]
+      } else if (!this.anyone["address"]) {
+        msg = "Chưa nhập địa chỉ";
+      } else if (!this.anyone["phone"]) {
+        msg = "Chưa nhập số điện thoại";
+      } else {
+        this.service.loadstart()
+        this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&" + this.service.toparam(this.anyone) + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+          // console.log(response);
+          if (response["status"]) {
+            this.comment = response["data"]
+            this.chattext = ""
+          }
+          this.service.loadend()
+        })
+      }
+      this.service.showMsg(msg);
     } 
     else {
       // this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&public=" + this.public + "&chattext=" + this.chattext).subscribe(response => {
-      this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&chattext=" + this.chattext).subscribe(response => {
-        console.log(response);
+      this.service.loadstart()
+      this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+        // console.log(response);
         if (response["status"]) {
           this.comment = response["data"]
           this.chattext = ""
@@ -149,6 +170,7 @@ export class DetailPage {
 @Component({
   template:
   `
+  <div class="modal">
     <form (ngSubmit)="buy()">
       <p class="note">
         {{lang.ordernote}}
@@ -175,6 +197,7 @@ export class DetailPage {
         {{lang.buy}}
       </button>
     </form>
+  </div>
   `
 })
 export class Order {

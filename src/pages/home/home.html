@@ -4,22 +4,13 @@
       <ion-item color="secondary">
         {{lang.menu}}
       </ion-item>
-      <ion-item>
-        {{lang.dog}}
-      </ion-item>
-      <ion-item>
-        {{lang.cat}}
-      </ion-item>
-      <ion-item>
-        {{lang.other}}
-      </ion-item>
       <ion-item color="secondary">
         {{lang.support}}
       </ion-item>
-      <ion-item>
+      <ion-item (click)="support()" class="clickable">
         {{lang.about}}
       </ion-item>
-      <ion-item>
+      <ion-item (click)="about()" class="clickable">
         {{lang.contact}}
       </ion-item>
     </ion-list>
@@ -27,25 +18,22 @@
       <ion-item color="secondary">
         {{lang.account}}
       </ion-item>
-      <ion-item>
-        {{lang.account_manager}}
-      </ion-item>
-      <ion-item (click)="sale()">
+      <ion-item (click)="sale()" class="clickable">
         {{lang.sale_manager}}
       </ion-item>
       <ion-item>
         {{lang.bookmark}}
       </ion-item>
-      <ion-item (click)="service.logout()">
+      <ion-item (click)="service.logout()" class="clickable">
         {{lang.logout}}
       </ion-item>
-      <ion-item color="secondary">
+      <ion-item (click)="support()" color="secondary">
         {{lang.support}}
       </ion-item>
-      <ion-item>
+      <ion-item (click)="about()" class="clickable">
         {{lang.about}}
       </ion-item>
-      <ion-item>
+      <ion-item class="clickable">
         {{lang.contact}}
       </ion-item>
     </ion-list>
@@ -97,7 +85,6 @@
 </ion-header>
 
 <ion-content>
-
   <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
   <div class="searchpanel" *ngIf="activebar[4]" style="background: white; z-index: 5;">
     <form (ngSubmit)="filtersuball()">
@@ -132,6 +119,14 @@
         </ion-select>
       </ion-item>
       <ion-item>
+        <ion-label> {{lang.province}} </ion-label>
+        <ion-select [(ngModel)]="filter.province" name="province">
+          <ion-option *ngFor="let option of service.config['province']; let i = index;" value="{{i}}">
+            {{option}}
+          </ion-option>
+        </ion-select>
+      </ion-item>
+      <ion-item>
         <ion-label>
           {{lang.price}}: {{unit(service.price[filter.price.lower] * 1000)}} - {{unit(service.price[filter.price.upper] * 1000)}} 
         </ion-label>
@@ -158,31 +153,56 @@
 
   <div *ngIf="activebar[1]">
     <div *ngIf="service.uid">
-      <div class="h1l">
+      <div class="h4l">
         <ion-list>
           <ion-item color="primary">
             {{lang.infomation}}
+            <ion-icon name="create" class="right clickable nav-icon" (click)="changeinfo()"></ion-icon>
           </ion-item>
           <ion-item>
-            {{lang.name}}: {{service.name}}
+            {{lang.name}}:
+            <p class="right">
+              {{service.name}}
+            </p>  
           </ion-item>
           <ion-item>
-            {{lang.phone}}: {{service.phone}}
+            {{lang.phone}}:
+            <p class="right">
+              {{service.phone}}
+            </p>
           </ion-item>
           <ion-item>
-            {{lang.address}}: {{service.address}}
+            {{lang.address}}:
+            <p class="right">
+              {{service.address}}
+            </p>
           </ion-item>
+          <form (ngSubmit)="changeprovince()">
+            <ion-item>
+              <ion-label>
+                {{lang.province}}
+              </ion-label>
+              <ion-select [(ngModel)]="province" name="province">
+                <ion-option *ngFor="let option of service.config.province; let i = index;" value="{{i}}">
+                  {{option}}
+                </ion-option>
+              </ion-select>
+            </ion-item>
+            <button ion-button>
+              {{lang.changeprovince}}
+            </button>
+          </form>
         </ion-list>
       </div>
-      <div class="h1r">
+      <div class="h4r">
         <ion-list>
           <ion-item color="primary">
             {{lang.account_manager}}
           </ion-item>
-          <ion-item>
+          <ion-item (click)="changepass()" class="clickable">
             {{lang.changepass}}
           </ion-item>
-          <ion-item>
+          <ion-item (click)="service.logout()" class="clickable">
             {{lang.logout}}
           </ion-item>
         </ion-list>
@@ -221,7 +241,6 @@
             {{option}}
           </ion-option>
         </ion-select>
-        <ion-input type="text"></ion-input>
       </ion-item>
       <button ion-button color="secondary" type="submit" class="button-half"> {{submitButton[submitType]}} </button>
       <button ion-button type="button" class="button-half" *ngIf="!submitType" (click)="nousername()">
@@ -235,8 +254,10 @@
   <ion-list *ngIf="activebar[2]">
     <ion-list>
       <ion-item *ngFor="let noti of notifice" (click)="tonotify(noti.type, noti.pid)">
-        <div>
-          {{noti.name}}
+        <div class="clickable">
+          <span *ngIf="noti.type < 6">
+            {{noti.name}}
+          </span>
           <span *ngIf="noti.type == '1'">
             {{lang.noti1}}
           </span>
@@ -258,8 +279,10 @@
           <span *ngIf="noti.type == '7'">
             {{lang.noti7}}
           </span>
-          {{noti.title}}
-          <span class="cmttime">{{noti.time}}</span>
+          <span>
+            : {{noti.title}}
+          </span>
+          <p class="right">{{noti.time}}</p>
         </div>
       </ion-item>
     </ion-list>

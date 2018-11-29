@@ -1,13 +1,16 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Events } from 'ionic-angular';
+import { NavController, Events, ViewController, ModalController, AlertController } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 
-import {DetailPage} from '../detail/detail'
+import { DetailPage } from '../detail/detail'
 import { SalePage } from '../sale/sale';
+import { SupportPage } from '../support/support';
+import { AboutPage } from '../about/about';
+import { text } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'page-home',
@@ -26,7 +29,8 @@ export class HomePage {
       upper: 73
     },
     kind: 0,
-    species: 0
+    species: 0,
+    province: 0
   }
   rangeSettings: number = 20;
   setdage: any;
@@ -58,22 +62,30 @@ export class HomePage {
   }
   menu: boolean = false
   notifice: object[] = []
-  constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
-    public http: HttpClient, public service: ServiceProvider, public event: Events) {
-      this.submitButton = [lang.login, lang.signup];
-
-      this.service.loadstart()
-      this.getlogin().then(logindata => {
-        this.checklogin(logindata)
-      })
+  info: {
+    name: string,
+    phone: string,
+    address: string
+  } = {
+    name: "",
+    phone: "",
+    address: ""
   }
-
-  getlogin() {
-    return new Promise((resolve) => {
+  province: number = 0
+  constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
+    public http: HttpClient, public service: ServiceProvider, public event: Events,
+    public modalCtrl: ModalController, public alertCtrl: AlertController) {
+      this.submitButton = [lang.login, lang.signup];
+      // console.log(this.filter);
+      
+      this.service.loadstart()
       this.storage.get("login").then(logindata => {
-        resolve(logindata)
+        if (logindata) {
+          this.checklogin(logindata)
+        } else {
+          this.refresh()
+        }
       })
-    })
   }
 
   checklogin(logindata) {
@@ -81,16 +93,10 @@ export class HomePage {
       this.http.get(this.service.url + "&action=getlogin&id=" + logindata).subscribe(data => {
         if (data["status"]) {
           // login
-          console.log(data);
+          // console.log(data);
           
           this.service.logged(data["data"], this.navCtrl, false);
         }
-        this.refresh().then(() => {
-          resolve()
-        })
-      }, (e) => {
-        // network error
-        this.service.showMsg(this.lang["undefined"])
         this.refresh().then(() => {
           resolve()
         })
@@ -99,24 +105,84 @@ export class HomePage {
   }
 
   refresh() {
+    // console.log(this.filter);
     return new Promise((resolve) => {
       this.service.loadstart()
-      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
-        console.log(data);
+      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+        // console.log(data);
         this.service.kind = data["data"]["kind"]
         this.service.species = data["data"]["species"]
         this.service.config = data["data"]["config"]
         this.service.type = data["data"]["type"]
         this.service.newpet = data["data"]["newpet"]
         this.banner = this.service.baseurl + this.service.config["banner"]
-        this.service.loadend
+        this.service.loadend()
         resolve()
       })
     })
   }
 
+  changeprovince() {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=changeprovince&uid=" + this.service.uid + "&province=" + this.province).subscribe(response => {
+      if (response["status"]) {
+        this.service.province = this.province
+      }
+      this.service.loadend()
+    })
+  }
+
+  changeinfo() {
+    this.info.name = this.service.name
+    this.info.phone = this.service.phone
+    this.info.address = this.service.address
+    this.alertCtrl.create({
+      title: this.lang.changeinfo,
+      inputs: [
+        {
+          name: this.info.name,
+          value: this.info.name,
+          type: "text",
+          placeholder: this.lang["name"]
+        },
+        {
+          name: this.info.phone,
+          value: this.info.phone,
+          type: "text",
+          placeholder: this.lang["phone"]
+        },
+        {
+          name: this.info.address,
+          value: this.info.address,
+          type: "text",
+          placeholder: this.lang["address"]
+        }
+      ],
+      buttons: [
+        {
+          text: this.lang.save,
+          handler: (data) => {
+            this.service.loadstart()
+            this.http.get(this.service.url + "&action=changeinfo&uid=" + this.service.uid
+              + "&" + this.service.toparam(data)).subscribe(response => {
+                if (response["status"]) {
+                  this.service.name = data.name
+                  this.service.phone = data.phone
+                  this.service.address = data.address
+                }
+                this.service.loadend()
+              })
+          }
+        },
+        {
+          text: this.lang.cancel
+        }
+      ]
+    }).present()
+  }
+
   search() {
-    console.log(1);
+    // console.log(1);
     this.issearch = true
     this.setActive(4)
     setTimeout(() => {
@@ -124,13 +190,14 @@ export class HomePage {
     }, 500)
   }
   bsearch() {
-    console.log(2);
+    // console.log(2);
     this.issearch = false
     this.setActive(this.prvindex)
   }
 
   setActive(index) {
-    console.log(index);
+    // console.log(index);
+    // console.log(this.filter);
     
     this.activebar[this.actindex] = 0
     this.prvindex = this.actindex
@@ -144,6 +211,7 @@ export class HomePage {
 
   login() {
     this.setActive(1)
+    this.province = this.service.province
   }
 
   detail(index) {
@@ -169,11 +237,23 @@ export class HomePage {
    return formatter.format(price)
   }
 
+  support() {
+    this.navCtrl.push(SupportPage)
+  }
+
+  about() {
+    this.navCtrl.push(AboutPage)
+  }
+
+  changepass() {
+    this.modalCtrl.create(ChangePass).present()
+  }
+
   inbox() {
     this.setActive(2);
     this.service.loadstart()
     this.http.get(this.service.url + "&action=getnotify&uid=" + this.service.uid).subscribe((response) => {
-      console.log(response);
+      // console.log(response);
       if (response["status"]) {
         this.notifice = response["data"]
       }
@@ -230,8 +310,8 @@ export class HomePage {
   filterall() {
     this.service.loadstart()
     return new Promise((resolve) => {
-      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
-        console.log(data);
+      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+        // console.log(data);
         if (data["status"]) {
           this.service.newpet = data["data"]
           // this.service.newpet = data["data"]
@@ -246,52 +326,62 @@ export class HomePage {
 
   submit() {
     // check username and password
-    if (this.submitType) {
-      this.service.loadstart()
-      // signup
-      this.http.get(this.service.url + "&action=signup&" + this.service.toparam(this.user)).subscribe(data => {
-        switch (data["status"]) {
-          case 1: // username existed
-            this.service.showMsg(this.lang["existedusername"]);            
-          break;
-          case 2: // success
-            this.service.logged(data["data"])
-          break;
-          default:
-            // undefined error
-            this.service.showMsg(this.lang["undefined"]);            
+    var msg = ""
+    if (!this.user.username) {
+      msg = "Chưa nhập tên tài khoản"
+    } else if (!this.user.password) {
+      msg = "Chưa nhập mật khẩu"
+    } else if (this.submitType) {
+      if (!this.user.name) {
+        msg = "Chưa nhập tên"
+      } else if (!this.user.phone) {
+        msg = "Chưa nhập số điện thoại"
+      } else if (!this.user.vpassword) {
+        msg = "Chưa xác nhận mật khẩu"
+      } else if (this.user.vpassword !== this.user.password) {
+        msg = "Xác nhận mật khẩu không đúng"
+      } else {
+        this.service.loadstart()
+        // signup
+        this.http.get(this.service.url + "&action=signup&" + this.service.toparam(this.user)).subscribe(data => {
+          switch (data["status"]) {
+            case 1: // username existed
+              this.service.showMsg(this.lang["existedusername"]);            
+            break;
+            case 2: // success
+              this.service.logged(data["data"])
+            break;
+            default:
+              // undefined error
+              this.service.showMsg(this.lang["undefined"]);            
           }
           this.service.loadend()
-      }, (e) => {
-        // undefined error
-        this.service.loadend()
-        this.service.showMsg(this.lang["undefined"]);            
-      })
+        })
+      }
     } else {
-      // login
-      this.http.get(this.service.url + "&action=login&" + this.service.toparam(this.user)).subscribe(data => {
-        console.log(data);
-        
-        switch (data["status"]) {
-          case 1: // no username
-            this.service.showMsg(this.lang["haventusername"]);
-          break;
-          case 2: // incorrect password
-            this.service.showMsg(this.lang["incorrectpassword"]);            
-          break;
-          case 3: // success
-            console.log(data);
-            this.service.logged(data["data"])
-          break;
-          default: // undefined error
-            this.service.showMsg(this.lang["undefined"]);            
+        // login        
+        this.service.loadstart()
+        this.http.get(this.service.url + "&action=login&" + this.service.toparam(this.user)).subscribe(data => {
+          // console.log(data);
+          switch (data["status"]) {
+            case 1: // no username
+              this.service.showMsg(this.lang["haventusername"]);
+            break;
+            case 2: // incorrect password
+              this.service.showMsg(this.lang["incorrectpassword"]);            
+            break;
+            case 3: // success
+              // console.log(data);
+              this.service.logged(data["data"])
+            break;
+            default: // undefined error
+              this.service.showMsg(this.lang["undefined"]);            
           }
           this.service.loadend()
-      }, (e) => {
-        // undefined error
-        this.service.loadend()
-        this.service.showMsg(this.lang["undefined"]);            
-      })
+        })
+    }
+    if (msg) {
+      this.service.showMsg(msg)
     }
   }
 
@@ -302,5 +392,52 @@ export class HomePage {
     this.submitType = 0;
   }
 
-
+}
+@Component({
+  template:
+  `
+  <form (ngSubmit)="changepass()">
+    <ion-list>
+      <ion-item>
+        <ion-label> {{lang.password}} </ion-label>
+        <ion-input [(ngModel)]="pass" name="password"> </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label> {{lang.npassword}} </ion-label>
+        <ion-input [(ngModel)]="npass" name="npass"> </ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label> {{lang.vpassword}} </ion-label>
+        <ion-input [(ngModel)]="vpass" name="vpass"> </ion-input>
+      </ion-item>
+      <button ion-button>
+        {{lang.changepass}}
+      </button>
+    </ion-list>
+  `
+})
+export class ChangePass {
+  pass: string = ""
+  vpass: string = ""
+  npass: string = ""
+  constructor(public lang: LangProvider, public service: ServiceProvider, public viewCtrl: ViewController,
+    public http: HttpClient) {
+  }
+  changepass() {
+    // console.log(this.pass, this.vpass);
+    if (this.npass == this.vpass) {
+      this.service.loadstart()
+      this.http.get(this.service.url + "&action=changepass&uid=" + this.service.uid + "&pass=" + this.pass + "&npass=" + this.npass).subscribe(response => {
+        if (response) {
+          // đổi mật khẩu thành công
+          this.service.showMsg("Đổi mật khẩu thành công")
+        }
+        this.service.loadend()
+      })
+      this.viewCtrl.dismiss()
+    }
+    else {
+      this.service.showMsg(this.lang["undefined"])
+    }
+  }
 }

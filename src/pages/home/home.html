@@ -2,9 +2,6 @@
     <div class="relay" (click)="close()" *ngIf="menu"></div>
     <ion-list *ngIf="!this.service.islogged && menu" class="menu" (click)="close()">
       <ion-item color="secondary">
-        {{lang.menu}}
-      </ion-item>
-      <ion-item color="secondary">
         {{lang.support}}
       </ion-item>
       <ion-item (click)="support()" class="clickable">
@@ -146,6 +143,7 @@
       </div>
       <img class="thumb" src="{{pet.image[0]}}">
       <p> &#9; {{pet.name}} </p>
+      <p> &#9; {{pet.owner}} | {{pet.province}} </p>
       <span class="price"> &#9; {{pet.price}} </span>
       <span class="timer right"> {{pet.timer}} </span>
     </div>
@@ -255,7 +253,7 @@
     </form>
   </div>
   <ion-list *ngIf="activebar[2]">
-    <ion-list>
+    <div *ngIf="service.uid">
       <ion-item *ngFor="let noti of notifice" (click)="tonotify(noti.type, noti.pid)">
         <div class="clickable">
           <span *ngIf="noti.type < 6">
@@ -288,6 +286,9 @@
           <p class="right">{{noti.time}}</p>
         </div>
       </ion-item>
-    </ion-list>
+    </div>
+    <div *ngIf="!service.uid" class="notice">
+      {{lang.pleaselogin}}
+    </div>
   </ion-list>
 </ion-content>

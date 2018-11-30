@@ -315,8 +315,14 @@ ion-header {
   line-height: 0px;
 }
 
-.shover {
-  color: gold;
+.shover ion-icon {
+  color: gold !important;
+}
+
+.notice {
+  text-align: center;
+  line-height: 50px;
+  font-size: 20px;
 }
 
 .star {

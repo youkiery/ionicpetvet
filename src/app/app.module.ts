@@ -12,6 +12,8 @@ import { HomePage, ChangePass } from '../pages/home/home';
 import { DetailPage, Order } from '../pages/detail/detail';
 import { SalePage, Post, OrderDetail, OrderDetailList } from '../pages/sale/sale';
 import { ProviderPage } from '../pages/provider/provider';
+import { AboutPage } from '../pages/about/about';
+import { SupportPage } from '../pages/support/support';
 
 import { LangProvider } from '../providers/lang/lang';
 import { ServiceProvider } from '../providers/service/service';
@@ -25,7 +27,8 @@ import { ServiceProvider } from '../providers/service/service';
     DetailPage, 
     SalePage, 
     ProviderPage,
-    ChangePass
+    ChangePass,
+    AboutPage, SupportPage
   ],
   imports: [
     BrowserModule,
@@ -40,7 +43,8 @@ import { ServiceProvider } from '../providers/service/service';
     DetailPage, Order,
     SalePage, Post, OrderDetail, OrderDetailList,
     ProviderPage,
-    ChangePass
+    ChangePass,
+    AboutPage, SupportPage
   ],
   providers: [
     StatusBar,

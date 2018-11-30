@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angu
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
 import { HttpClient } from '@angular/common/http';
+import { DetailPage } from '../detail/detail';
 
 @IonicPage()
 @Component({
@@ -48,6 +49,10 @@ export class ProviderPage {
     this.actindex = index
     this.activebar[this.actindex] = 1
   } 
+
+  detail(index) {
+    this.navCtrl.push(DetailPage, {data: this.propet[index]});
+  }
 
   refresh() {
     this.setActive(0)

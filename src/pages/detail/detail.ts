@@ -100,8 +100,11 @@ export class DetailPage {
       this.isnext = data["data"]["next"]
       this.rate = data["data"]["rate"]
       if (!this.service.uid) {
+        console.log(1);
+        
         this.ratedisabled = true
       } else if (this.rate) {
+        console.log(2);
         this.onhover(this.rate)
         this.ratedisabled = true
       }

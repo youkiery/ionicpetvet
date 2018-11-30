@@ -111,7 +111,7 @@ export class HomePage {
     return new Promise((resolve) => {
       this.service.loadstart()
       this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]] + "&page=" + this.page).subscribe(data => {
-        // console.log(data);
+        console.log(data);
         this.service.kind = data["data"]["kind"]
         this.service.species = data["data"]["species"]
         this.service.config = data["data"]["config"]
@@ -268,17 +268,18 @@ export class HomePage {
   inbox() {
     this.setActive(2);
     this.service.loadstart()
-    this.http.get(this.service.url + "&action=getnotify&uid=" + this.service.uid).subscribe((response) => {
-      // console.log(response);
-      if (response["status"]) {
-        this.notifice = response["data"]
-      }
-      this.service.loadend()
-    })
+    if (this.service.uid) {
+      this.http.get(this.service.url + "&action=getnotify&uid=" + this.service.uid).subscribe((response) => {
+        // console.log(response);
+        if (response["status"]) {
+          this.notifice = response["data"]
+        }
+        this.service.loadend()
+      })
+    }
   }
 
   tonotify(type, pid) {
-    
     type = parseInt(type)
     switch (type) {
       case 1:

@@ -95,6 +95,7 @@ export class LangProvider {
   totalsale: string = "Tổng giao dịch thành công";
   review: string = "Đánh giá từ khách hàng";
   province: string = "Vùng";
+  pleaselogin: string = "Xin hãy đăng nhập để xem thông báo";
   noti1: string = "vừa đặt đơn tại";
   noti2: string = "vừa hủy đơn ";
   noti3: string = "Bạn vừa đánh giá chủ đề";

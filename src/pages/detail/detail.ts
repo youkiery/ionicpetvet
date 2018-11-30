@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ViewController, ModalController, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ViewController, ModalController, Events, AlertController } from 'ionic-angular';
 
 import { HttpClient } from '@angular/common/http'
 import { ServiceProvider } from '../../providers/service/service';
@@ -32,14 +32,18 @@ export class DetailPage {
   chattext: string = ""
   classhover: string[] = ["nhover", "shover"]
   shover: number[] = [0, 0, 0, 0, 0]
+  page: number = 1;
+  isnext: boolean = false
   constructor(public navCtrl: NavController, public navParams: NavParams, public http: HttpClient,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
-    public event: Events) {
+    public event: Events, public alert: AlertController) {
     var type = this.navParams.get("type");
     this.service.loadstart()
     if (type) {
       this.http.get(this.service.url + "&action=getdatainfo&pid=" + type.pid).subscribe(response => {
-        this.data = response
+        if (response["status"]) {
+          this.data = response["data"]["owner"]
+        }
         this.service.loadend()
       })
     }
@@ -59,11 +63,12 @@ export class DetailPage {
     if (this.service.uid) {
       uid = this.service.uid
     }
-    this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + uid + "&puid=" + this.data["user"]).subscribe(data => {
+    this.http.get(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + uid + "&puid=" + this.data["user"] + "&page=" + this.page).subscribe(data => {
       // console.log(data);
       
       this.owner = data["data"]["owner"]
       this.comment = data["data"]["comment"]
+      this.isnext = data["data"]["next"]
       this.rate = data["data"]["rate"]
       if (!this.service.uid) {
         this.ratedisabled = true
@@ -116,6 +121,15 @@ export class DetailPage {
     }
   }
 
+  viewdetail(data) {
+    console.log(data);
+    
+    this.alert.create({
+      title: this.lang.userinfo,
+      message: this.lang.name + ": " + data["name"] + "<br>" + this.lang.phone + ": " + data["phone"] + "<br>" + this.lang.address + ": " + data["address"] + "<br>"
+    }).present()
+  }
+
   provider() {
     this.navCtrl.push(ProviderPage, {provider: this.owner})
   }
@@ -141,10 +155,10 @@ export class DetailPage {
         msg = "Chưa nhập số điện thoại";
       } else {
         this.service.loadstart()
-        this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&" + this.service.toparam(this.anyone) + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+        this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&" + this.service.toparam(this.anyone) + "&puid=" + this.data["user"] + "&chattext=" + this.chattext + "&page=" + this.page).subscribe(response => {
           // console.log(response);
           if (response["status"]) {
-            this.comment = response["data"]
+            this.comment = response["data"]["comment"]
             this.chattext = ""
           }
           this.service.loadend()
@@ -155,16 +169,25 @@ export class DetailPage {
     else {
       // this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&public=" + this.public + "&chattext=" + this.chattext).subscribe(response => {
       this.service.loadstart()
-      this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext).subscribe(response => {
+      this.http.get(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext + "&page=" + this.page).subscribe(response => {
         // console.log(response);
         if (response["status"]) {
-          this.comment = response["data"]
+          this.comment = response["data"]["comment"]          
           this.chattext = ""
         }
         this.service.loadend()
       })
     }
     
+  }
+  next() {
+    this.http.get(this.service.url + "&action=nextcomment&page=" + this.page + "&pid=" + this.data["id"]).subscribe(response => {
+      if (response["status"]) {
+        this.comment = response["data"]["comment"]
+        this.isnext = response["data"]["next"]
+        this.page ++
+      }
+    })
   }
 }
 @Component({

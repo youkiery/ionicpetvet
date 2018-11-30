@@ -75,6 +75,7 @@ export class LangProvider {
   bought: string = "Đã mua";
   changepass: string = "Đổi mật khẩu";
   changeprovince: string = "Đổi vùng";
+  userinfo: string = "Thông tin người dùng";
   changeinfo: string = "Sửa thông tin";
   infomation: string = "Thông tin";
   thank: string = "Cảm ơn quý khách đã sử dụng hệ thống bình chọn";

@@ -13,7 +13,22 @@ import { ProviderPage } from '../provider/provider';
   templateUrl: 'detail.html',
 })
 export class DetailPage {
-  data: object
+  data: object = {
+    ageid: "0",	
+    description: "",	
+    id: "0",	
+    image: "",	
+    kind: "",	
+    name: "",	
+    owner: "",	
+    price: "0",	
+    province: 0,	
+    species: "",	
+    time: 0,	
+    typeid: 0,	
+    user: 0,	
+    vaccine: 0
+  }
   comment: object = []
   rate: number = 0
   ratedisabled: boolean = false
@@ -39,17 +54,24 @@ export class DetailPage {
     public event: Events, public alert: AlertController) {
     var type = this.navParams.get("type");
     this.service.loadstart()
+    console.log(type);
+    
     if (type) {
       this.http.get(this.service.url + "&action=getdatainfo&pid=" + type.pid).subscribe(response => {
+        console.log(response);
+        
         if (response["status"]) {
           this.data = response["data"]["owner"]
+          this.init()
         }
         this.service.loadend()
       })
     }
     else {
       this.data = this.navParams.get("data");
+      this.init()
     }
+    console.log(this.data);
     this.service.getData("public").then(data => {
       // console.log(1);
       this.public = String(data)
@@ -58,6 +80,13 @@ export class DetailPage {
     })
     // console.log(this.data);
     
+    this.event.subscribe("ordered", () => {
+      document.getElementById("buy").setAttribute("disabled", "true")
+    })
+
+  }
+
+  init() {
     this.service.loadstart()
     var uid = "0"
     if (this.service.uid) {
@@ -81,10 +110,6 @@ export class DetailPage {
       }
       this.service.loadend()
     })
-    this.event.subscribe("ordered", () => {
-      document.getElementById("buy").setAttribute("disabled", "true")
-    })
-
   }
 
   onhover(index) {

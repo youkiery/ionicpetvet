@@ -10,7 +10,6 @@ import { DetailPage } from '../detail/detail'
 import { SalePage } from '../sale/sale';
 import { SupportPage } from '../support/support';
 import { AboutPage } from '../about/about';
-import { text } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'page-home',
@@ -72,6 +71,8 @@ export class HomePage {
     address: ""
   }
   province: number = 0
+  page: number = 1
+  isnext: boolean = false
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
     public modalCtrl: ModalController, public alertCtrl: AlertController) {
@@ -106,21 +107,36 @@ export class HomePage {
 
   refresh() {
     // console.log(this.filter);
+    this.page = 1;
     return new Promise((resolve) => {
       this.service.loadstart()
-      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]] + "&page=" + this.page).subscribe(data => {
         // console.log(data);
         this.service.kind = data["data"]["kind"]
         this.service.species = data["data"]["species"]
         this.service.config = data["data"]["config"]
         this.service.type = data["data"]["type"]
         this.service.newpet = data["data"]["newpet"]
+        this.isnext = data["data"]["next"]
         this.banner = this.service.baseurl + this.service.config["banner"]
         this.service.loadend()
         resolve()
       })
     })
   }
+
+  next() {
+    this.service.loadstart()
+    this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+      // console.log(data);
+      if (data["status"]) {
+        this.service.newpet = data["data"]["newpet"]
+        this.isnext = data["data"]["next"]
+        this.page ++;
+      }
+      this.service.loadend()
+    })
+}
 
   changeprovince() {
     this.service.loadstart()
@@ -310,10 +326,11 @@ export class HomePage {
   filterall() {
     this.service.loadstart()
     return new Promise((resolve) => {
-      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
         // console.log(data);
         if (data["status"]) {
-          this.service.newpet = data["data"]
+          this.service.newpet = data["data"]["newpet"]
+          this.isnext = data["data"]["next"]
           // this.service.newpet = data["data"]
           // this.service.newpet = data["data"]
           resolve()

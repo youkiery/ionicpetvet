@@ -149,6 +149,9 @@
       <span class="price"> &#9; {{pet.price}} </span>
       <span class="timer right"> {{pet.timer}} </span>
     </div>
+    <button ion-button block *ngIf="isnext" (click)="next()">
+      Tải thêm
+    </button>
   </div>
 
   <div *ngIf="activebar[1]">

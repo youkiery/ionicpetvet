@@ -64,7 +64,7 @@ export class SalePage {
   }
   
   setActive(index) {
-    console.log(index);
+    // console.log(index);
     
     this.activebar[this.actindex] = 0
     this.prvindex = this.actindex
@@ -75,15 +75,9 @@ export class SalePage {
   } 
 
   filterall() {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
-      console.log(response);
-      if (response["status"]) {
+    this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
         this.service.userpet = response["data"]
         this.type = this.filter["type"]
-      }
-      
-      this.service.loadend()
     })
   }
 
@@ -95,13 +89,9 @@ export class SalePage {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.service.loadstart()
-            this.http.get(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
-              console.log(response);
-              if (response["status"]) {
-                this.service.userpet = response["data"]
-              }
-              this.service.loadend()
+            this.service.fetch(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+              // console.log(response);
+                this.service.userpet = response["data"]["userpet"]
             })
           }
         },
@@ -114,13 +104,9 @@ export class SalePage {
   }
 
   viewdetail(oid) {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=getvender&oid=" + oid).subscribe(response => {
-        if (response["status"]) {
+    this.service.fetch(this.service.url + "&action=getvender&oid=" + oid).then(response => {
         
         this.modalCtrl.create(OrderDetail, {data: response["data"]}).present()
-      }
-      this.service.loadend()
     })
   }
 
@@ -141,11 +127,11 @@ export class SalePage {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.http.get(this.service.url + "&action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(data => {
-              switch (data["status"]) {
+            this.service.fetch(this.service.url + "&action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+              switch (response["status"]) {
                 case 1:
                   this.service.showMsg(this.lang["removesuccess"])
-                  this.service.userpet = data["data"]
+                  this.service.userpet = response["data"]["userpet"]
                   break;
                 default:
                   this.service.showMsg(this.lang["removefail"])
@@ -163,17 +149,10 @@ export class SalePage {
   }
 
   orderdetail(pid) {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=getorderlist&pid=" + pid).subscribe(response => {
-      console.log(response);
-      if (response["status"]) {
+    this.service.fetch(this.service.url + "&action=getorderlist&pid=" + pid).then(response => {
+      // console.log(response);
         let modal = this.modalCtrl.create(OrderDetailList, {data: response["data"], filter: this.filter, pid: pid})
         modal.present()
-      }
-      else {
-        this.service.showMsg(this.lang["undefined"])
-      }
-      this.service.loadend()
     })
   }
 
@@ -219,7 +198,7 @@ export class SalePage {
       </ion-item>
       <ion-item>
         <ion-label> {{lang.price}} </ion-label>
-        <ion-input type="number" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}"></ion-input>
+        <ion-input type="text" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}" (keyup)="formatprice($event)"></ion-input>
       </ion-item>
       <ion-textarea [(ngModel)]="this.post.description" name="description" class="description" placeholder="{{lang.description}}"></ion-textarea>
       <button ion-button color="secondary" type="submit" class="button-half"> {{lang.post}} </button>
@@ -244,20 +223,21 @@ export class Post {
     sort: 0,
     type: 0
   }
+  realprice: number = 0
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
     public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController) {
-    console.log(this.service.species);
+    // console.log(this.service.species);
     
     var now = new Date();
     var data = this.navParams.get("data")
     this.filter = this.navParams.get("filter")
-    console.log(data);
+    // console.log(data);
     
     if (data) {
       this.post = data
-      console.log(this.post);
-      console.log(this.service.config);
+      // console.log(this.post);
+      // console.log(this.service.config);
     } else {
       this.post.name = ""
       this.post.date = now.getFullYear() + "-" + (now.getMonth() + 1) + "-" + now.getDate() 
@@ -270,6 +250,35 @@ export class Post {
       this.post.price = 0
     }
   }
+
+  formatprice(e) {
+    var x = e.target.selectionStart ;
+    var d1 = (this.post.price.match(/./g) || []).length
+    var num = this.parse(this.post.price);
+    
+    if (isFinite(Number(e.key)) || e.key == "Backspace" || e.key == "Delete") {
+      this.post.price = this.format(num)
+      setTimeout(() => {
+        var d2 = (this.post.price.match(/./g) || []).length
+        x += (d2 - d1);
+        e.target.setSelectionRange(x, x)
+      }, 10)
+    }
+  }
+
+    format(num) {
+      var formatter = new Intl.NumberFormat('vi-VI', {
+        style: 'currency',
+        currency: 'VND',
+      });
+      var result = formatter.format(num)
+      result = result.slice(0, result.length - 2)
+      return result
+    }
+
+    parse(val) {
+      return val.replace(/\./g, "")
+    }
 
   change() {
     var input = document.getElementById("files")
@@ -302,6 +311,7 @@ export class Post {
       } else check = false;
     }
     fd.append("uid", this.service.uid);
+    fd.append("ck", this.service.rand());
     fd.append("name", this.post.name);
     fd.append("age", this.post.age);
     fd.append("price", this.post.price);
@@ -315,43 +325,30 @@ export class Post {
     xhttp.onreadystatechange = () => {
       if (xhttp.readyState == 4 && xhttp.status == 200) {
         var response = JSON.parse(xhttp.responseText)
-        
         switch (response["status"]) {
           case 1:
-          // cannot insert
-          this.service.showMsg(this.lang["notinsert"])
+          // success
+          // console.log("x");
+          this.service.showMsg(this.lang["uploadsuccess"])
+          this.service.userpet = response["data"]["userpet"]
+          this.viewCtrl.dismiss()
           break;
           case 2:
-          // fail
-          this.service.showMsg(this.lang["insertfail"])
-          break;
-          case 3:
-          // success
-          console.log("x");
-          this.service.showMsg(this.lang["uploadsuccess"])
-          this.service.userpet = response["data"]
-          this.viewCtrl.dismiss()
-          break;
-          case 4:
-          // upload error
-          this.service.showMsg(this.lang["uploaderror"])            
-          break;
-          case 5:
           // edit success
           this.service.showMsg(this.lang["editsuccess"])            
-          this.service.userpet = response["data"]
+          this.service.userpet = response["data"]["userpet"]
           this.viewCtrl.dismiss()
+          break;
+          case 3:
+          // upload error
+          this.service.showMsg(this.lang["uploaderror"])            
           break;
           default:
         }
       }
     };
     xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&" + this.service.toparam(this.filter), true);
-    // xhttp.setRequestHeader('Content-type', 'multipart/form-data;');
     xhttp.send(fd);
-        // this.http.post("http://linesrc.netne.net/index.php&action=uploadimage", files, {headers}).subscribe(data => {
-    //   console.log(data);
-    // })
   }
 }
 @Component({
@@ -380,7 +377,7 @@ export class OrderDetail {
   }
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
     var data = this.navParams.get("data")
-    console.log(data);
+    // console.log(data);
     if (data["vender"] && data["vender"]["name"]) {
       this.data = data["vender"]
     }
@@ -420,26 +417,18 @@ export class OrderDetailList {
     var data = this.navParams.get("data")
     this.filter = this.navParams.get("filter")
     this.pid = this.navParams.get("pid")
-    console.log(data);
-    console.log(this.filter);
+    // console.log(data);
+    // console.log(this.filter);
     if (data["vender"] && data["vender"].length) {
       this.data = data["vender"]
     }
   }
   submitorder(oid) {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).subscribe(response => {
-      console.log(response);
-      switch (response["status"]) {
-        case 1:
+    this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+      // console.log(response);
           // success
           this.ev.publish("submitorder-finish", response["data"])
           this.viewCtrl.dismiss()
-        break;
-        default:
-          this.service.showMsg(this.lang["undefined"])
-      }
-      this.service.loadend()
     })
   }
 }

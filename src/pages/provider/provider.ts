@@ -32,6 +32,8 @@ export class ProviderPage {
   actindex = 0
   prvindex = 0
   propet: object[]
+  page: number = 1
+  isnext: boolean = false
   constructor(public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
     public navParam: NavParams) {
@@ -58,10 +60,11 @@ export class ProviderPage {
     this.setActive(0)
     this.service.loadstart()
     this.http.get(
-      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"]).subscribe(response => {
+      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + this.page).subscribe(response => {
         // console.log(response);
         if (response["status"]) {
           this.propet = response["data"]["propet"]
+          this.isnext = response["data"]["next"]
           this.rate["total"] = response["data"]["total"]
           this.rate["average"] = response["data"]["average"]
           this.rate["totalsale"] = response["data"]["totalsale"]
@@ -69,6 +72,21 @@ export class ProviderPage {
           // console.log(response["data"]["rate"]);
           // console.log(this.rate["comment"]);
           
+        }
+        this.service.loadend()
+      })
+  }
+  next() {
+    this.service.loadstart()
+    this.http.get(
+      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + (this.page + 1)).subscribe(response => {
+        // console.log(response);
+        if (response["status"]) {
+          this.propet = response["data"]["propet"]
+          this.isnext = response["data"]["next"]
+          this.page ++
+          // console.log(response["data"]["rate"]);
+          // console.log(this.rate["comment"]);
         }
         this.service.loadend()
       })

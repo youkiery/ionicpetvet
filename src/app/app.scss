@@ -386,7 +386,15 @@ form.sale {
   position: absolute;
   z-index: 6;
 }
-
+.navback span {
+  font-size: 1.2em;
+  color: white !important;
+}
+.navback ion-icon {
+  font-size: 2em;
+  color: white !important;
+  margin-right: 10px;
+}
 @media screen and (min-width: 576px) {
   .menu {
     width: 40%;
@@ -427,15 +435,7 @@ form.sale {
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
   }
-  .navback span {
-    font-size: 1.2em;
-    color: white;
-  }
-  .navback ion-icon {
-    font-size: 2em;
-    color: white;
-    margin-right: 10px;
-  }
+
   .pet_box {
     width: 33.3%;
   }

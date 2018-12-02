@@ -8,8 +8,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
-import { HomePage, ChangePass } from '../pages/home/home';
-import { DetailPage, Order } from '../pages/detail/detail';
+import { HomePage } from '../pages/home/home';
+import { DetailPage } from '../pages/detail/detail';
 import { SalePage, Post, OrderDetail, OrderDetailList } from '../pages/sale/sale';
 import { ProviderPage } from '../pages/provider/provider';
 import { AboutPage } from '../pages/about/about';
@@ -21,13 +21,11 @@ import { ServiceProvider } from '../providers/service/service';
 @NgModule({
   declarations: [
     MyApp,
-    HomePage,
-    Order,
     Post, OrderDetail, OrderDetailList,
+    HomePage,
     DetailPage, 
     SalePage, 
     ProviderPage,
-    ChangePass,
     AboutPage, SupportPage
   ],
   imports: [
@@ -40,10 +38,9 @@ import { ServiceProvider } from '../providers/service/service';
   entryComponents: [
     MyApp,
     HomePage,
-    DetailPage, Order,
+    DetailPage,
     SalePage, Post, OrderDetail, OrderDetailList,
     ProviderPage,
-    ChangePass,
     AboutPage, SupportPage
   ],
   providers: [

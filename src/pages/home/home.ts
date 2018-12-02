@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Events, ViewController, ModalController, AlertController } from 'ionic-angular';
+import { NavController, Events, ModalController, AlertController } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
@@ -73,79 +73,50 @@ export class HomePage {
   province: number = 0
   page: number = 1
   isnext: boolean = false
+  npage: number = 1
+  isnnext: boolean = false
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
     public modalCtrl: ModalController, public alertCtrl: AlertController) {
       this.submitButton = [lang.login, lang.signup];
       // console.log(this.filter);
       
-      this.service.loadstart()
-      this.storage.get("login").then(logindata => {
-        if (logindata) {
-          this.checklogin(logindata)
-        } else {
-          this.refresh()
-        }
+      this.storage.get("login").then(uid => {
+        this.init(uid)
       })
   }
 
-  checklogin(logindata) {
-    return new Promise((resolve) => {
-      this.http.get(this.service.url + "&action=getlogin&id=" + logindata).subscribe(data => {
-        if (data["status"]) {
-          // login
-          // console.log(data);
-          
-          this.service.logged(data["data"], this.navCtrl, false);
-        }
-        this.refresh().then(() => {
-          resolve()
-        })
-      })
-    })
-  }
-
-  refresh() {
-    // console.log(this.filter);
-    this.page = 1;
-    return new Promise((resolve) => {
-      this.service.loadstart()
-      this.http.get(this.service.url + "&action=getinit&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]] + "&page=" + this.page).subscribe(data => {
-        console.log(data);
-        this.service.kind = data["data"]["kind"]
-        this.service.species = data["data"]["species"]
-        this.service.config = data["data"]["config"]
-        this.service.type = data["data"]["type"]
-        this.service.newpet = data["data"]["newpet"]
-        this.isnext = data["data"]["next"]
-        this.banner = this.service.baseurl + this.service.config["banner"]
-        this.service.loadend()
-        resolve()
-      })
+  init(uid) {
+    if (!uid) uid = 0;
+    this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then((response) => {
+      if (response["logininfo"]) {
+        this.service.logged(response["logininfo"], this.navCtrl, false);
+      }
+      this.service.kind = response["kind"]
+      this.service.species = response["species"]
+      this.service.config = response["config"]
+      this.service.type = response["type"]
+      this.service.newpet = response["newpet"]
+      this.isnext = response["next"]
+      this.banner = this.service.baseurl + this.service.config["banner"]
+    }, (e) => {
+      console.log(e);
     })
   }
 
   next() {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
+    this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then(response => {
       // console.log(data);
-      if (data["status"]) {
-        this.service.newpet = data["data"]["newpet"]
-        this.isnext = data["data"]["next"]
-        this.page ++;
-      }
-      this.service.loadend()
-    })
+      this.service.newpet = response["newpet"]
+      this.isnext = response["next"]
+      this.page ++;
+    }, (e) => {})
 }
 
   changeprovince() {
-    this.service.loadstart()
-    this.http.get(this.service.url + "&action=changeprovince&uid=" + this.service.uid + "&province=" + this.province).subscribe(response => {
-      if (response["status"]) {
-        this.service.province = this.province
-      }
-      this.service.loadend()
-    })
+    this.service.fetch(this.service.url + "&action=changeprovince&uid=" + this.service.uid + "&province=" + this.province).then(response => {
+      this.service.province = this.province
+    }, (e) => {})
   }
 
   changeinfo() {
@@ -156,19 +127,19 @@ export class HomePage {
       title: this.lang.changeinfo,
       inputs: [
         {
-          name: this.info.name,
+          name: "name",
           value: this.info.name,
           type: "text",
           placeholder: this.lang["name"]
         },
         {
-          name: this.info.phone,
+          name: "phone",
           value: this.info.phone,
           type: "text",
           placeholder: this.lang["phone"]
         },
         {
-          name: this.info.address,
+          name: "address",
           value: this.info.address,
           type: "text",
           placeholder: this.lang["address"]
@@ -176,22 +147,27 @@ export class HomePage {
       ],
       buttons: [
         {
-          text: this.lang.save,
-          handler: (data) => {
-            this.service.loadstart()
-            this.http.get(this.service.url + "&action=changeinfo&uid=" + this.service.uid
-              + "&" + this.service.toparam(data)).subscribe(response => {
-                if (response["status"]) {
-                  this.service.name = data.name
-                  this.service.phone = data.phone
-                  this.service.address = data.address
-                }
-                this.service.loadend()
-              })
-          }
+          text: this.lang.cancel
         },
         {
-          text: this.lang.cancel
+          text: this.lang.save,
+          handler: (data) => {
+            console.log(data);
+            
+            this.service.fetch(this.service.url + "&action=changeinfo&uid=" + this.service.uid
+              + "&name=" + data.name + "&phone=" + data.phone + "&address=" + data.address).then(response => {
+                switch (response["status"]) {
+                  case 1:
+                    this.service.name = data.name
+                    this.service.phone = data.phone
+                    this.service.address = data.address
+                  break;
+                  case 2:
+                    this.service.showMsg("usedphone")
+                  break;
+                }
+              }, (e) => {})
+          }
         }
       ]
     }).present()
@@ -214,7 +190,7 @@ export class HomePage {
   setActive(index) {
     // console.log(index);
     // console.log(this.filter);
-    
+    this.service.newpet = []
     this.activebar[this.actindex] = 0
     this.prvindex = this.actindex
     this.actindex = index
@@ -262,21 +238,70 @@ export class HomePage {
   }
 
   changepass() {
-    this.modalCtrl.create(ChangePass).present()
+    this.alertCtrl.create({
+      title: this.lang.changepass,
+      inputs: [
+        {
+          name: "pass",
+          type: "password",
+          placeholder: this.lang["password"]
+        },
+        {
+          name: "npass",
+          type: "password",
+          placeholder: this.lang["npassword"]
+        },
+        {
+          name: "vpass",
+          type: "password",
+          placeholder: this.lang["vpassword"]
+        }
+      ],
+      buttons: [
+        {
+          text: this.lang.cancel
+        },
+        {
+          text: this.lang.save,
+          handler: (data) => {
+            if (data.npass == data.vpass) {
+              this.service.fetch(this.service.url + "&action=changepass&uid=" + this.service.uid + "&pass=" + data.pass + "&npass=" + data.npass).then(response => {
+                  // đổi mật khẩu thành công
+                  if (response["status"] == 1) {
+                    this.service.showMsg("Đổi mật khẩu thành công")
+                  }
+                  else {
+                    this.service.showMsg(this.lang["incorrectpassword"])
+                  }
+              }, (e) => {})
+            }
+            else {
+              this.service.showMsg(this.lang["passnotmatch"])
+            }
+          }
+        }
+      ]
+    }).present()
   }
 
   inbox() {
     this.setActive(2);
-    this.service.loadstart()
     if (this.service.uid) {
-      this.http.get(this.service.url + "&action=getnotify&uid=" + this.service.uid).subscribe((response) => {
-        // console.log(response);
-        if (response["status"]) {
-          this.notifice = response["data"]
-        }
-        this.service.loadend()
-      })
+      this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + this.npage).then((response) => {
+        console.log(response);
+        
+          this.notifice = response["notify"]
+          this.isnnext = response["next"]
+      }, (e) => {})
     }
+  }
+
+  nnext() {
+    this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + (this.npage + 1)).then((response) => {
+        this.notifice = response["notify"]
+        this.isnnext = response["next"]
+        this.npage ++
+    }, (e) => {})
   }
 
   tonotify(type, pid) {
@@ -325,21 +350,11 @@ export class HomePage {
   }
 
   filterall() {
-    this.service.loadstart()
-    return new Promise((resolve) => {
-      this.http.get(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).subscribe(data => {
-        // console.log(data);
-        if (data["status"]) {
-          this.service.newpet = data["data"]["newpet"]
-          this.isnext = data["data"]["next"]
-          // this.service.newpet = data["data"]
-          // this.service.newpet = data["data"]
-          resolve()
-        }
+      this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then(response => {
         this.setActive(0)
-        this.service.loadend()
-      })
-    })
+        this.service.newpet = response["newpet"]
+        this.isnext = response["next"]
+      }, (e) => {})
   }
 
   submit() {
@@ -359,29 +374,26 @@ export class HomePage {
       } else if (this.user.vpassword !== this.user.password) {
         msg = "Xác nhận mật khẩu không đúng"
       } else {
-        this.service.loadstart()
         // signup
-        this.http.get(this.service.url + "&action=signup&" + this.service.toparam(this.user)).subscribe(data => {
-          switch (data["status"]) {
+        this.service.fetch(this.service.url + "&action=signup&" + this.service.toparam(this.user)).then(response => {
+          switch (response["status"]) {
             case 1: // username existed
               this.service.showMsg(this.lang["existedusername"]);            
             break;
             case 2: // success
-              this.service.logged(data["data"])
+              this.service.logged(response["info"])
             break;
             default:
               // undefined error
               this.service.showMsg(this.lang["undefined"]);            
           }
-          this.service.loadend()
-        })
+        }, (e) => {})
       }
     } else {
         // login        
-        this.service.loadstart()
-        this.http.get(this.service.url + "&action=login&" + this.service.toparam(this.user)).subscribe(data => {
+        this.service.fetch(this.service.url + "&action=login&" + this.service.toparam(this.user)).then(response => {
           // console.log(data);
-          switch (data["status"]) {
+          switch (response["status"]) {
             case 1: // no username
               this.service.showMsg(this.lang["haventusername"]);
             break;
@@ -390,13 +402,12 @@ export class HomePage {
             break;
             case 3: // success
               // console.log(data);
-              this.service.logged(data["data"])
+              this.service.logged(response["logininfo"])
             break;
             default: // undefined error
               this.service.showMsg(this.lang["undefined"]);            
           }
-          this.service.loadend()
-        })
+        }, (e) => {})
     }
     if (msg) {
       this.service.showMsg(msg)
@@ -410,52 +421,4 @@ export class HomePage {
     this.submitType = 0;
   }
 
-}
-@Component({
-  template:
-  `
-  <form (ngSubmit)="changepass()">
-    <ion-list>
-      <ion-item>
-        <ion-label> {{lang.password}} </ion-label>
-        <ion-input [(ngModel)]="pass" name="password"> </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label> {{lang.npassword}} </ion-label>
-        <ion-input [(ngModel)]="npass" name="npass"> </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label> {{lang.vpassword}} </ion-label>
-        <ion-input [(ngModel)]="vpass" name="vpass"> </ion-input>
-      </ion-item>
-      <button ion-button>
-        {{lang.changepass}}
-      </button>
-    </ion-list>
-  `
-})
-export class ChangePass {
-  pass: string = ""
-  vpass: string = ""
-  npass: string = ""
-  constructor(public lang: LangProvider, public service: ServiceProvider, public viewCtrl: ViewController,
-    public http: HttpClient) {
-  }
-  changepass() {
-    // console.log(this.pass, this.vpass);
-    if (this.npass == this.vpass) {
-      this.service.loadstart()
-      this.http.get(this.service.url + "&action=changepass&uid=" + this.service.uid + "&pass=" + this.pass + "&npass=" + this.npass).subscribe(response => {
-        if (response) {
-          // đổi mật khẩu thành công
-          this.service.showMsg("Đổi mật khẩu thành công")
-        }
-        this.service.loadend()
-      })
-      this.viewCtrl.dismiss()
-    }
-    else {
-      this.service.showMsg(this.lang["undefined"])
-    }
-  }
 }

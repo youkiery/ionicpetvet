@@ -134,7 +134,7 @@
   </div>
 
   <div *ngIf="activebar[0]">
-    <div *ngIf="service.config.banner">
+    <div *ngIf="service.config && service.config.banner">
       <img src="{{service.baseurl + service.config.banner}}" class="banner">
     </div>
     <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
@@ -210,7 +210,7 @@
       </div>
     </div>
     <form (ngSubmit)="submit()" class="panel" *ngIf="!service.uid">
-      <img src="../../assets/imgs/pet-logo.png" class="logo">
+      <img src="../../assets/imgs/logo.png" class="logo">
       <ion-item>
         <ion-label> {{lang.username}} </ion-label>
         <ion-input type="text" [(ngModel)]="this.user.username" name="username"></ion-input>
@@ -286,6 +286,7 @@
           <p class="right">{{noti.time}}</p>
         </div>
       </ion-item>
+      <button ion-button block (click)="nnext()" *ngIf="isnnext"> {{lang.loadmore}} </button>
     </div>
     <div *ngIf="!service.uid" class="notice">
       {{lang.pleaselogin}}

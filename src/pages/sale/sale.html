@@ -4,46 +4,49 @@
       <ion-icon name="arrow-round-back"></ion-icon>
     </ion-col>
     <ion-col col-2 (click)="sell()" class="{{active[activebar[0]]}} navcol">
-      <ion-icon name="home"></ion-icon>
+         <ion-icon name="home"></ion-icon>
       <p class="subtitle"> {{lang.sell}} </p>
     </ion-col>
     <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
-      <ion-icon name="contact"></ion-icon>
+         <ion-icon name="contact"></ion-icon>
       <p class="subtitle"> {{lang.buy}} </p>
     </ion-col>
     <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
-      <ion-icon name="mail"></ion-icon>
+         <ion-icon name="mail"></ion-icon>
+      <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
       <p class="subtitle"> {{lang.order}} </p>
     </ion-col>
     <ion-col col-2 (click)="sold()" class="{{active[activebar[3]]}} navcol">
-      <ion-icon name="menu"></ion-icon>
+         <ion-icon name="menu"></ion-icon>
+      <ion-badge item-end *ngIf="new[6] > 0" color="danger">{{new[6]}}</ion-badge>
       <p class="subtitle"> {{lang.sold}} </p>
     </ion-col>
     <ion-col col-2 class="searchbar {{active[activebar[4]]}} navcol" (click)="bought()">
       <ion-icon name="search"></ion-icon>
+      <ion-badge item-end *ngIf="new[7] > 0" color="danger">{{new[7]}}</ion-badge>
       <p class="subtitle"> {{lang.bought}} </p>
     </ion-col>
   </ion-row>
 </ion-header>
 
 <ion-content>
-  <div>
-  <!-- <div class="h2l"> -->
-    <ion-icon class="nav-icon" name="add-circle" (click)="post()"></ion-icon>
-    <form (ngSubmit)="filterall()">
-      <ion-item>
-        <ion-label>
-          {{lang.keyword}}
-        </ion-label>
-        <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-label>
-          {{lang.sort}}
-        </ion-label>
-        <ion-select [(ngModel)]="filter.sort" name="sort">
-          <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
-            {{option}}
+  <div *ngIf="service.isconnect">
+    <div>
+      <!-- <div class="h2l"> -->
+      <form (ngSubmit)="filterall()">
+        <ion-item>
+          <ion-label>
+            {{lang.keyword}}
+          </ion-label>
+          <ion-input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            {{lang.sort}}
+          </ion-label>
+          <ion-select [(ngModel)]="filter.sort" name="sort">
+            <ion-option *ngFor="let option of service.sort; let i = index" value="{{i}}">
+              {{option}}
           </ion-option>
         </ion-select>
       </ion-item>
@@ -52,32 +55,61 @@
       </button>
     </form>
   </div>
-  <div>
   <!-- <div class="h2r"> -->
+  <div style="font-size: 0px;">
+    <div class="pet_box pet_box_create" *ngIf="type == 0" (click)="post()">
+      <p>+</p>
+    </div>
     <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
-      <div>
-        <div class="pet-box-option" *ngIf="type == 0">
-          <!-- sell -->
-          <ion-icon name="create" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image)"></ion-icon>
+      <div *ngIf="type == 0" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image)">
+        <!-- sell -->
+        <div class="pet-box-option">
           <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
         </div>
-        <div class="pet-box-option" *ngIf="type == 1">
-          <!-- buy -->
-          <ion-icon name="create" (click)="viewdetail(pet.oid)"></ion-icon>
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
+      </div>
+      <div *ngIf="type == 1" (click)="viewdetail(pet.oid)">
+        <!-- buy -->
+        <div class="pet-box-option">
           <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
         </div>
-        <div class="pet-box-option" *ngIf="type == 2">
-          <!-- order -->
-          <ion-icon name="create" (click)="orderdetail(pet.id)"></ion-icon>
-        </div>
-        <div>
-          <img class="thumb" src="{{pet.image[0]}}">
-          <p> &#9; {{pet.name}} </p>
-          <p> &#9; {{pet.owner}} | {{pet.province}} </p>
-          <span class="price"> &#9; {{pet.price}} </span>
-          <span class="timer right"> {{pet.timer}} </span>
-        </div>
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
       </div>
-    </div>
-  </div>
+      <div *ngIf="type == 2" (click)="orderdetail(pet.id)">
+        <!-- order -->
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
+      </div>
+      <div *ngIf="type > 2">
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
+      </div>
+    </div>  
+  </div>  
+  <button ion-button block (click)="next()" *ngIf="isnext">
+    {{lang.loadmore}}
+  </button>
+</div>
+<div *ngIf="!service.isconnect">
+  <p>
+    {{lang.nointernet}}
+  </p>
+  <button ion-button (click)="reconnect()">
+      {{lang.reload}}
+</button>
+</div>
 </ion-content>

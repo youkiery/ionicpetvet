@@ -34,11 +34,24 @@ export class ProviderPage {
   propet: object[]
   page: number = 1
   isnext: boolean = false
+  rpage: number = 1
+  isrnext: boolean = false
   constructor(public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
     public navParam: NavParams) {
       this.provider = this.navParam.get('provider')
-      // console.log(this.provider);
+      this.propet = Array.apply(null, Array(12)).map(() => {
+        return {
+          image: ["../assets/imgs/noimage.png"],
+          name: this.lang.loading,
+          owner: this.lang.loading,
+          price: this.lang.loading,
+          province: this.lang.loading,
+          timer: this.lang.loading,
+          type: this.lang.loading,
+        }
+      })
+        // console.log(this.provider);
       
       this.provider["description"] = "Chưa có"
       this.refresh()
@@ -58,44 +71,61 @@ export class ProviderPage {
 
   refresh() {
     this.setActive(0)
-    this.service.loadstart()
-    this.http.get(
-      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + this.page).subscribe(response => {
-        // console.log(response);
-        if (response["status"]) {
-          this.propet = response["data"]["propet"]
-          this.isnext = response["data"]["next"]
-          this.rate["total"] = response["data"]["total"]
-          this.rate["average"] = response["data"]["average"]
-          this.rate["totalsale"] = response["data"]["totalsale"]
-          this.rate["comment"] = response["data"]["rate"]
-          // console.log(response["data"]["rate"]);
+
+    this.service.fetch(
+      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + this.page).then(response => {
+          this.propet = response["propet"]
+          this.isnext = response["next"]
+          // console.log(response["rate"]);
           // console.log(this.rate["comment"]);
-          
-        }
-        this.service.loadend()
-      })
+      }, e => {})
   }
+
+  reconnect() {
+    this.refresh()
+  }
+
+  getrate() {
+    this.service.fetch(
+      this.service.url + "&action=getrate&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + this.rpage).then(response => {
+        this.rate["total"] = response["total"]
+        this.rate["average"] = response["average"]
+        this.rate["totalsale"] = response["totalsale"]
+        this.rate["comment"] = response["rate"]
+        this.isrnext = response["next"]
+      }, e => {})
+  }
+
+  getnextrate() {
+    this.service.fetch(
+      this.service.url + "&action=getnextrate&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + (this.rpage + 1)).then(response => {
+        this.rate["comment"] = response["rate"]
+        this.isrnext = response["next"]
+        this.rpage ++
+      }, e => {})
+  }
+
   next() {
-    this.service.loadstart()
-    this.http.get(
-      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + (this.page + 1)).subscribe(response => {
+    this.service.fetch(
+      this.service.url + "&action=getproviderpet&name=" + this.provider["name"] + "&phone=" + this.provider["phone"] + "&page=" + (this.page + 1)).then(response => {
         // console.log(response);
-        if (response["status"]) {
-          this.propet = response["data"]["propet"]
-          this.isnext = response["data"]["next"]
+          this.propet = response["propet"]
+          this.isnext = response["next"]
           this.page ++
-          // console.log(response["data"]["rate"]);
+          // console.log(response["rate"]);
           // console.log(this.rate["comment"]);
-        }
-        this.service.loadend()
-      })
+      }, e => {})
   }
   info() {
-    this.setActive(1)
+    if (this.service.isconnect) {
+      this.setActive(1)
+    }
   }
   crate() {
-    this.setActive(2)
+    if (this.service.isconnect) {
+      this.setActive(2)
+      this.getrate()
+    }
   }
   home() {
     this.navCtrl.popAll()

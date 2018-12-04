@@ -75,17 +75,29 @@ export class HomePage {
   isnext: boolean = false
   npage: number = 1
   isnnext: boolean = false
+  new: number = 0
+  interval: any
+  configInterval: any
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
     public modalCtrl: ModalController, public alertCtrl: AlertController) {
       this.submitButton = [lang.login, lang.signup];
       // console.log(this.filter);
-      
       this.storage.get("login").then(uid => {
+        this.service.uid
         this.init(uid)
       })
   }
-
+  ionViewWillLeave() {
+    clearInterval(this.interval)
+  }
+  ionViewDidEnter() {
+    this.interval = setInterval(() => {
+      if (this.service.uid) {
+        this.getnewnotice()
+      }
+    }, 5000);
+  }
   init(uid) {
     if (!uid) uid = 0;
     this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then((response) => {
@@ -98,10 +110,20 @@ export class HomePage {
       this.service.type = response["type"]
       this.service.newpet = response["newpet"]
       this.isnext = response["next"]
+      this.new = response["new"]
       this.banner = this.service.baseurl + this.service.config["banner"]
-    }, (e) => {
-      console.log(e);
-    })
+      console.log(this.service.newpet);
+      
+    }, (e) => {})
+  }
+
+  reconnect() {
+    if (this.service.isconfig) {
+      this.filterall()
+    }
+    else {
+      this.init(this.service.uid)
+    }
   }
 
   next() {
@@ -116,6 +138,7 @@ export class HomePage {
   changeprovince() {
     this.service.fetch(this.service.url + "&action=changeprovince&uid=" + this.service.uid + "&province=" + this.province).then(response => {
       this.service.province = this.province
+      this.service.showMsg(this.lang["changedprovince"])
     }, (e) => {})
   }
 
@@ -152,7 +175,7 @@ export class HomePage {
         {
           text: this.lang.save,
           handler: (data) => {
-            console.log(data);
+            // console.log(data);
             
             this.service.fetch(this.service.url + "&action=changeinfo&uid=" + this.service.uid
               + "&name=" + data.name + "&phone=" + data.phone + "&address=" + data.address).then(response => {
@@ -174,12 +197,15 @@ export class HomePage {
   }
 
   search() {
-    // console.log(1);
-    this.issearch = true
-    this.setActive(4)
-    setTimeout(() => {
-      this.myInput.setFocus()
-    }, 500)
+    if (this.service.isconnect) {
+
+      // console.log(1);
+      this.issearch = true
+      this.setActive(4)
+      setTimeout(() => {
+        this.myInput.setFocus()
+      }, 500)
+    }
   }
   bsearch() {
     // console.log(2);
@@ -202,8 +228,11 @@ export class HomePage {
   }
 
   login() {
-    this.setActive(1)
-    this.province = this.service.province
+    if (this.service.isconnect) {
+
+      this.setActive(1)
+      this.province = this.service.province
+    }
   }
 
   detail(index) {
@@ -211,7 +240,11 @@ export class HomePage {
   }
 
   open() {
-    this.menu = !this.menu
+    if (this.service.isconnect) {
+      this.menu = !this.menu
+    } else {
+      this.service.showMsg(this.lang["msgreconnect"])
+    }
   }
   close() {
     this.menu = false
@@ -264,7 +297,15 @@ export class HomePage {
         {
           text: this.lang.save,
           handler: (data) => {
-            if (data.npass == data.vpass) {
+            var msg = ""
+            if (!data.pass) {
+              msg = this.lang["emptypass"]
+            } else if (!data.npass) {
+              msg = this.lang["emptynpass"]
+            } else if (data.npass != data.vpass) {
+              msg = this.lang["incorrectvpass"]
+            }
+            if (!msg) {
               this.service.fetch(this.service.url + "&action=changepass&uid=" + this.service.uid + "&pass=" + data.pass + "&npass=" + data.npass).then(response => {
                   // đổi mật khẩu thành công
                   if (response["status"] == 1) {
@@ -276,7 +317,7 @@ export class HomePage {
               }, (e) => {})
             }
             else {
-              this.service.showMsg(this.lang["passnotmatch"])
+              this.service.showMsg(msg)
             }
           }
         }
@@ -285,14 +326,16 @@ export class HomePage {
   }
 
   inbox() {
-    this.setActive(2);
-    if (this.service.uid) {
-      this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + this.npage).then((response) => {
-        console.log(response);
-        
-          this.notifice = response["notify"]
-          this.isnnext = response["next"]
-      }, (e) => {})
+    if (this.service.isconnect) {
+      this.setActive(2);
+      if (this.service.uid) {
+        this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + this.npage).then((response) => {
+          // console.log(response);
+            this.notifice = response["notify"]
+            this.isnnext = response["next"]
+            this.new = response["new"]
+        }, (e) => {})
+      }
     }
   }
 
@@ -300,8 +343,19 @@ export class HomePage {
     this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + (this.npage + 1)).then((response) => {
         this.notifice = response["notify"]
         this.isnnext = response["next"]
+        this.new = response["new"]
         this.npage ++
     }, (e) => {})
+  }
+
+  getnewnotice() {
+    this.http.get(this.service.url + "&action=getnewnotice&uid=" + this.service.uid + "&ck=" + this.service.rand()).subscribe(response => {
+      console.log(this.service.isconnect);
+      
+      if (response["status"]) {
+        this.new = response["data"]["new"]
+      }
+    })
   }
 
   tonotify(type, pid) {
@@ -346,6 +400,7 @@ export class HomePage {
 
   filtersuball() {
     this.bsearch()
+    this.page = 1;
     this.filterall()
   }
 
@@ -403,6 +458,7 @@ export class HomePage {
             case 3: // success
               // console.log(data);
               this.service.logged(response["logininfo"])
+              this.new = response["new"]
             break;
             default: // undefined error
               this.service.showMsg(this.lang["undefined"]);            

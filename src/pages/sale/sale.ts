@@ -26,13 +26,36 @@ export class SalePage {
   activebar: number[] = [1, 0, 0, 0, 0]
   actindex = 0
   prvindex = 0
+  clickIndex: number = 0;
+  new: object = {
+    1: 0,
+    6: 0,
+    7: 0
+  }
+  page: number = 1;
+  isnext: boolean = false
+  interval: any
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
     public navParam: NavParams, public ev: Events) {
+      console.log(this.new);
+      this.service.userpet = Array.apply(null, Array(12)).map(() => {
+        return {
+          image: ["../assets/imgs/noimage.png"],
+          name: this.lang.loading,
+          owner: this.lang.loading,
+          price: this.lang.loading,
+          province: this.lang.loading,
+          timer: this.lang.loading,
+          type: this.lang.loading,
+        }
+      })
+        
       var type = this.navParam.get("type")
       if (type) {
         this.setActive(type.value)
       }
+
       this.filterall()  
       this.ev.subscribe("submitorder-finish", (data) => {
         this.service.userpet = data["vender"]
@@ -41,6 +64,29 @@ export class SalePage {
       //   console.log(this.service.userpet);
       // }, 3000)
     
+  }
+
+  ionViewWillLeave() {
+    clearInterval(this.interval)
+  }
+  ionViewDidEnter() {
+    
+    this.interval = setInterval(() => {
+      console.log(this.service.uid);
+      this.getnewsalenotices()
+    }, 5000);
+}
+
+reconnect() {
+  this.filterall();
+}
+
+  getnewsalenotices() {
+    this.http.get(this.service.url + "&action=getnewsalenotices&uid=" + this.service.uid + "&ck=" + this.service.rand()).subscribe(response => {
+      if (response["status"]) {
+        this.new = response["data"]["new"]
+      }
+    })
   }
 
   sell() {
@@ -65,23 +111,36 @@ export class SalePage {
   
   setActive(index) {
     // console.log(index);
-    
-    this.activebar[this.actindex] = 0
-    this.prvindex = this.actindex
-    this.actindex = index
-    this.activebar[this.actindex] = 1
     this.filter["type"] = index
     this.filterall()
   } 
 
   filterall() {
-    this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
-        this.service.userpet = response["data"]
-        this.type = this.filter["type"]
-    })
+    this.page = 1;
+    this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
+      this.activebar[this.actindex] = 0
+      this.prvindex = this.actindex
+      this.actindex = this.filter["type"]
+      this.activebar[this.actindex] = 1
+      this.service.userpet = response["userpet"]
+      this.isnext = response["next"]
+      this.new[response["newtype"]] = response["new"]
+      this.type = this.filter["type"]
+    }, (e) => {})
+  }
+
+  next() {
+    this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&page=" + (this.page + 1) + "&" + this.service.toparam(this.filter)).then(response => {
+      console.log(response);
+      this.service.userpet = response["userpet"]
+      this.isnext = response["next"]
+      this.new[response["newtype"]] = response["new"]
+      this.type = this.filter["type"]
+    }, (e) => {})
   }
 
   disorder(id) {
+    this.clickIndex = 1;
     var alert = this.alert.create({
       title: this.lang["notice"],
       message: this.lang["removequest"],
@@ -91,8 +150,8 @@ export class SalePage {
           handler: () => {
             this.service.fetch(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
               // console.log(response);
-                this.service.userpet = response["data"]["userpet"]
-            })
+                this.service.userpet = response["userpet"]
+            }, (e) => {})
           }
         },
         {
@@ -104,44 +163,48 @@ export class SalePage {
   }
 
   viewdetail(oid) {
-    this.service.fetch(this.service.url + "&action=getvender&oid=" + oid).then(response => {
-        
-        this.modalCtrl.create(OrderDetail, {data: response["data"]}).present()
-    })
+    if (!this.clickIndex) {
+      this.service.fetch(this.service.url + "&action=getvender&oid=" + oid).then(response => {
+      console.log(response);
+        this.modalCtrl.create(OrderDetail, {data: response}).present()
+      }, (e) => {})
+    }
+    else {
+      this.clickIndex = 0
+    }
   }
 
   post() {
-    let x = this.modalCtrl.create(Post, {filter: this.filter});
+    let x = this.modalCtrl.create(Post, {filter: this.filter, page: this.page});
     x.present()
   }
 
   edit(id, name, timer, price, description, kind, species, type, age, vaccine, image) {
-    let x = this.modalCtrl.create(Post, {data: {id: id, name: name, timer: timer, price: price, description: description, kind: kind, species: species, type: type, age: age, vaccine: vaccine, image: image}});
-    x.present()
+    if (!this.clickIndex) {
+      let x = this.modalCtrl.create(Post, {data: {id: id, name: name, timer: timer, price: price, description: description, kind: kind, species: species, type: type, age: age, vaccine: vaccine, image: image}, filter: this.filter});
+      x.present()
+    }
+    else {
+      this.clickIndex = 0
+    }
   }
 
   remove(id) {
+    this.clickIndex = 1;
     let alert = this.alert.create({
       title: this.lang["removequest"],
       buttons: [
         {
-          text: this.lang["remove"],
-          handler: () => {
-            this.service.fetch(this.service.url + "&action=removepost&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
-              switch (response["status"]) {
-                case 1:
-                  this.service.showMsg(this.lang["removesuccess"])
-                  this.service.userpet = response["data"]["userpet"]
-                  break;
-                default:
-                  this.service.showMsg(this.lang["removefail"])
-                  break;
-              }
-            })
-          }
+          text: this.lang["cancel"]
         },
         {
-          text: this.lang["cancel"]
+          text: this.lang["remove"],
+          handler: () => {
+            this.service.fetch(this.service.url + "&action=removepost&pid=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+                  this.service.showMsg(this.lang["removesuccess"])
+                  this.service.userpet = response["userpet"]
+            }, (e) => {})
+          }
         }
       ]
     })
@@ -150,10 +213,10 @@ export class SalePage {
 
   orderdetail(pid) {
     this.service.fetch(this.service.url + "&action=getorderlist&pid=" + pid).then(response => {
-      // console.log(response);
-        let modal = this.modalCtrl.create(OrderDetailList, {data: response["data"], filter: this.filter, pid: pid})
+      console.log(response);
+        let modal = this.modalCtrl.create(OrderDetailList, {data: response, filter: this.filter, pid: pid})
         modal.present()
-    })
+    }, (e) => {})
   }
 
 }
@@ -192,7 +255,7 @@ export class SalePage {
       </ion-item>
       <ion-item>
         <ion-label> {{lang.type}} </ion-label>
-        <ion-select [(ngModel)]="post.typeid" name="typeid">
+        <ion-select [(ngModel)]="post.type" name="type">
           <ion-option *ngFor="let option of service.type; let i = index" value="{{i}}">{{option}}</ion-option>
         </ion-select>
       </ion-item>
@@ -224,15 +287,17 @@ export class Post {
     type: 0
   }
   realprice: number = 0
-
+  page: number = 1
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
     public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController) {
     // console.log(this.service.species);
     
     var now = new Date();
     var data = this.navParams.get("data")
+    this.page = this.navParams.get("page")
     this.filter = this.navParams.get("filter")
     // console.log(data);
+    console.log(this.filter);
     
     if (data) {
       this.post = data
@@ -245,10 +310,11 @@ export class Post {
       this.post.kind = 0
       this.post.species = 0
       this.post.vaccine = 0
-      this.post.typeid = 0
+      this.post.type = 0
       this.post.age = 0
       this.post.price = 0
     }
+    this.post.price = this.format(this.post.price)
   }
 
   formatprice(e) {
@@ -287,68 +353,87 @@ export class Post {
       var length = input["files"].length;
       for (var i = 0; i < length; i ++) {
         var reader = new FileReader();
+        reader.readAsDataURL(input["files"][i]);  
 
         reader.onload = (e) => {
-          this.post.image.push(e.target["result"])
+          var image = new Image();
+          image.src = e.target["result"];
+          image.onload = (e2) => {
+            var c = document.createElement("canvas")
+            var ctx = c.getContext("2d");
+            c.width = image["width"];
+            c.height = image["height"];
+            ctx.drawImage(image, 0, 0);
+            this.post.image.push(c.toDataURL("image/jpg"))
+          };
         };
-  
-        reader.readAsDataURL(input["files"][i]);  
       }
     }
   }
 
   savepost() {
-    var files = document.getElementById("files");
-    files = files["files"];
-    
-    var fd = new FormData();
-    var check = true;
-    var length = 0;
-    while (check) {
-      if (files && files[length]) {
-        fd.append("file[" + length + "]", files[length]);
-        length ++;
-      } else check = false;
+    if (!this.post.name) {
+      this.service.showMsg("emptytitle")
     }
-    fd.append("uid", this.service.uid);
-    fd.append("ck", this.service.rand());
-    fd.append("name", this.post.name);
-    fd.append("age", this.post.age);
-    fd.append("price", this.post.price);
-    fd.append("description", this.post.description);
-    fd.append("species", this.post.species);
-    fd.append("kind", this.post.kind);
-    fd.append("vaccine", this.post.vaccine);
-    fd.append("typeid", this.post.typeid);
-    fd.append("id", this.post.id);
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = () => {
-      if (xhttp.readyState == 4 && xhttp.status == 200) {
-        var response = JSON.parse(xhttp.responseText)
-        switch (response["status"]) {
-          case 1:
-          // success
-          // console.log("x");
-          this.service.showMsg(this.lang["uploadsuccess"])
-          this.service.userpet = response["data"]["userpet"]
-          this.viewCtrl.dismiss()
-          break;
-          case 2:
-          // edit success
-          this.service.showMsg(this.lang["editsuccess"])            
-          this.service.userpet = response["data"]["userpet"]
-          this.viewCtrl.dismiss()
-          break;
-          case 3:
-          // upload error
-          this.service.showMsg(this.lang["uploaderror"])            
-          break;
-          default:
-        }
+    else {
+      this.service.loadstart()
+      var files = document.getElementById("files");
+      files = files["files"];
+      
+      var fd = new FormData();
+      var check = true;
+      var length = 0;
+      while (check) {
+        if (files && files[length]) {
+          fd.append("file[" + length + "]", files[length]);
+          length ++;
+        } else check = false;
       }
-    };
-    xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&" + this.service.toparam(this.filter), true);
-    xhttp.send(fd);
+      fd.append("uid", this.service.uid);
+      fd.append("ck", this.service.rand());
+      fd.append("name", this.post.name);
+      fd.append("age", this.post.age);
+      fd.append("price", this.parse(this.post.price));
+      fd.append("description", this.post.description);
+      fd.append("species", this.post.species);
+      fd.append("kind", this.post.kind);
+      fd.append("vaccine", this.post.vaccine);
+      fd.append("typeid", this.post.type);
+      fd.append("id", this.post.id);
+      fd.append("sort", this.post.vaccine);
+      fd.append("type", this.post.type);
+      fd.append("uid", this.service.uid);
+      var xhttp = new XMLHttpRequest();
+      xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+          var response = JSON.parse(xhttp.responseText)
+          this.service.loadend()
+          switch (response["data"]["status"]) {
+            case 1:
+            // success
+            // console.log("x");
+              this.service.showMsg(this.lang["uploadsuccess"])
+              this.service.userpet = response["data"]["userpet"]
+              this.viewCtrl.dismiss()
+              break;
+            case 2:
+            // edit success
+              this.service.showMsg(this.lang["editsuccess"])            
+              this.service.userpet = response["data"]["userpet"]
+              this.viewCtrl.dismiss()
+              break;
+            case 3:
+            // upload error
+              this.service.showMsg(this.lang["uploaderror"])            
+            break;
+            default:
+              this.service.showMsg(this.lang["undefined"])            
+          }
+        }
+      };
+      xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter), true);
+      xhttp.send(fd);
+    }
   }
 }
 @Component({
@@ -358,28 +443,37 @@ export class Post {
         {{lang["orderdetail"]}}
       </ion-item>
       <ion-item>
-        <b> {{lang["customer"]}} </b> {{data["name"]}}<p>
+        <b> {{lang["customer"]}} </b>
+        <span class="right">
+          {{vender["name"]}}
+        </span>
       </ion-item>
       <ion-item>
-        <b> {{lang["phone"]}} </b> {{data["phone"]}}<p>
+        <b> {{lang["phone"]}} </b>
+        <span class="right">
+          {{vender["phone"]}}
+        </span>
       </ion-item>
       <ion-item>
-        <b> {{lang["address"]}} </b> {{data["address"]}}<p>
+        <b> {{lang["address"]}} </b>
+        <span class="right">
+          {{vender["address"]}}
+        </span>
       </ion-item>
     </ion-list>
   `
 })
 export class OrderDetail {
-  data: object = {
+  vender: object = {
     name: "",
     phone: "",
     address: ""
   }
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
     var data = this.navParams.get("data")
-    // console.log(data);
+    console.log(data);
     if (data["vender"] && data["vender"]["name"]) {
-      this.data = data["vender"]
+      this.vender = data["vender"]
     }
   }
 }
@@ -392,13 +486,22 @@ export class OrderDetail {
           {{lang["orderdetail"]}}
         </ion-item>
         <ion-item>
-          <b> {{lang["customer"]}} </b> {{vender["name"]}}<p>
+          <b> {{lang["customer"]}} </b>
+          <span class="right">
+            {{vender["name"]}}
+          </span>
         </ion-item>
         <ion-item>
-          <b> {{lang["phone"]}} </b> {{vender["phone"]}}<p>
+          <b> {{lang["phone"]}} </b>
+          <span class="right">
+            {{vender["phone"]}}
+          </span>
         </ion-item>
         <ion-item>
-          <b> {{lang["address"]}} </b> {{vender["address"]}}<p>
+          <b> {{lang["address"]}} </b>
+          <span class="right">
+            {{vender["address"]}}
+          </span>
         </ion-item>
       </div>
     </ion-list>
@@ -417,7 +520,7 @@ export class OrderDetailList {
     var data = this.navParams.get("data")
     this.filter = this.navParams.get("filter")
     this.pid = this.navParams.get("pid")
-    // console.log(data);
+    console.log(data);
     // console.log(this.filter);
     if (data["vender"] && data["vender"].length) {
       this.data = data["vender"]
@@ -427,9 +530,9 @@ export class OrderDetailList {
     this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
       // console.log(response);
           // success
-          this.ev.publish("submitorder-finish", response["data"])
+          this.ev.publish("submitorder-finish", response)
           this.viewCtrl.dismiss()
-    })
+    }, (e) => {})
   }
 }
 

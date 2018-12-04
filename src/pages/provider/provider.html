@@ -1,125 +1,114 @@
-<ion-menu side="right" [content]="providermenu" class="toggle-menu">
-  <ion-content class="list-menu" menuClose>
-    <ion-list *ngIf="!this.service.islogged">
-      <ion-item color="secondary">
-        {{lang.menu}}
-      </ion-item>
-      <ion-item (click)="home()">
-        {{lang.home}}
-      </ion-item>
-    </ion-list>
-  </ion-content>
-</ion-menu>
-
-<ion-nav #providermenu [root]="rootPage"></ion-nav>
 <ion-header>
   <ion-row>
     <ion-col col-2 class="navcol" (click)="back()">
       <ion-icon name="arrow-round-back"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-2 class="{{active[activebar[0]]}} navcol" *ngIf="!activebar[0]" (click)="refresh()">
       <ion-icon name="cart"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-4 class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]" (click)="refresh()">
       <ion-icon name="cart"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-2 class="{{active[activebar[1]]}} navcol" *ngIf="!activebar[1]" (click)="info()">
       <ion-icon name="information-circle"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-4 class="{{active[activebar[1]]}} navcol" *ngIf="activebar[1]" (click)="info()">
       <ion-icon name="information-circle"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-2 class="{{active[activebar[2]]}} navcol" *ngIf="!activebar[2]" (click)="crate()">
       <ion-icon name="star"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
     <ion-col col-4 class="{{active[activebar[2]]}} navcol" *ngIf="activebar[2]" (click)="crate()">
       <ion-icon name="star"></ion-icon>
-      <!-- {{lang.menu}} -->
-    </ion-col>
-    <ion-col col-2 menuToggle>
-      <ion-icon name="menu"></ion-icon>
-      <!-- {{lang.menu}} -->
     </ion-col>
   </ion-row>
 </ion-header>
 
 <ion-content>
-  <div *ngIf="activebar[0]">
-    <ion-item color="secondary">
-      {{lang.vender}} {{provider.name}}
-    </ion-item>
-    <div *ngIf="service.config.banner">
-      <img src="{{service.baseurl + service.config.banner}}" class="banner">
-    </div>
-    <div *ngFor="let pet of propet; let i = index" class="pet_box" (click)="detail(i)">
-      <div class="petboxintro i{{pet.typeid}}">
-        {{service.type[pet.typeid]}}
-      </div>
-      <img class="thumb" src="{{pet.image[0]}}">
-      <p> &#9; {{pet.name}} </p>
-      <p> &#9; {{pet.owner}} | {{pet.province}} </p>
-      <span class="price"> &#9; {{pet.price}} </span>
-      <span class="timer right"> {{pet.timer}} </span>
-    </div>
-    <button ion-button block (click)="next()" *ngIf="isnext">
-      {{lang.loadmore}}
-    </button>
+  <div *ngIf="service.isconnect">
+      <div *ngIf="activebar[0]">
+          <ion-item color="secondary">
+            {{lang.vender}} {{provider.name}}
+          </ion-item>
+          <div *ngIf="service.config.banner">
+            <img src="{{service.baseurl + service.config.banner}}" class="banner">
+          </div>
+          <div *ngFor="let pet of propet; let i = index" class="pet_box" (click)="detail(i)">
+            <div class="petboxintro i{{pet.typeid}}">
+              {{service.type[pet.typeid]}}
+            </div>
+            <img class="thumb" src="{{pet.image[0]}}">
+            <p> &#9; {{pet.name}} </p>
+            <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+            <span class="price"> &#9; {{pet.price}} </span>
+            <span class="timer right"> {{pet.timer}} </span>
+          </div>
+          <button ion-button block (click)="next()" *ngIf="isnext">
+            {{lang.loadmore}}
+          </button>
+        </div>
+      
+        <div *ngIf="activebar[1]">
+          <ion-item>
+            <b> {{lang.provider}}: </b>
+            <p class="right"> {{provider.name}} </p>
+          </ion-item>
+          <ion-item>
+            <b> {{lang.phone}}: </b>
+            <p class="right"> {{provider.phone}} </p>
+          </ion-item>
+          <ion-item>
+            <b> {{lang.address}} </b>
+            <p class="right"> {{provider.address}} </p>
+          </ion-item>
+          <ion-item>
+            <b> {{lang.description}} </b>
+            <p class="right"> {{provider.description}} </p>
+          </ion-item>
+        </div>
+      
+        <div *ngIf="activebar[2]">
+          <ion-item>
+            <b> {{lang.totalrate}} </b>
+            <p class="right">
+              {{rate.total}}
+            </p>
+          </ion-item>
+          <ion-item>
+            <b> {{lang.averagerate}} </b>
+            <p class="right">
+              {{rate.average}}
+            </p>
+          </ion-item>
+          <ion-item>
+            <b> {{lang.totalsale}} </b>
+            <p class="right">
+              {{rate.totalsale}}
+            </p>
+          </ion-item>
+          <ion-item color="secondary">
+            {{lang.review}}
+          </ion-item>
+          <div *ngFor="let c of rate.comment">
+            <ion-item>
+              {{c.name}}: {{c.msg}}
+              <p class="cmttime">
+                {{c.time}}
+              </p>
+            </ion-item>
+          </div>
+          <button ion-button block (click)="getnextrate()" *ngIf="isrnext">
+            {{lang["loadmore"]}}
+          </button>
+        </div>
   </div>
-
-  <div *ngIf="activebar[1]">
-    <ion-item>
-      <b> {{lang.provider}}: </b>
-      <p class="right"> {{provider.name}} </p>
-    </ion-item>
-    <ion-item>
-      <b> {{lang.phone}}: </b>
-      <p class="right"> {{provider.phone}} </p>
-    </ion-item>
-    <ion-item>
-      <b> {{lang.address}} </b>
-      <p class="right"> {{provider.address}} </p>
-    </ion-item>
-    <ion-item>
-      <b> {{lang.description}} </b>
-      <p class="right"> {{provider.description}} </p>
-    </ion-item>
-  </div>
-
-  <div *ngIf="activebar[2]">
-    <ion-item>
-      <b> {{lang.totalrate}} </b>
-      <p class="right">
-        {{rate.total}}
-      </p>
-    </ion-item>
-    <ion-item>
-      <b> {{lang.averagerate}} </b>
-      <p class="right">
-        {{rate.average}}
-      </p>
-    </ion-item>
-    <ion-item>
-      <b> {{lang.totalsale}} </b>
-      <p class="right">
-        {{rate.totalsale}}
-      </p>
-    </ion-item>
-    <ion-item color="secondary">
-      {{lang.review}}
-    </ion-item>
-    <div *ngFor="let c of rate.comment">
-      <ion-item>
-        {{c.name}}: {{c.msg}}
-        <p class="cmttime">
-          {{c.time}}
+  <div *ngIf="!service.isconnect">
+      <p>
+          {{lang.nointernet}}
         </p>
-      </ion-item>
-    </div>
+        <button ion-button (click)="reconnect()">
+          {{lang.reload}}
+        </button>
+
   </div>
 </ion-content>

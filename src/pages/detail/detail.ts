@@ -49,6 +49,8 @@ export class DetailPage {
   page: number = 1;
   isnext: boolean = false
   true: boolean = true
+  totalrate: number = 0
+  averagerate: number = 0
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
     public event: Events, public alert: AlertController) {
@@ -56,15 +58,31 @@ export class DetailPage {
     // console.log(type);
     
     if (type) {
-      this.service.fetch(this.service.url + "&action=getdatainfo&pid=" + type.pid).then(response => {
+      this.service.fetch(this.service.url + "&action=getdatainfo&pid=" + type.pid + "&uid=" + this.service.uid + "&page=" + this.page).then(response => {
         // console.log(response);
-          this.data = response["owner"]
-          this.init()
+        this.owner = response["owner"]
+        this.comment = response["comment"]
+        this.isnext = response["next"]
+        this.rate = response["rate"]
+        this.totalrate = response["total"]
+        this.averagerate = response["average"]
+        if (!this.service.uid) {
+          this.ratedisabled = true
+        } else if (this.rate) {
+          this.onhover(this.rate)
+          this.ratedisabled = true
+        }
+        console.log(this.data);
+        console.log(this.owner);
+        console.log(this.rate);
+        if (response["order"]) {
+          document.getElementById("buy").setAttribute("disabled", "true")
+        }
       }, (e) => {})
     }
     else {
       this.data = this.navParams.get("data");
-      this.init()
+      this.reload()
     }
     // console.log(this.data);
     this.service.getData("public").then(data => {
@@ -76,27 +94,25 @@ export class DetailPage {
     // console.log(this.data);
   }
 
-  init() {
-    var uid = "0"
-    if (this.service.uid) {
-      uid = this.service.uid
-    }
-    this.service.fetch(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + uid + "&puid=" + this.data["user"] + "&page=" + this.page).then(response => {
-      // console.log(data);
+  reload() {
+    this.service.fetch(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"] + "&page=" + this.page).then(response => {
+      console.log(response);
       
       this.owner = response["owner"]
       this.comment = response["comment"]
       this.isnext = response["next"]
       this.rate = response["rate"]
+      this.totalrate = response["total"]
+      this.averagerate = response["average"]
       if (!this.service.uid) {
-        // console.log(1);
-        
         this.ratedisabled = true
       } else if (this.rate) {
-        // console.log(2);
         this.onhover(this.rate)
         this.ratedisabled = true
       }
+      console.log(this.data);
+      console.log(this.owner);
+      console.log(this.rate);
       if (response["order"]) {
         document.getElementById("buy").setAttribute("disabled", "true")
       }
@@ -121,19 +137,34 @@ export class DetailPage {
 
   crate(index) {
     if (!this.ratedisabled) {
-      this.service.fetch(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&pid=" + this.data["id"]).then(response => {
-        // console.log(response);
-        switch (response["status"]) {
-          case 1:
-          // success
-          this.service.showMsg(this.lang["thank"])
-          this.onhover(index)
-          this.ratedisabled = true
-          break;
-          default:
-          // undefined error
-        }
-      }, (e) => {})
+      this.alert.create({
+        title: this.lang["userreview"],
+        inputs: [
+          {
+            name: "review",
+            type: "text",
+          }
+        ],
+        buttons: [
+          {
+            text: this.lang["cancel"]
+          },
+          {
+            text: this.lang["toreview"],
+            handler: (data) => {
+              console.log(data);
+              
+              this.service.fetch(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&pid=" + this.data["id"] + "&review=" + data["review"]).then(response => {
+                // console.log(response);
+                  // success
+                  this.service.showMsg(this.lang["thank"])
+                  this.onhover(index)
+                  this.ratedisabled = true
+              }, (e) => {})
+            }
+          }
+        ]
+      }).present()
     }
   }
 
@@ -180,17 +211,17 @@ export class DetailPage {
         ],
         buttons: [
           {
+            text: this.lang["cancel"]
+          },
+          {
             text: this.lang["order"],
             handler: (data) => {
-              this.service.fetch(this.service.url + "&action=order&" + this.service.toparam(data)).then(response => {
+              this.service.fetch(this.service.url + "&action=order&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&" + this.service.toparam(data)).then(response => {
                 // insert success
                 this.service.showMsg(this.lang["ordersuccess"])
                 document.getElementById("buy").setAttribute("disabled", "true")
               }, (e) => {})
             }
-          },
-          {
-            text: this.lang["cancel"]
           }
         ]
       }).present()

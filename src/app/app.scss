@@ -23,7 +23,7 @@
   height: 32px;
 }
 .nav-icon {
-  color: green;
+  color: white;
   float: right;
   margin: 0px 10px;
   font-size: 32px;
@@ -73,6 +73,7 @@
 }
 
 .pet_box {
+  font-size: 14px;
   cursor: pointer;
   display: inline-block;
   width: 50%;
@@ -101,16 +102,14 @@
 
 .pet-box-option {
   text-align: right;
-  display: none;
   font-size: 20px;
-  background: lightgreen;
   position: absolute !important;
   top: 0;
   left: 0;
   width: 100%;
   opacity: 0.85;
   margin: 0px !important;
-  z-index: 10;
+  z-index: 11;
 }
 .pet-box-option ion-icon {
   text-align: center;
@@ -119,11 +118,25 @@
   padding: 5px;
 }
 .pet-box-option ion-icon:hover {
-  background: white;
+  background: lightgreen;
 }
 .pet_box:hover .pet-box-option {
   display: block;
   transition-duration: 500ms;
+}
+.pet_box_create {
+  text-align: center;
+  border: 1px dashed lightseagreen;
+  font-size: 32px;
+  border-radius: 20px;
+  color: lightblue;
+}
+.pet_box_create:hover {
+  background: deepskyblue;
+  transition-duration: 500ms;
+}
+.pet_box_create p {
+  line-height: 120px;
 }
 
 .petboxintro {
@@ -222,15 +235,15 @@ ion-content.panel {
 }
 form.panel {
   background: #fff;
-  width: 400px;
-  margin: 50px auto;
+  width: 100%;
   border: 1px solid #ddd;
   padding: 20px 10px;
   border-radius: 10px;
   text-align: center;
 }
 .logo {
-  margin: 30px 0px;
+  margin: 15px 0px;
+  width: 50%;
 }
 .button-half {
   width: 46%;
@@ -319,6 +332,10 @@ ion-header {
   color: gold !important;
 }
 
+.disabled ion-icon {
+  color: #aaa !important;
+}
+
 .notice {
   text-align: center;
   line-height: 50px;
@@ -376,6 +393,9 @@ form.sale {
   z-index: 7;
   border: 2px solid #fff;
 }
+.center {
+  text-align: center;
+}
 .relay {
   top: 0px;
   left: 0px;
@@ -396,10 +416,14 @@ form.sale {
   margin-right: 10px;
 }
 @media screen and (min-width: 576px) {
+  form.panel {
+    width: 400px;
+    margin: 50px auto;
+  }
   .menu {
     width: 40%;
   }
-  form {
+  form  {
     width: 100%;
     margin: auto;
   }

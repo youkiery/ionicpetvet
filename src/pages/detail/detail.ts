@@ -51,15 +51,42 @@ export class DetailPage {
   true: boolean = true
   totalrate: number = 0
   averagerate: number = 0
+  exist: boolean = true
+  pid: number = 0
   constructor(public navCtrl: NavController, public navParams: NavParams,
     public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
     public event: Events, public alert: AlertController) {
     var type = this.navParams.get("type");
-    // console.log(type);
-    
+    var data = this.navParams.get("data");
+    console.log(data);
     if (type) {
-      this.service.fetch(this.service.url + "&action=getdatainfo&pid=" + type.pid + "&uid=" + this.service.uid + "&page=" + this.page).then(response => {
-        // console.log(response);
+      this.pid = type.pid;
+    } else if (data) {
+      this.pid = data.id
+    }
+    if (this.pid) {
+      this.reload()
+      
+      // console.log(this.data);
+      this.service.getData("public").then(data => {
+        // console.log(1);
+        this.public = String(data)
+      }, () => {
+        this.public = "false"
+      })
+      // console.log(this.data);
+    }
+    else {
+      this.exist = false
+    }
+  }
+
+  reload() {
+    this.service.fetch(this.service.url + "&action=getdatainfo&pid=" + this.pid + "&uid=" + this.service.uid + "&page=" + this.page).then(response => {
+      // console.log(response);
+      if (response["status"] == 1) {
+        this.exist = true
+        this.data = response["data"]
         this.owner = response["owner"]
         this.comment = response["comment"]
         this.isnext = response["next"]
@@ -78,43 +105,9 @@ export class DetailPage {
         if (response["order"]) {
           document.getElementById("buy").setAttribute("disabled", "true")
         }
-      }, (e) => {})
-    }
-    else {
-      this.data = this.navParams.get("data");
-      this.reload()
-    }
-    // console.log(this.data);
-    this.service.getData("public").then(data => {
-      // console.log(1);
-      this.public = String(data)
-    }, () => {
-      this.public = "false"
-    })
-    // console.log(this.data);
-  }
-
-  reload() {
-    this.service.fetch(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"] + "&page=" + this.page).then(response => {
-      // console.log(response);
-      
-      this.owner = response["owner"]
-      this.comment = response["comment"]
-      this.isnext = response["next"]
-      this.rate = response["rate"]
-      this.totalrate = response["total"]
-      this.averagerate = response["average"]
-      if (!this.service.uid) {
-        this.ratedisabled = true
-      } else if (this.rate) {
-        this.onhover(this.rate)
-        this.ratedisabled = true
       }
-      // console.log(this.data);
-      // console.log(this.owner);
-      // console.log(this.rate);
-      if (response["order"]) {
-        document.getElementById("buy").setAttribute("disabled", "true")
+      else {
+        this.exist = false
       }
     }, (e) => {})
   }

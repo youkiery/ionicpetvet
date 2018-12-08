@@ -11,155 +11,160 @@
 </ion-header>
 
 <ion-content padding>
-  <div class="h1h2">
-    <div class="h1l">
-      <ion-slides>
-        <ion-slide *ngFor="let image of data.image">
-          <img src="{{image}}" class="gallery">
-        </ion-slide>
-      </ion-slides>
-      <p>
-        <b> {{lang.call}} {{owner.name}} </b>
-      </p>
-      <p>
-        <b> {{lang.address}} </b>
-        <span class="right"> {{owner.address}} </span>
-      </p>
-      <p>
-        <b> {{lang.phone}} </b>
-        <span class="right"> {{owner.phone}} </span>
-      </p>
-      <p (mouseout)="onuhover()" class="star {{ratedisabled ? 'disabled' : ''}}">
-        {{lang.rate}}
-        <span class="{{classhover[shover[0]]}}">
-          <ion-icon name="star" (click)="crate(1)" (mouseover)="onhover(1)"> </ion-icon>
-        </span>
-        <span class="{{classhover[shover[1]]}}">
-          <ion-icon name="star" (click)="crate(2)" (mouseover)="onhover(2)"> </ion-icon>
-        </span>
-        <span class="{{classhover[shover[2]]}}">
-          <ion-icon name="star" (click)="crate(3)" (mouseover)="onhover(3)"> </ion-icon>
-        </span>
-        <span class="{{classhover[shover[3]]}}">
-          <ion-icon name="star" (click)="crate(4)" (mouseover)="onhover(4)"> </ion-icon>
-        </span>
-        <span class="{{classhover[shover[4]]}}">
-          <ion-icon name="star" (click)="crate(5)" (mouseover)="onhover(5)"> </ion-icon>
-        </span>
-      </p>
-      <P class="shover star">
-        {{averagerate}}
-        <ion-icon name="star"> </ion-icon>
-        {{lang["totalratein1"]}} {{totalrate}} {{lang["totalratein2"]}}
-      </P>
-      <button ion-button (click)="provider()">
-        {{lang.viewmore}}
-      </button>
+  <div *ngIf="exist">
+    <div class="h1h2">
+      <div class="h1l">
+        <ion-slides>
+          <ion-slide *ngFor="let image of data.image">
+            <img src="{{image}}" class="gallery">
+          </ion-slide>
+        </ion-slides>
+        <p>
+          <b> {{lang.call}} {{owner.name}} </b>
+        </p>
+        <p>
+          <b> {{lang.address}} </b>
+          <span class="right"> {{owner.address}} </span>
+        </p>
+        <p>
+          <b> {{lang.phone}} </b>
+          <span class="right"> {{owner.phone}} </span>
+        </p>
+        <p (mouseout)="onuhover()" class="star {{ratedisabled ? 'disabled' : ''}}">
+          {{lang.rate}}
+          <span class="{{classhover[shover[0]]}}">
+            <ion-icon name="star" (click)="crate(1)" (mouseover)="onhover(1)"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover[1]]}}">
+            <ion-icon name="star" (click)="crate(2)" (mouseover)="onhover(2)"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover[2]]}}">
+            <ion-icon name="star" (click)="crate(3)" (mouseover)="onhover(3)"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover[3]]}}">
+            <ion-icon name="star" (click)="crate(4)" (mouseover)="onhover(4)"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover[4]]}}">
+            <ion-icon name="star" (click)="crate(5)" (mouseover)="onhover(5)"> </ion-icon>
+          </span>
+        </p>
+        <P class="shover star">
+          {{averagerate}}
+          <ion-icon name="star"> </ion-icon>
+          {{lang["totalratein1"]}} {{totalrate}} {{lang["totalratein2"]}}
+        </P>
+        <button ion-button (click)="provider()">
+          {{lang.viewmore}}
+        </button>
+      </div>
+      <div class="h1r">
+        <p>
+          <b> {{data.type}} </b>
+        </p>
+        <p>
+          <b>{{lang.species}}</b>
+          <span class="right">
+            {{data.typename}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.price}}</b>
+          <span class="right price">
+            {{data.price}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.timeago}}</b>
+          <span class="right">
+            {{data.timer}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.age}}</b>
+          <span class="right">
+            {{data.age}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.vaccine}}</b>
+          <span class="right">
+            {{data.vaccine}} {{lang.vaccine_per}}
+          </span>
+        </p>
+        <p>
+          <b>{{lang.description}}</b>
+        </p>
+        <p> {{data.description}} </p>
+      </div>
     </div>
-    <div class="h1r">
-      <p>
-        <b> {{data.type}} </b>
-      </p>
-      <p>
-        <b>{{lang.species}}</b>
-        <span class="right">
-          {{data.typename}}
-        </span>
-      </p>
-      <p>
-        <b>{{lang.price}}</b>
-        <span class="right price">
-          {{data.price}}
-        </span>
-      </p>
-      <p>
-        <b>{{lang.timeago}}</b>
-        <span class="right">
-          {{data.timer}}
-        </span>
-      </p>
-      <p>
-        <b>{{lang.age}}</b>
-        <span class="right">
-          {{data.age}}
-        </span>
-      </p>
-      <p>
-        <b>{{lang.vaccine}}</b>
-        <span class="right">
-          {{data.vaccine}} {{lang.vaccine_per}}
-        </span>
-      </p>
-      <p>
-        <b>{{lang.description}}</b>
-      </p>
-      <p> {{data.description}} </p>
+    <div class="h3">
+      <button ion-button block (click)="order()" id="buy">
+        {{lang.buy}}
+      </button>
+      <div class="h3l">
+        <form (ngSubmit)="postchat()" class="postchat">
+          <div *ngIf="!service.uid">
+            <ion-item>
+              <ion-label>
+                {{lang.name}}
+              </ion-label>
+              <ion-input type="text" [(ngModel)]="anyone.name" name="name"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                {{lang.phone}}
+              </ion-label>
+              <ion-input type="text" [(ngModel)]="anyone.phone" name="phone"></ion-input>
+            </ion-item>
+            <ion-item>
+              <ion-label>
+                {{lang.address}}
+              </ion-label>
+              <ion-input type="text" [(ngModel)]="anyone.address" name="address"></ion-input>
+            </ion-item>
+          </div>
+          <ion-item class="textarea">
+            <ion-textarea [(ngModel)]="chattext" name="chattext"></ion-textarea>
+            <div class="textplaceholder" *ngIf="!chattext.length"> Nội dung... </div>
+          </ion-item>
+          <!-- <ion-select [(ngModel)]="public" name="public">
+            <ion-option value="true">
+              {{lang.public}}
+            </ion-option>
+            <ion-option value="false">
+              {{lang.unpublic}}
+            </ion-option>
+          </ion-select> -->
+          <button ion-button>
+            {{lang.post}}
+          </button>
+        </form>
+      </div>
+      <div class="h3r">
+        <ion-list>
+          <ion-item *ngFor="let c of comment">
+            <div class="{{c.user === service.uid ? 'green' : 'blue'}}" (press)="viewdetail(c)">
+              <p>
+                {{c.name}}
+              </p>
+              <p>
+                {{c.comment}}
+              </p>
+              <p class="ctime">
+                {{c.time}}
+              </p>
+            </div>
+          </ion-item>
+          <ion-item *ngIf="isnext">
+            <button ion-button block (click)="next()">
+              Tải thêm
+            </button>
+          </ion-item>
+        </ion-list>
+      </div>
     </div>
   </div>
-  <div class="h3">
-    <button ion-button block (click)="order()" id="buy">
-      {{lang.buy}}
-    </button>
-    <div class="h3l">
-      <form (ngSubmit)="postchat()" class="postchat">
-        <div *ngIf="!service.uid">
-          <ion-item>
-            <ion-label>
-              {{lang.name}}
-            </ion-label>
-            <ion-input type="text" [(ngModel)]="anyone.name" name="name"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              {{lang.phone}}
-            </ion-label>
-            <ion-input type="text" [(ngModel)]="anyone.phone" name="phone"></ion-input>
-          </ion-item>
-          <ion-item>
-            <ion-label>
-              {{lang.address}}
-            </ion-label>
-            <ion-input type="text" [(ngModel)]="anyone.address" name="address"></ion-input>
-          </ion-item>
-        </div>
-        <ion-item class="textarea">
-          <ion-textarea [(ngModel)]="chattext" name="chattext"></ion-textarea>
-          <div class="textplaceholder" *ngIf="!chattext.length"> Nội dung... </div>
-        </ion-item>
-        <!-- <ion-select [(ngModel)]="public" name="public">
-          <ion-option value="true">
-            {{lang.public}}
-          </ion-option>
-          <ion-option value="false">
-            {{lang.unpublic}}
-          </ion-option>
-        </ion-select> -->
-        <button ion-button>
-          {{lang.post}}
-        </button>
-      </form>
-    </div>
-    <div class="h3r">
-      <ion-list>
-        <ion-item *ngFor="let c of comment">
-          <div class="{{c.user === service.uid ? 'green' : 'blue'}}" (press)="viewdetail(c)">
-            <p>
-              {{c.name}}
-            </p>
-            <p>
-              {{c.comment}}
-            </p>
-            <p class="ctime">
-              {{c.time}}
-            </p>
-          </div>
-        </ion-item>
-        <ion-item *ngIf="isnext">
-          <button ion-button block (click)="next()">
-            Tải thêm
-          </button>
-        </ion-item>
-      </ion-list>
-    </div>
+  <div *ngIf="exist">
+    {{lang.nodetail}}
   </div>
 </ion-content>

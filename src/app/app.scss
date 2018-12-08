@@ -204,9 +204,14 @@
   color: gray;
   background-color: white;
   padding: 8px 20px;
+  margin: 0px !important;
   border-radius: 8px;
   font-size: 20px;
   font-weight: bold;
+}
+
+.sale_right {
+  text-align: left;
 }
 
 .upload-input {

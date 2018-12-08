@@ -26,10 +26,10 @@ import { Base64 } from '@ionic-native/base64';
     MyApp,
     Post, OrderDetail, OrderDetailList,
     HomePage,
-    DetailPage, 
-    SalePage, 
-    ProviderPage,
-    AboutPage, SupportPage
+    // DetailPage, 
+    // SalePage, 
+    // ProviderPage,
+    // AboutPage, SupportPage
   ],
   imports: [
     BrowserModule,

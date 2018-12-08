@@ -117,6 +117,7 @@ export class LangProvider {
   msgreconnect: string = "Thiết bị đang offline, xin hãy tải lại trước";
   exitclick: string = "Nhấp một lần nữa để thoát";
   nocam: string = "Thiết bị không hỗ trợ";
+  nodetail: string = "Bài đăng không tồn tại hoặc đã bị xóa";
   noti1: string = "vừa đặt đơn tại";
   noti2: string = "vừa hủy đơn ";
   noti3: string = "vừa đánh giá chủ đề";

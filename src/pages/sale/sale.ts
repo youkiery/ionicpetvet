@@ -63,8 +63,10 @@ export class SalePage {
       if (type) {
         this.setActive(type.value)
       }
+      else {
+        this.filterall()  
+      }
 
-      this.filterall()  
       this.ev.subscribe("submitorder-finish", (data) => {
         this.service.userpet = data["userpet"]
         this.next = data["next"]
@@ -277,17 +279,17 @@ reconnect() {
         <ion-input type="text" id="price" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}" (ionChange)="formatprice($event)" ></ion-input>
       </ion-item>
       <ion-textarea [(ngModel)]="this.post.description" name="description" class="description" placeholder="{{lang.description}}"></ion-textarea>
-      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.post}} </button>
-    </div>
-    <div class="sale_right">
-      <div class="upload-btn-wrapper">
-        <ion-label class="upload-btn">{{lang.upload}}</ion-label>
-        <input class="upload-input" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
+      <div class="sale_right">
         <ion-icon name="camera" (click)="takephoto()" class="camera"></ion-icon>
+        <div class="upload-btn-wrapper">
+          <ion-label class="upload-btn">{{lang.upload}}</ion-label>
+          <input class=" upload-input" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
+        </div>
         <span *ngFor="let image of post.image">
           <img class="thumb" src="{{image}}">
         </span>
       </div>
+      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.post}} </button>
     </div>
   </form>
   `
@@ -329,6 +331,7 @@ export class Post {
       this.post.type = 0
       this.post.age = 0
       this.post.price = 0
+      this.post.image = ["assets/imgs/noimage.png"]
     }
     this.post.price = this.format(this.post.price)
   }
@@ -418,9 +421,9 @@ export class Post {
             var ratio = 1;
 
             if(image.width > maxWidth)
-                ratio = maxWidth / image.width;
+              ratio = maxWidth / image.width;
             else if(image.height > maxHeight)
-                ratio = maxHeight / image.height;
+              ratio = maxHeight / image.height;
 
             c.width = image["width"];
             c.height = image["height"];
@@ -430,6 +433,9 @@ export class Post {
             var cctx = cc.getContext("2d");
             cc.width = image.width * ratio;
             cc.height = image.height * ratio;
+
+            cctx.fillStyle = "#fff";
+            cctx.fillRect(0, 0, cc.width, cc.height);
             cctx.drawImage(c, 0, 0, c.width, c.height, 0, 0, cc.width, cc.height);
 
             this.post.image.push(cc.toDataURL("image/jpg"))

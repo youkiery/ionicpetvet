@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Events, ModalController, AlertController } from 'ionic-angular';
+import { NavController, Events, ModalController, AlertController, Platform } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
@@ -78,18 +78,21 @@ export class HomePage {
   new: number = 0
   interval: any
   configInterval: any
+  counter: number = 0
+  refreshkey: string = ""
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
-    public modalCtrl: ModalController, public alertCtrl: AlertController) {
+    public modalCtrl: ModalController, public alertCtrl: AlertController, public platform: Platform) {
       this.submitButton = [lang.login, lang.signup];
       // console.log(this.filter);
       this.storage.get("login").then(uid => {
-        this.service.uid
         this.init(uid)
       })
+      
   }
   ionViewWillLeave() {
     clearInterval(this.interval)
+    // this.platform.registerBackButtonAction(() => {}, 1)
   }
   ionViewDidEnter() {
     this.interval = setInterval(() => {
@@ -97,13 +100,26 @@ export class HomePage {
         this.getnewnotice()
       }
     }, 5000);
+
+    // this.platform.registerBackButtonAction(() => {
+    //   if (this.counter == 0) {
+    //     this.counter++;
+    //     this.service.showMsg(this.lang["exitclick"]);
+    //     setTimeout(() => { this.counter = 0 }, 2000)
+    //     } else {
+    //     // console.log(“exitapp”);
+    //     this.platform.exitApp();
+    //     }
+    //   }, 1);
   }
   init(uid) {
     if (!uid) uid = 0;
     this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then((response) => {
+      
       if (response["logininfo"]) {
         this.service.logged(response["logininfo"], this.navCtrl, false);
       }
+      // console.log(this.service.uid);
       this.service.kind = response["kind"]
       this.service.species = response["species"]
       this.service.config = response["config"]
@@ -112,7 +128,7 @@ export class HomePage {
       this.isnext = response["next"]
       this.new = response["new"]
       this.banner = this.service.baseurl + this.service.config["banner"]
-      console.log(this.service.newpet);
+      // console.log(this.service.newpet);
       
     }, (e) => {})
   }
@@ -326,8 +342,8 @@ export class HomePage {
   }
 
   inbox() {
-    if (this.service.isconnect) {
-      this.setActive(2);
+    this.setActive(2);
+    if (Number(this.service.uid) > 0) {
       if (this.service.uid) {
         this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + this.npage).then((response) => {
           // console.log(response);
@@ -349,13 +365,19 @@ export class HomePage {
   }
 
   getnewnotice() {
-    this.http.get(this.service.url + "&action=getnewnotice&uid=" + this.service.uid + "&ck=" + this.service.rand()).subscribe(response => {
-      console.log(this.service.isconnect);
-      
-      if (response["status"]) {
-        this.new = response["data"]["new"]
-      }
-    })
+    if (!this.refreshkey) {
+      this.refreshkey = this.service.rand()
+      this.http.get(this.service.url + "&action=getnewnotice&uid=" + this.service.uid + "&ck=" + this.refreshkey).subscribe(response => {
+        // console.log(this.service.isconnect);
+        // console.log(this.service.uid);
+        if (response["status"]) {
+          this.new = response["data"]["new"]
+        }
+        setTimeout(() => {
+          this.refreshkey = ""
+        }, 5000);
+      })
+    }
   }
 
   tonotify(type, pid) {

@@ -362,6 +362,10 @@ ion-header {
   position: relative;
   font-size: 1.25em;
 }
+.passed {
+  color: orangered;
+  opacity: 0.8;
+}
 .textplaceholder {
   position: absolute;
   left: 10px;
@@ -375,6 +379,14 @@ div.blue:hover .ctime, div.green:hover .ctime {
 
 form.sale {
   text-align: center;
+}
+.camera {
+  cursor: pointer;
+  font-size: 4em;
+}
+.camera:hover {
+  color: orange;
+  transition: 500ms;
 }
 
 .sale .thumb {

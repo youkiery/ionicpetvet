@@ -3,6 +3,8 @@
     <ion-col col-6 (click)="back()" class="navback clickable">
       <ion-icon name="arrow-round-back"></ion-icon>
       <span> {{data.name}} </span>
+    </ion-col>
+    <ion-col col-6 (click)="back()" class="navback clickable right">
       <ion-icon name="refresh" class="right" (click)="reload()"></ion-icon>
     </ion-col>
   </ion-row>
@@ -105,13 +107,13 @@
             <ion-label>
               {{lang.name}}
             </ion-label>
-            <ion-input type="text" [(ngModel)]="anyone.name" name="name" *ngIf="!service.uid"></ion-input>
+            <ion-input type="text" [(ngModel)]="anyone.name" name="name"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label>
               {{lang.phone}}
             </ion-label>
-            <ion-input type="text" [(ngModel)]="anyone.phone" name="phone" *ngIf="!service.uid"></ion-input>
+            <ion-input type="text" [(ngModel)]="anyone.phone" name="phone"></ion-input>
           </ion-item>
           <ion-item>
             <ion-label>

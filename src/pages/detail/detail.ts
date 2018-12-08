@@ -72,9 +72,9 @@ export class DetailPage {
           this.onhover(this.rate)
           this.ratedisabled = true
         }
-        console.log(this.data);
-        console.log(this.owner);
-        console.log(this.rate);
+        // console.log(this.data);
+        // console.log(this.owner);
+        // console.log(this.rate);
         if (response["order"]) {
           document.getElementById("buy").setAttribute("disabled", "true")
         }
@@ -96,7 +96,7 @@ export class DetailPage {
 
   reload() {
     this.service.fetch(this.service.url + "&action=getinfo&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&puid=" + this.data["user"] + "&page=" + this.page).then(response => {
-      console.log(response);
+      // console.log(response);
       
       this.owner = response["owner"]
       this.comment = response["comment"]
@@ -110,9 +110,9 @@ export class DetailPage {
         this.onhover(this.rate)
         this.ratedisabled = true
       }
-      console.log(this.data);
-      console.log(this.owner);
-      console.log(this.rate);
+      // console.log(this.data);
+      // console.log(this.owner);
+      // console.log(this.rate);
       if (response["order"]) {
         document.getElementById("buy").setAttribute("disabled", "true")
       }
@@ -152,7 +152,7 @@ export class DetailPage {
           {
             text: this.lang["toreview"],
             handler: (data) => {
-              console.log(data);
+              // console.log(data);
               
               this.service.fetch(this.service.url + "&action=rate&value=" + index +"&uid=" + this.service.uid + "&pid=" + this.data["id"] + "&review=" + data["review"]).then(response => {
                 // console.log(response);
@@ -192,7 +192,7 @@ export class DetailPage {
             type: "text",
             value: this.service.name,
             placeholder: this.lang["name"],
-            disabled: this.disabled
+            disabled: true
           },
           {
             name: "phone",

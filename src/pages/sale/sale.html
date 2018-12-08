@@ -4,25 +4,25 @@
       <ion-icon name="arrow-round-back"></ion-icon>
     </ion-col>
     <ion-col col-2 (click)="sell()" class="{{active[activebar[0]]}} navcol">
-         <ion-icon name="home"></ion-icon>
+         <ion-icon name="cart"></ion-icon>
       <p class="subtitle"> {{lang.sell}} </p>
     </ion-col>
     <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
-         <ion-icon name="contact"></ion-icon>
+         <ion-icon name="card"></ion-icon>
       <p class="subtitle"> {{lang.buy}} </p>
     </ion-col>
     <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
-         <ion-icon name="mail"></ion-icon>
+         <ion-icon name="clipboard"></ion-icon>
       <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
       <p class="subtitle"> {{lang.order}} </p>
     </ion-col>
     <ion-col col-2 (click)="sold()" class="{{active[activebar[3]]}} navcol">
-         <ion-icon name="menu"></ion-icon>
+         <ion-icon name="cart" class="passed"></ion-icon>
       <ion-badge item-end *ngIf="new[6] > 0" color="danger">{{new[6]}}</ion-badge>
       <p class="subtitle"> {{lang.sold}} </p>
     </ion-col>
-    <ion-col col-2 class="searchbar {{active[activebar[4]]}} navcol" (click)="bought()">
-      <ion-icon name="search"></ion-icon>
+    <ion-col col-2 class="{{active[activebar[4]]}} navcol" (click)="bought()">
+      <ion-icon name="card" class="passed"></ion-icon>
       <ion-badge item-end *ngIf="new[7] > 0" color="danger">{{new[7]}}</ion-badge>
       <p class="subtitle"> {{lang.bought}} </p>
     </ion-col>

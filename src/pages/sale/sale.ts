@@ -1,8 +1,14 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, AlertController, ViewController, Events } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, ModalController, AlertController, ViewController,  Events } from 'ionic-angular';
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
 import { HttpClient } from '@angular/common/http';
+import { Camera } from '@ionic-native/camera';
+import { File } from '@ionic-native/file';
+import { Base64 } from '@ionic-native/base64';
+import { DomSanitizer } from '@angular/platform-browser';
+
+
 
 @IonicPage()
 @Component({
@@ -10,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: 'sale.html',
 })
 export class SalePage {
+
   // post: {
   //   name: string,
   //   date: string,
@@ -35,10 +42,11 @@ export class SalePage {
   page: number = 1;
   isnext: boolean = false
   interval: any
+  refreshkey: string = ""
   constructor(public modalCtrl: ModalController, public service: ServiceProvider, public http: HttpClient,
     public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
     public navParam: NavParams, public ev: Events) {
-      console.log(this.new);
+      // console.log(this.new);
       this.service.userpet = Array.apply(null, Array(12)).map(() => {
         return {
           image: ["../assets/imgs/noimage.png"],
@@ -58,7 +66,8 @@ export class SalePage {
 
       this.filterall()  
       this.ev.subscribe("submitorder-finish", (data) => {
-        this.service.userpet = data["vender"]
+        this.service.userpet = data["userpet"]
+        this.next = data["next"]
       })
       // setInterval(() => {
       //   console.log(this.service.userpet);
@@ -70,9 +79,8 @@ export class SalePage {
     clearInterval(this.interval)
   }
   ionViewDidEnter() {
-    
     this.interval = setInterval(() => {
-      console.log(this.service.uid);
+      // console.log(this.service.uid);
       this.getnewsalenotices()
     }, 5000);
 }
@@ -82,11 +90,17 @@ reconnect() {
 }
 
   getnewsalenotices() {
-    this.http.get(this.service.url + "&action=getnewsalenotices&uid=" + this.service.uid + "&ck=" + this.service.rand()).subscribe(response => {
-      if (response["status"]) {
-        this.new = response["data"]["new"]
-      }
-    })
+    if (!this.refreshkey) {
+      this.refreshkey = this.service.rand()
+      this.http.get(this.service.url + "&action=getnewsalenotices&uid=" + this.service.uid + "&ck=" + this.refreshkey).subscribe(response => {
+        if (response["status"]) {
+          this.new = response["data"]["new"]
+        }
+        setTimeout(() => {
+          this.refreshkey = ""
+        }, 3000);
+      })
+    }
   }
 
   sell() {
@@ -131,7 +145,7 @@ reconnect() {
 
   next() {
     this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&page=" + (this.page + 1) + "&" + this.service.toparam(this.filter)).then(response => {
-      console.log(response);
+      // console.log(response);
       this.service.userpet = response["userpet"]
       this.isnext = response["next"]
       this.new[response["newtype"]] = response["new"]
@@ -148,9 +162,8 @@ reconnect() {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.service.fetch(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
-              // console.log(response);
-                this.service.userpet = response["userpet"]
+            this.service.fetch(this.service.url + "&action=disorder&id=" + id + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
+              this.service.userpet = response["userpet"]
             }, (e) => {})
           }
         },
@@ -165,7 +178,7 @@ reconnect() {
   viewdetail(oid) {
     if (!this.clickIndex) {
       this.service.fetch(this.service.url + "&action=getvender&oid=" + oid).then(response => {
-      console.log(response);
+      // console.log(response);
         this.modalCtrl.create(OrderDetail, {data: response}).present()
       }, (e) => {})
     }
@@ -200,7 +213,7 @@ reconnect() {
         {
           text: this.lang["remove"],
           handler: () => {
-            this.service.fetch(this.service.url + "&action=removepost&pid=" + id + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+            this.service.fetch(this.service.url + "&action=removepost&pid=" + id + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
                   this.service.showMsg(this.lang["removesuccess"])
                   this.service.userpet = response["userpet"]
             }, (e) => {})
@@ -213,8 +226,8 @@ reconnect() {
 
   orderdetail(pid) {
     this.service.fetch(this.service.url + "&action=getorderlist&pid=" + pid).then(response => {
-      console.log(response);
-        let modal = this.modalCtrl.create(OrderDetailList, {data: response, filter: this.filter, pid: pid})
+      // console.log(response);
+        let modal = this.modalCtrl.create(OrderDetailList, {data: response, filter: this.filter, pid: pid, page: this.page})
         modal.present()
     }, (e) => {})
   }
@@ -261,7 +274,7 @@ reconnect() {
       </ion-item>
       <ion-item>
         <ion-label> {{lang.price}} </ion-label>
-        <ion-input type="text" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}" (keyup)="formatprice($event)"></ion-input>
+        <ion-input type="text" id="price" [(ngModel)]="this.post.price" name="price" placeholder="{{lang.unit}}" (ionChange)="formatprice($event)" ></ion-input>
       </ion-item>
       <ion-textarea [(ngModel)]="this.post.description" name="description" class="description" placeholder="{{lang.description}}"></ion-textarea>
       <button ion-button color="secondary" type="submit" class="button-half"> {{lang.post}} </button>
@@ -270,6 +283,7 @@ reconnect() {
       <div class="upload-btn-wrapper">
         <ion-label class="upload-btn">{{lang.upload}}</ion-label>
         <input class="upload-input" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
+        <ion-icon name="camera" (click)="takephoto()" class="camera"></ion-icon>
         <span *ngFor="let image of post.image">
           <img class="thumb" src="{{image}}">
         </span>
@@ -288,16 +302,18 @@ export class Post {
   }
   realprice: number = 0
   page: number = 1
+  files: any[]
+  changing: boolean = false
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
-    public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController) {
+    public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController,
+    public camera: Camera, public file: File, private base64: Base64, private sanitizer: DomSanitizer) {
     // console.log(this.service.species);
-    
     var now = new Date();
     var data = this.navParams.get("data")
     this.page = this.navParams.get("page")
     this.filter = this.navParams.get("filter")
     // console.log(data);
-    console.log(this.filter);
+    // console.log(this.filter);
     
     if (data) {
       this.post = data
@@ -317,18 +333,53 @@ export class Post {
     this.post.price = this.format(this.post.price)
   }
 
+  takephoto() {
+    let options = {
+      quality: 95,
+      destinationType: this.camera.DestinationType.FILE_URI,
+      encodingType: this.camera.EncodingType.PNG,
+      targetWidth: 400,
+      targetHeight: 400,
+      saveToPhotoAlbum: true,
+      correctOrientation: true
+    };
+    this.camera.getPicture(options).then((imageData) => {
+      // console.log(imageData);
+      this.base64.encodeFile(imageData).then((base64File: string) => {
+        let blob = new Blob([base64File], {type: "image/jpeg"});
+        this.files = [blob]
+        this.post.image = [this.sanitizer.bypassSecurityTrustUrl(base64File)]
+        // console.log(base64File);
+      }, (err) => {
+        // console.log(err);
+      });
+    }, (err) => {
+      this.service.showMsg(this.lang.nocam)
+    });
+  }
+
   formatprice(e) {
-    var x = e.target.selectionStart ;
-    var d1 = (this.post.price.match(/./g) || []).length
-    var num = this.parse(this.post.price);
-    
-    if (isFinite(Number(e.key)) || e.key == "Backspace" || e.key == "Delete") {
-      this.post.price = this.format(num)
-      setTimeout(() => {
-        var d2 = (this.post.price.match(/./g) || []).length
-        x += (d2 - d1);
-        e.target.setSelectionRange(x, x)
-      }, 10)
+    if (!this.changing) {
+      var x = document.getElementById("price");
+      var child = x.children[0] as HTMLInputElement;
+      var y = Number(child["selectionStart"]);
+      // console.log(y);
+      
+      var z = this.parse(child["value"])
+      if (Number(z)) {
+        var d1 = (this.post.price.split(".")).length - 1
+        this.post.price = this.format(z)
+        this.changing = true
+        var d2 = (this.post.price.split(".")).length - 1
+          y += (d2 - d1);
+          // console.log(d2, d1, y);
+          setTimeout(() => {
+            child.setSelectionRange(y, y)
+          }, 10);
+      }
+    }
+    else {
+      this.changing = false
     }
   }
 
@@ -348,6 +399,8 @@ export class Post {
 
   change() {
     var input = document.getElementById("files")
+    var maxWidth = 640;
+    var maxHeight = 480;
     this.post.image = []
     if (input["files"] && input["files"][0]) {
       var length = input["files"].length;
@@ -361,10 +414,25 @@ export class Post {
           image.onload = (e2) => {
             var c = document.createElement("canvas")
             var ctx = c.getContext("2d");
+                
+            var ratio = 1;
+
+            if(image.width > maxWidth)
+                ratio = maxWidth / image.width;
+            else if(image.height > maxHeight)
+                ratio = maxHeight / image.height;
+
             c.width = image["width"];
             c.height = image["height"];
             ctx.drawImage(image, 0, 0);
-            this.post.image.push(c.toDataURL("image/jpg"))
+
+            var cc = document.createElement("canvas")
+            var cctx = cc.getContext("2d");
+            cc.width = image.width * ratio;
+            cc.height = image.height * ratio;
+            cctx.drawImage(c, 0, 0, c.width, c.height, 0, 0, cc.width, cc.height);
+
+            this.post.image.push(cc.toDataURL("image/jpg"))
           };
         };
       }
@@ -373,23 +441,25 @@ export class Post {
 
   savepost() {
     if (!this.post.name) {
-      this.service.showMsg("emptytitle")
+      this.service.showMsg(this.lang["emptytitle"])
     }
     else {
       this.service.loadstart()
-      var files = document.getElementById("files");
-      files = files["files"];
+      if (!this.files) {
+        var files = document.getElementById("files");
+        this.files = files["files"];
+      }
       
       var fd = new FormData();
       var check = true;
       var length = 0;
       while (check) {
-        if (files && files[length]) {
-          fd.append("file[" + length + "]", files[length]);
+        if (this.files && this.files[length]) {
+          fd.append("file[" + length + "]", this.files[length]);
           length ++;
         } else check = false;
       }
-      fd.append("uid", this.service.uid);
+      fd.append("uid", String(this.service.uid));
       fd.append("ck", this.service.rand());
       fd.append("name", this.post.name);
       fd.append("age", this.post.age);
@@ -402,7 +472,6 @@ export class Post {
       fd.append("id", this.post.id);
       fd.append("sort", this.post.vaccine);
       fd.append("type", this.post.type);
-      fd.append("uid", this.service.uid);
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -418,6 +487,7 @@ export class Post {
               break;
             case 2:
             // edit success
+              this.files = null
               this.service.showMsg(this.lang["editsuccess"])            
               this.service.userpet = response["data"]["userpet"]
               this.viewCtrl.dismiss()
@@ -471,7 +541,7 @@ export class OrderDetail {
   }
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
     var data = this.navParams.get("data")
-    console.log(data);
+    // console.log(data);
     if (data["vender"] && data["vender"]["name"]) {
       this.vender = data["vender"]
     }
@@ -482,8 +552,9 @@ export class OrderDetail {
   template: `
     <ion-list>
       <div *ngFor="let vender of data">
-        <ion-item color="primary" (click)="submitorder(vender['oid'])">
+        <ion-item color="primary">
           {{lang["orderdetail"]}}
+          <ion-icon name="cart"  (click)="submitorder(vender['oid'])" class="right"></ion-icon>
         </ion-item>
         <ion-item>
           <b> {{lang["customer"]}} </b>
@@ -515,19 +586,21 @@ export class OrderDetailList {
   }]
   pid: number = -1
   filter: object = {}
+  page: number
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider,
     public http: HttpClient, public ev: Events, public viewCtrl: ViewController) {
     var data = this.navParams.get("data")
     this.filter = this.navParams.get("filter")
     this.pid = this.navParams.get("pid")
-    console.log(data);
+    this.page = this.navParams.get("page")
+    // console.log(data);
     // console.log(this.filter);
     if (data["vender"] && data["vender"].length) {
       this.data = data["vender"]
     }
   }
   submitorder(oid) {
-    this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+    this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
       // console.log(response);
           // success
           this.ev.publish("submitorder-finish", response)

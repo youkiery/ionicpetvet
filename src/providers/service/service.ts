@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ToastController, Events, LoadingController, Platform } from 'ionic-angular';
+import { ToastController, Events, LoadingController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { HttpClient } from '@angular/common/http';
 
@@ -11,7 +11,7 @@ export class ServiceProvider {
   url: string = "http://localhost/index.php?nv=mobile"
   // baseurl: string = "https://petcoffee.com/"
   // url: string = "https://petcoffee.com/index.php?nv=mobile"
-  uid: string = "0"
+  uid: number = 0
   name: string = ""
   phone: string = ""
   address: string = ""
@@ -41,12 +41,7 @@ export class ServiceProvider {
   // date: string[] = ["1 ngày", "2 ngày", "3 ngày", "4 ngày", "5 ngày", "6 ngày", "1 tuần", "2 tuần", "3 tuần", "1 tháng", "2 tháng", "3 tháng", "4 tháng", "5 tháng", "6 tháng", "7 tháng", "8 tháng", "9 tháng", "10 tháng", "11 tháng", "1 năm", "2 năm", "3 năm", "4 năm", "5 năm", "6 năm", "7 năm", "8 năm", "9 năm", "10 năm", "11 năm", "12 năm", "13 năm", "14 năm", "15 năm", "16 năm", "17 năm", "18 năm", "19 năm", "20 năm", "Nhiều hơn"]
   // vaccine: string[] = ["Chưa tiêm", "1 Mũi", "2 Mũi", "3 Mũi", "4 Mũi", "5 Mũi", "6 Mũi", "7 Mũi", "8 Mũi", "9 Mũi", "10 Mũi", "Nhiều hơn"]
   constructor(public toastCtrl: ToastController, public storage: Storage, public event: Events,
-    public loadCtrl: LoadingController, public http: HttpClient, public lang: LangProvider,
-    public platform: Platform) {
-      platform.registerBackButtonAction(() => {
-        console.log("backPressed 1");
-        this.cancelconnect()
-      }, 1);
+    public loadCtrl: LoadingController, public http: HttpClient, public lang: LangProvider) {
   }
   cancelconnect() {
     this.connectkey = this.rand()
@@ -80,7 +75,7 @@ export class ServiceProvider {
         }
       }, 30000)
       this.http.get(url + "&ck=" + this.connectkey).subscribe(response => {
-        console.log(this.isconnect);
+        // console.log(this.isconnect);
         // console.log(response);
         this.loadend()
         this.isconnect = true
@@ -102,7 +97,7 @@ export class ServiceProvider {
     })
   }
   rejecterror(reject, key) {
-    console.log(key);
+    // console.log(key);
     this.connectkey = this.rand()
     switch (key) {
       case 1:
@@ -111,7 +106,7 @@ export class ServiceProvider {
       case 2:
       break;
       default:
-        console.log(this.isconnect);
+        // console.log(this.isconnect);
         this.isconnect = false
         this.showMsg(this.lang["interneterror"])
     }
@@ -156,14 +151,38 @@ export class ServiceProvider {
   logout() {
     this.storage.remove("login");
     this.islogged = false
-    this.uid = null
+    this.uid = 0
     this.name = ""
     this.phone = ""
     this.address = ""
   }
+  
+  b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
+
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
+
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+  }
   loadstart() {
     if (!this.isloading) {
-      if (this.isconfig) {
+      if (!this.isconfig) {
         this.loading = this.loadCtrl.create({
           content: "Vui lòng chờ",
         })

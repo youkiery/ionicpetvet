@@ -31,6 +31,7 @@ export class DetailPage {
   comment: object = []
   rate: number = 0
   ratedisabled: boolean = false
+  rated: boolean = false
   owner: object = {
     name: "",
     address: "",
@@ -46,6 +47,7 @@ export class DetailPage {
   chattext: string = ""
   classhover: string[] = ["nhover", "shover"]
   shover: number[] = [0, 0, 0, 0, 0]
+  shover2: number[] = [0, 0, 0, 0, 0]
   page: number = 1;
   isnext: boolean = false
   true: boolean = true
@@ -58,11 +60,11 @@ export class DetailPage {
     public event: Events, public alert: AlertController) {
     var type = this.navParams.get("type");
     var data = this.navParams.get("data");
-    console.log(data);
+    // console.log(data);
     if (type) {
       this.pid = type.pid;
     } else if (data) {
-      this.pid = data.id
+      this.pid = data.id;
     }
     if (this.pid) {
       this.reload()
@@ -93,11 +95,16 @@ export class DetailPage {
         this.rate = response["rate"]
         this.totalrate = response["total"]
         this.averagerate = response["average"]
+        var average = Math.ceil(this.averagerate);
+        for (var i = 0; i < average; i ++) {
+          this.shover2[i] = 1
+        }
         if (!this.service.uid) {
           this.ratedisabled = true
         } else if (this.rate) {
+          this.rated = true
           this.onhover(this.rate)
-          this.ratedisabled = true
+          // this.ratedisabled = true
         }
         // console.log(this.data);
         // console.log(this.owner);
@@ -113,7 +120,7 @@ export class DetailPage {
   }
 
   onhover(index) {
-    if (!this.ratedisabled) {
+    if (!this.rated) {
       this.shover.fill(0)
       for (let i = 0; i < index; i++) {
         this.shover[i] = 1;
@@ -123,7 +130,7 @@ export class DetailPage {
   }
 
   onuhover() {
-    if (!this.ratedisabled) {
+    if (!this.rated) {
       this.shover.fill(0)
     }
   }
@@ -152,7 +159,7 @@ export class DetailPage {
                   // success
                   this.service.showMsg(this.lang["thank"])
                   this.onhover(index)
-                  this.ratedisabled = true
+                  this.rated = true
               }, (e) => {})
             }
           }
@@ -236,7 +243,7 @@ export class DetailPage {
         msg = "Chưa nhập số điện thoại";
       } else {
         this.service.fetch(this.service.url + "&action=postchat&id=" + this.data["id"] + "&" + this.service.toparam(this.anyone) + "&puid=" + this.data["user"] + "&chattext=" + this.chattext + "&page=" + this.page).then(response => {
-          // console.log(response);
+          // console.log(1, response);
           if (response["status"]) {
             this.comment = response["comment"]
             this.chattext = ""
@@ -248,14 +255,13 @@ export class DetailPage {
     else {
       // this.service.fetch(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&name=" + this.name + "&public=" + this.public + "&chattext=" + this.chattext).subscribe(response => {
       this.service.fetch(this.service.url + "&action=postchat&id=" + this.data["id"] + "&uid=" + this.service["uid"] + "&puid=" + this.data["user"] + "&chattext=" + this.chattext + "&page=" + this.page).then(response => {
-        // console.log(response);
+        // console.log(2, response);
         if (response["status"]) {
           this.comment = response["comment"]          
           this.chattext = ""
         }
       }, (e) => {})
     }
-    
   }
   next() {
     this.service.fetch(this.service.url + "&action=nextcomment&page=" + this.page + "&pid=" + this.data["id"]).then(response => {

@@ -4,8 +4,8 @@
       <ion-icon name="arrow-round-back"></ion-icon>
       <span> {{data.name}} </span>
     </ion-col>
-    <ion-col col-6 (click)="back()" class="navback clickable right">
-      <ion-icon name="refresh" class="right" (click)="reload()"></ion-icon>
+    <ion-col col-6 (click)="reload()" class="navback clickable right">
+      <ion-icon name="refresh" class="right"></ion-icon>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -46,6 +46,23 @@
           </span>
           <span class="{{classhover[shover[4]]}}">
             <ion-icon name="star" (click)="crate(5)" (mouseover)="onhover(5)"> </ion-icon>
+          </span>
+        </p>
+        <p class="star">
+          <span class="{{classhover[shover2[0]]}}">
+            <ion-icon name="star"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover2[1]]}}">
+            <ion-icon name="star"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover2[2]]}}">
+            <ion-icon name="star"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover2[3]]}}">
+            <ion-icon name="star"> </ion-icon>
+          </span>
+          <span class="{{classhover[shover2[4]]}}">
+            <ion-icon name="star"> </ion-icon>
           </span>
         </p>
         <P class="shover star">
@@ -164,7 +181,7 @@
       </div>
     </div>
   </div>
-  <div *ngIf="exist">
+  <div *ngIf="!exist">
     {{lang.nodetail}}
   </div>
 </ion-content>

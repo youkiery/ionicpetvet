@@ -1,9 +1,35 @@
 <ion-header>
-  <div (click)="back()">
-    <ion-icon name="arrow-round-back" class="navcol"></ion-icon>
-  </div>
+  <ion-row>
+    <ion-col col-6 (click)="back()" class="navback clickable">
+      <ion-icon name="arrow-round-back"></ion-icon>
+      {{lang.support}}
+    </ion-col>
+  </ion-row>
 </ion-header>
 
 <ion-content>
-
+  <ion-card>
+    <ion-card-content>
+      <p>
+        {{lang.txdescription}}
+      </p>
+      <p>
+        {{lang.txdescription2}}
+      </p>
+      <p>
+        {{lang.txdescription3}}
+      </p>
+      <p>
+        {{lang.txdescription4}}
+      </p>
+    </ion-card-content>
+    <ion-list>
+      <ion-item>
+        {{lang.txphone}}
+      </ion-item>
+      <ion-item>
+        {{lang.address}}
+      </ion-item>
+    </ion-list>
+  </ion-card>
 </ion-content>

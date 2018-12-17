@@ -114,7 +114,7 @@ export class HomePage {
   }
   init(uid) {
     if (!uid) uid = 0;
-    this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then((response) => {
+    this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then((response) => {
       
       if (response["logininfo"]) {
         this.service.logged(response["logininfo"], this.navCtrl, false);
@@ -143,7 +143,7 @@ export class HomePage {
   }
 
   next() {
-    this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then(response => {
+    this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
       // console.log(data);
       this.service.newpet = response["newpet"]
       this.isnext = response["next"]
@@ -244,6 +244,8 @@ export class HomePage {
   }
 
   login() {
+    // console.log(this.service.province);
+    
     if (this.service.isconnect) {
 
       this.setActive(1)
@@ -427,7 +429,8 @@ export class HomePage {
   }
 
   filterall() {
-      this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + this.service.price[this.filter["price"]["lower"]] + "-" + this.service.price[this.filter["price"]["upper"]]).then(response => {
+    // console.log(this.service.province);
+      this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
         this.setActive(0)
         this.service.newpet = response["newpet"]
         this.isnext = response["next"]
@@ -459,6 +462,7 @@ export class HomePage {
             break;
             case 2: // success
               this.service.logged(response["info"])
+              this.province = response["info"]["province"]
             break;
             default:
               // undefined error
@@ -480,7 +484,7 @@ export class HomePage {
             case 3: // success
               // console.log(data);
               this.service.logged(response["logininfo"])
-              this.new = response["new"]
+              this.province = response["logininfo"]["province"]
             break;
             default: // undefined error
               this.service.showMsg(this.lang["undefined"]);            

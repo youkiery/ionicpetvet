@@ -68,7 +68,7 @@
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
-        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <p> &#9; {{pet.count}} {{lang.ordercount}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>
@@ -87,14 +87,23 @@
         <!-- order -->
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
-        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <p> &#9; {{pet.count}} {{lang.ordercount}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>
-      <div *ngIf="type > 2">
+      <div *ngIf="type == 3">
+        <!-- sold -->
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
-        <p> &#9; {{pet.owner}} | {{pet.province}} </p>
+        <p> &#9; {{pet.sold.name}} | {{pet.sold.phone}} </p>
+        <span class="price"> &#9; {{pet.price}} </span>
+        <span class="timer right"> {{pet.timer}} </span>
+      </div>
+      <div *ngIf="type == 4" (click)="venderdetail(pet.bought)">
+        <!-- bought -->
+        <img class="thumb" src="{{pet.image[0]}}">
+        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.bought.name}} | {{pet.bought.phone}} </p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>

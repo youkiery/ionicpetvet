@@ -4,9 +4,10 @@ import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
 import { HttpClient } from '@angular/common/http';
 import { Camera } from '@ionic-native/camera';
-import { File } from '@ionic-native/file';
 import { Base64 } from '@ionic-native/base64';
 import { DomSanitizer } from '@angular/platform-browser';
+
+import { ProviderPage } from '../provider/provider'
 
 
 
@@ -153,6 +154,10 @@ reconnect() {
       this.new[response["newtype"]] = response["new"]
       this.type = this.filter["type"]
     }, (e) => {})
+  }
+
+  venderdetail(provider) {
+    this.navCtrl.push(ProviderPage, {provider: provider})
   }
 
   disorder(id) {
@@ -308,7 +313,7 @@ export class Post {
   changing: boolean = false
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
     public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController,
-    public camera: Camera, public file: File, private base64: Base64, private sanitizer: DomSanitizer) {
+    public camera: Camera, private base64: Base64, private sanitizer: DomSanitizer) {
     // console.log(this.service.species);
     var now = new Date();
     var data = this.navParams.get("data")

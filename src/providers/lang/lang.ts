@@ -118,6 +118,16 @@ export class LangProvider {
   exitclick: string = "Nhấp một lần nữa để thoát";
   nocam: string = "Thiết bị không hỗ trợ";
   nodetail: string = "Bài đăng không tồn tại hoặc đã bị xóa";
+  ordercount: string = "lượt đặt";
+  txphone: string = "Hotline: 02626.290.609";
+  txaddress: string = "Địa chỉ: 12-14 Lê Đại Hành, Buôn Ma Thuột";
+  txdescription: string = "Cửa hàng thú cưng: Kinh doanh thức ăn, đồ chơi, vật dụng, dầu tắm chó mèo";
+  txdescription2: string = "Bệnh viện thú cưng: Có đội ngũ y, bác sĩ chuyên tư vấn các vấn đề chó mèo, chữa bệnh, tiêm phòng, phẫu thuật, triệt sản,...";
+  txdescription3: string = "SPA thú cưng: Chuyên tắm gội, tỉa lông, làm đẹp chó mèo theo yêu cầu khách hàng";
+  txdescription4: string = "Siêu thị - Bệnh viện thú cưng Thanh Xuân mở cửa từ 07:30 - 17:30 tất cả các ngày trong tuần, kể cả ngày lễ trừ mồng 1 tết";
+  appsupport: string = "Petcoffee.com là ứng dụng mua bán chó mèo được thực hiển bởi Bệnh viện thú cưng Thanh Xuân. Nhằm mục đích liên kết khách hàng với chủ trại, người có nhu cầu với nhau.";
+  appsupport2: string = "Thông tin liên lạc sẽ được cung cấp bởi các trại, nếu có bất kỳ vấn đề nào cần tư vấn xin liên hệ facebook: FB.COM/petcoffee.com";
+  appsupport3: string = "Mọi đóng góp phát triển ứng dụng gửi mail đến youkiery@gmail.com";
   noti1: string = "vừa đặt đơn tại";
   noti2: string = "vừa hủy đơn ";
   noti3: string = "vừa đánh giá chủ đề";

@@ -4,7 +4,6 @@ import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Camera } from '@ionic-native/camera';
-import { File } from '@ionic-native/file';
 
 import { HttpClientModule } from '@angular/common/http';
 import { IonicStorageModule } from '@ionic/storage';
@@ -53,7 +52,6 @@ import { Base64 } from '@ionic-native/base64';
     LangProvider,
     ServiceProvider,
     Camera,
-    File,
     Base64
   ]
 })

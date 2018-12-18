@@ -243,6 +243,7 @@ reconnect() {
 
 @Component({
   template: `
+  <ion-icon class="close" name="close" (click)="close()"></ion-icon>
   <form (ngSubmit)="savepost()" class="sale">
     <div class="sale_left">
       <ion-item>
@@ -285,16 +286,27 @@ reconnect() {
       </ion-item>
       <ion-textarea [(ngModel)]="this.post.description" name="description" class="description" placeholder="{{lang.description}}"></ion-textarea>
       <div class="sale_right">
-        <ion-icon name="camera" (click)="takephoto()" class="camera"></ion-icon>
-        <div class="upload-btn-wrapper">
-          <ion-label class="upload-btn">{{lang.upload}}</ion-label>
-          <input class=" upload-input" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
+        <div class="image_add_box">
+          <ion-icon name="camera" (click)="takephoto()" class="image_camera"></ion-icon>
         </div>
-        <span *ngFor="let image of post.image">
-          <img class="thumb" src="{{image}}">
+        <div class="image_add_box">
+          <span class="image_add"> + </span>
+          <input class="upload-input" style="width: 120px; height: 120px;" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
+        </div>
+        <span *ngFor="let image of post.image; let i = index">
+          <div style="position: relative; display: inline-block; border: 1px solid; float: left; width: 120px; height: 120px;">
+            <img src="{{image}}">
+            <ion-icon style="position: absolute; top: 4px; right: 4px; " name="close" (click)="remove(i)"></ion-icon>
+          </div>
+        </span>
+        <span *ngIf="!post.image.length">
+          <div style="position: relative; display: inline-block; border: 1px solid; float: left; width: 120px; height: 120px;">
+            <img src="assets/imgs/noimage.png">
+          </div>
         </span>
       </div>
-      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.post}} </button>
+      <div style="clear: both;"></div>
+      <button ion-button color="secondary" type="submit"> {{lang.post}} </button>
     </div>
   </form>
   `
@@ -336,9 +348,13 @@ export class Post {
       this.post.type = 0
       this.post.age = 0
       this.post.price = 0
-      this.post.image = ["assets/imgs/noimage.png"]
+      this.post.image = []
     }
     this.post.price = this.format(this.post.price)
+  }
+
+  close() {
+    this.viewCtrl.dismiss()
   }
 
   takephoto() {
@@ -354,8 +370,6 @@ export class Post {
     this.camera.getPicture(options).then((imageData) => {
       // console.log(imageData);
       this.base64.encodeFile(imageData).then((base64File: string) => {
-        let blob = new Blob([base64File], {type: "image/jpeg"});
-        this.files = [blob]
         this.post.image = [this.sanitizer.bypassSecurityTrustUrl(base64File)]
         // console.log(base64File);
       }, (err) => {
@@ -405,11 +419,14 @@ export class Post {
       return val.replace(/\./g, "")
     }
 
+  remove(index: number) {
+    this.post.image = this.post.image.filter((image: object, i: number) => { return i !== index})
+  }
+
   change() {
     var input = document.getElementById("files")
     var maxWidth = 640;
     var maxHeight = 480;
-    this.post.image = []
     if (input["files"] && input["files"][0]) {
       var length = input["files"].length;
       for (var i = 0; i < length; i ++) {
@@ -417,56 +434,61 @@ export class Post {
         reader.readAsDataURL(input["files"][i]);  
 
         reader.onload = (e) => {
-          var image = new Image();
-          image.src = e.target["result"];
-          image.onload = (e2) => {
-            var c = document.createElement("canvas")
-            var ctx = c.getContext("2d");
-                
-            var ratio = 1;
-
-            if(image.width > maxWidth)
-              ratio = maxWidth / image.width;
-            else if(image.height > maxHeight)
-              ratio = maxHeight / image.height;
-
-            c.width = image["width"];
-            c.height = image["height"];
-            ctx.drawImage(image, 0, 0);
-
-            var cc = document.createElement("canvas")
-            var cctx = cc.getContext("2d");
-            cc.width = image.width * ratio;
-            cc.height = image.height * ratio;
-
-            cctx.fillStyle = "#fff";
-            cctx.fillRect(0, 0, cc.width, cc.height);
-            cctx.drawImage(c, 0, 0, c.width, c.height, 0, 0, cc.width, cc.height);
-
-            this.post.image.push(cc.toDataURL("image/jpg"))
-          };
+          var type = e.target["result"].split('/')[1].split(";")[0];
+          console.log(type);
+          if (["jpeg", "jpg", "png", "bmp", "gif"].indexOf(type) >= 0) {
+            var image = new Image();
+            image.src = e.target["result"];
+            image.onload = (e2) => {
+              // kiểm tra định dạng hình ảnh, img, png, bmp
+              var c = document.createElement("canvas")
+              var ctx = c.getContext("2d");
+              var ratio = 1;
+              if(image.width > maxWidth)
+                ratio = maxWidth / image.width;
+              else if(image.height > maxHeight)
+                ratio = maxHeight / image.height;
+              c.width = image["width"];
+              c.height = image["height"];
+              ctx.drawImage(image, 0, 0);
+              var cc = document.createElement("canvas")
+              var cctx = cc.getContext("2d");
+              cc.width = image.width * ratio;
+              cc.height = image.height * ratio;
+              cctx.fillStyle = "#fff";
+              cctx.fillRect(0, 0, cc.width, cc.height);
+              cctx.drawImage(c, 0, 0, c.width, c.height, 0, 0, cc.width, cc.height);
+              var base64Image = cc.toDataURL("image/jpeg");
+              this.post.image.push(base64Image)
+            };
+          }
+          else {
+            this.service.showMsg(this.lang["noformat"])
+          }
         };
       }
     }
   }
 
   savepost() {
+    this.files = []
+    // this.post.image.forEach(imgURL => {
+    //   let blob = new Blob([imgURL], {type: "image/jpeg"});
+    //   this.files.push(blob)
+    // })
+    // console.log(this.post.image);
+    
     if (!this.post.name) {
       this.service.showMsg(this.lang["emptytitle"])
     }
     else {
       this.service.loadstart()
-      if (!this.files) {
-        var files = document.getElementById("files");
-        this.files = files["files"];
-      }
-      
       var fd = new FormData();
       var check = true;
       var length = 0;
       while (check) {
-        if (this.files && this.files[length]) {
-          fd.append("file[" + length + "]", this.files[length]);
+        if (this.post.image && this.post.image[length]) {
+          fd.append("image[" + length + "]", this.post.image[length]);
           length ++;
         } else check = false;
       }
@@ -481,8 +503,10 @@ export class Post {
       fd.append("vaccine", this.post.vaccine);
       fd.append("typeid", this.post.type);
       fd.append("id", this.post.id);
-      fd.append("sort", this.post.vaccine);
-      fd.append("type", this.post.type);
+      fd.append("keyword", this.filter["keyword"]);
+      fd.append("sort", this.filter["sort"]);
+      fd.append("type", this.filter["type"]);
+      fd.append("page", this.page.toString());
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -519,6 +543,7 @@ export class Post {
 }
 @Component({
   template: `
+    <ion-icon class="close" name="close" (click)="close()"></ion-icon>
     <ion-list>
       <ion-item color="primary">
         {{lang["orderdetail"]}}
@@ -550,17 +575,22 @@ export class OrderDetail {
     phone: "",
     address: ""
   }
-  constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider) {
+  constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider,
+    private viewCtrl: ViewController) {
     var data = this.navParams.get("data")
     // console.log(data);
     if (data["vender"] && data["vender"]["name"]) {
       this.vender = data["vender"]
     }
   }
+  close() {
+    this.viewCtrl.dismiss()
+  }
 }
 
 @Component({
   template: `
+    <ion-icon class="close" name="close" (click)="close()"></ion-icon>
     <ion-list>
       <div *ngFor="let vender of data">
         <ion-item color="primary">
@@ -609,6 +639,9 @@ export class OrderDetailList {
     if (data["vender"] && data["vender"].length) {
       this.data = data["vender"]
     }
+  }
+  close() {
+    this.viewCtrl.dismiss()
   }
   submitorder(oid) {
     this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {

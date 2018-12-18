@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ModalController, Events, AlertController } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, Events, AlertController } from 'ionic-angular';
 
 import { ServiceProvider } from '../../providers/service/service';
 import { LangProvider } from '../../providers/lang/lang';
@@ -30,8 +30,8 @@ export class DetailPage {
   }
   comment: object = []
   rate: number = 0
-  ratedisabled: boolean = false
-  rated: boolean = false
+  ratedisabled: boolean = true
+  rated: boolean = true
   owner: object = {
     name: "",
     address: "",
@@ -42,7 +42,7 @@ export class DetailPage {
     address: "",
     phone: ""
   } 
-  disabled: boolean = false
+  disabled: boolean = true
   public: string
   chattext: string = ""
   classhover: string[] = ["nhover", "shover"]
@@ -55,9 +55,8 @@ export class DetailPage {
   averagerate: number = 0
   exist: boolean = true
   pid: number = 0
-  constructor(public navCtrl: NavController, public navParams: NavParams,
-    public service: ServiceProvider, public lang: LangProvider, public modalCtrl: ModalController,
-    public event: Events, public alert: AlertController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public service: ServiceProvider,
+    public lang: LangProvider, public event: Events, public alert: AlertController) {
     var type = this.navParams.get("type");
     var data = this.navParams.get("data");
     // console.log(data);

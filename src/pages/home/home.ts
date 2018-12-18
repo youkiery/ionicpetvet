@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, Events, ModalController, AlertController, Platform } from 'ionic-angular';
+import { NavController, Events, AlertController, Platform } from 'ionic-angular';
 
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
@@ -22,15 +22,16 @@ export class HomePage {
   filter: object = {
     keyword: "",
     sort: 0,
-    type: 0,
     price: {
       lower: 0,
       upper: 73
     },
+    type: [true, true, true, true],
     kind: 0,
     species: 0,
     province: 0
   }
+  temp = [true, true, true, true]
   rangeSettings: number = 20;
   setdage: any;
   banner: string = ""
@@ -82,7 +83,7 @@ export class HomePage {
   refreshkey: string = ""
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
-    public modalCtrl: ModalController, public alertCtrl: AlertController, public platform: Platform) {
+    public alertCtrl: AlertController, public platform: Platform) {
       this.submitButton = [lang.login, lang.signup];
       // console.log(this.filter);
       this.storage.get("login").then(uid => {
@@ -114,7 +115,7 @@ export class HomePage {
   }
   init(uid) {
     if (!uid) uid = 0;
-    this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then((response) => {
+    this.service.fetch(this.service.url + "&action=getlogin&uid=" + uid + "&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"].join(",") + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then((response) => {
       
       if (response["logininfo"]) {
         this.service.logged(response["logininfo"], this.navCtrl, false);
@@ -143,7 +144,7 @@ export class HomePage {
   }
 
   next() {
-    this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
+    this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"].join(",") + "&province=" + this.filter["province"] +  "&page=" + (this.page + 1) + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
       // console.log(data);
       this.service.newpet = response["newpet"]
       this.isnext = response["next"]
@@ -192,20 +193,32 @@ export class HomePage {
           text: this.lang.save,
           handler: (data) => {
             // console.log(data);
-            
-            this.service.fetch(this.service.url + "&action=changeinfo&uid=" + this.service.uid
-              + "&name=" + data.name + "&phone=" + data.phone + "&address=" + data.address).then(response => {
-                switch (response["status"]) {
-                  case 1:
-                    this.service.name = data.name
-                    this.service.phone = data.phone
-                    this.service.address = data.address
-                  break;
-                  case 2:
-                    this.service.showMsg("usedphone")
-                  break;
-                }
+            var msg = ""
+            if (!this.user.name) {
+              msg = "Chưa nhập tên"
+            } else if (!this.user.phone) {
+              msg = "Chưa nhập số điện thoại"
+            } else if (!isFinite(Number(this.user.phone)) || this.user.phone.length < 4 || this.user.phone.length > 12) {
+              msg = "Số điện thoại không hợp lệ"
+            }
+            if (msg) {
+              this.service.showMsg(msg)
+            }
+            else {
+              this.service.fetch(this.service.url + "&action=changeinfo&uid=" + this.service.uid
+                + "&name=" + data.name + "&phone=" + data.phone + "&address=" + data.address).then(response => {
+                  switch (response["status"]) {
+                    case 1:
+                      this.service.name = data.name
+                      this.service.phone = data.phone
+                      this.service.address = data.address
+                    break;
+                    case 2:
+                      this.service.showMsg("usedphone")
+                    break;
+                  }
               }, (e) => {})
+            }
           }
         }
       ]
@@ -214,13 +227,15 @@ export class HomePage {
 
   search() {
     if (this.service.isconnect) {
-
       // console.log(1);
       this.issearch = true
       this.setActive(4)
+      console.log(this.temp);
+      
       setTimeout(() => {
+        this.filter["type"] = this.temp
         this.myInput.setFocus()
-      }, 500)
+      }, 300)
     }
   }
   bsearch() {
@@ -430,10 +445,12 @@ export class HomePage {
 
   filterall() {
     // console.log(this.service.province);
-      this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"] + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
+      this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"].join(",") + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
         this.setActive(0)
         this.service.newpet = response["newpet"]
         this.isnext = response["next"]
+        this.temp = this.filter["type"];
+        this.filter["type"] = [false, false, false, false]
       }, (e) => {})
   }
 
@@ -449,6 +466,8 @@ export class HomePage {
         msg = "Chưa nhập tên"
       } else if (!this.user.phone) {
         msg = "Chưa nhập số điện thoại"
+      } else if (!isFinite(Number(this.user.phone)) || this.user.phone.length < 4 || this.user.phone.length > 12) {
+        msg = "Số điện thoại không hợp lệ"
       } else if (!this.user.vpassword) {
         msg = "Chưa xác nhận mật khẩu"
       } else if (this.user.vpassword !== this.user.password) {

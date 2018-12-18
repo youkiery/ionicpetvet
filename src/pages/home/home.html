@@ -90,11 +90,9 @@
             <ion-label> {{lang.keyword}} </ion-label>
             <ion-input #input type="text" [(ngModel)]="filter.keyword" name="keyword"></ion-input>
           </ion-item>
-          <ion-item>
-            <ion-label> {{lang.type}} </ion-label>
-            <ion-select [(ngModel)]="filter.type" name="type">
-              <ion-option *ngFor="let option of service.type; let i = index" value="{{i}}"> {{option}} </ion-option>
-            </ion-select>
+          <ion-item *ngFor="let option of service.type; let i = index">
+            <ion-label> {{option}} </ion-label>
+            <ion-checkbox [checked]="filter.type[i]" [(ngModel)]="filter.type[i]" name="type"></ion-checkbox>
           </ion-item>
           <ion-item>
             <ion-label> {{lang.sort}} </ion-label>

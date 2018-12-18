@@ -51,6 +51,51 @@
 .price {
   color: #d22;
 }
+.image_add_box {
+  position: relative;
+  width: 120px; height: 120px;
+  border: 1px dashed lightseagreen;
+  border-radius: 10px; float: left;
+  margin: 0px 10px;
+  text-align: center;
+}
+.image_add_box span, .image_add_box ion-icon {
+  color: deepskyblue;
+}
+// .image_add_box ion-icon {
+//   te
+// }
+.image_add_box:hover {
+  background: deepskyblue;
+  transition-duration: 500ms;
+}
+.image_add_box:hover span, .image_add_box:hover ion-icon {
+  color: white;
+}
+.close {
+  position: absolute;
+  background: white;
+  opacity: 0.8;
+  top: 4px;
+  right: 4px;
+  z-index: 1;
+  width: 32px;
+  height: 32px;
+  line-height: 32px;
+  text-align: center;
+  border-radius: 50%;
+  color: deepskyblue;
+}
+.close:hover {
+  color: white;
+  background: deepskyblue;
+  transition: 500ms;
+}
+.image_add, .image_camera {
+  line-height: 120px;
+  font-size: 5em;
+}
+
 .slides {
   height: auto !important;
 }
@@ -133,10 +178,16 @@
 }
 .pet_box_create:hover {
   background: deepskyblue;
+  color: white;
   transition-duration: 500ms;
 }
+.pet_box_create:hover p {
+  color: white;
+}
 .pet_box_create p {
-  line-height: 120px;
+  font-size: 4em;
+  margin: 16px;
+  color: deepskyblue;
 }
 
 .petboxintro {
@@ -384,14 +435,6 @@ div.blue:hover .ctime, div.green:hover .ctime {
 
 form.sale {
   text-align: center;
-}
-.camera {
-  cursor: pointer;
-  font-size: 4em;
-}
-.camera:hover {
-  color: orange;
-  transition: 500ms;
 }
 
 .sale .thumb {

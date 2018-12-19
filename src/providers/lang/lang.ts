@@ -120,6 +120,7 @@ export class LangProvider {
   nodetail: string = "Bài đăng không tồn tại hoặc đã bị xóa";
   ordercount: string = "lượt đặt";
   noformat: string = "Ảnh không hợp lệ"
+  cate: string = "Danh mục"
   txphone: string = "Hotline: 02626.290.609";
   txaddress: string = "Địa chỉ: 12-14 Lê Đại Hành, Buôn Ma Thuột";
   txdescription: string = "Cửa hàng thú cưng: Kinh doanh thức ăn, đồ chơi, vật dụng, dầu tắm chó mèo";

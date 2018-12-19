@@ -70,7 +70,22 @@ export class SalePage {
 
       this.ev.subscribe("submitorder-finish", (data) => {
         this.service.userpet = data["userpet"]
-        this.next = data["next"]
+        if (data["next"]) {
+          this.isnext = data["next"]
+        }
+        else {
+          this.page --
+        }
+      })
+      this.ev.subscribe("save-post", (data) => {
+        console.log(data);
+        this.service.userpet = data["userpet"]
+        if (data["next"]) {
+          this.isnext = data["next"]
+        }
+        else {
+          this.page --
+        }
       })
       // setInterval(() => {
       //   console.log(this.service.userpet);
@@ -153,6 +168,7 @@ reconnect() {
       this.isnext = response["next"]
       this.new[response["newtype"]] = response["new"]
       this.type = this.filter["type"]
+      this.page ++
     }, (e) => {})
   }
 
@@ -223,6 +239,12 @@ reconnect() {
             this.service.fetch(this.service.url + "&action=removepost&pid=" + id + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
                   this.service.showMsg(this.lang["removesuccess"])
                   this.service.userpet = response["userpet"]
+                  if (response["next"]) {
+                    this.isnext = response["next"]
+                  }
+                  else {
+                    this.page --
+                  }
             }, (e) => {})
           }
         }
@@ -325,7 +347,7 @@ export class Post {
   changing: boolean = false
   constructor(public navCtrl: NavController, public navParams: NavParams, public lang: LangProvider,
     public service: ServiceProvider, public http: HttpClient, public viewCtrl: ViewController,
-    public camera: Camera, private base64: Base64, private sanitizer: DomSanitizer) {
+    public camera: Camera, private base64: Base64, private sanitizer: DomSanitizer, private event: Events) {
     // console.log(this.service.species);
     var now = new Date();
     var data = this.navParams.get("data")
@@ -506,7 +528,11 @@ export class Post {
       fd.append("keyword", this.filter["keyword"]);
       fd.append("sort", this.filter["sort"]);
       fd.append("type", this.filter["type"]);
-      fd.append("page", this.page.toString());
+      var page = "1"
+      if (isFinite(this.page)) {
+        page = this.page.toString();
+      }
+      fd.append("page", page);
       var xhttp = new XMLHttpRequest();
       xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
@@ -517,7 +543,7 @@ export class Post {
             // success
             // console.log("x");
               this.service.showMsg(this.lang["uploadsuccess"])
-              this.service.userpet = response["data"]["userpet"]
+              this.event.publish("save-post", response["data"])
               this.viewCtrl.dismiss()
               break;
             case 2:

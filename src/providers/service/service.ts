@@ -7,10 +7,10 @@ import { LangProvider } from '../lang/lang'
 
 @Injectable()
 export class ServiceProvider {
-  baseurl: string = "http://localhost/"
-  url: string = "http://localhost/index.php?nv=mobile"
-  // baseurl: string = "https://petcoffee.com/"
-  // url: string = "https://petcoffee.com/index.php?nv=mobile"
+  // baseurl: string = "http://localhost/"
+  // url: string = "http://localhost/index.php?nv=mobile"
+  baseurl: string = "https://petcoffee.com/"
+  url: string = "https://petcoffee.com/index.php?nv=mobile"
   uid: number = 0
   name: string = ""
   phone: string = ""
@@ -57,7 +57,7 @@ export class ServiceProvider {
     }
     return result
   }
-  fetch(url) {
+  fetch(url: string) {
     // reject | 0: connection error, 1: server error, 2: ignore
     return new Promise((resolve, reject) => {
       this.loadstart()
@@ -91,13 +91,13 @@ export class ServiceProvider {
           this.rejecterror(reject, 1)
         }
       }, () => {        
-        this.loadend()
         this.rejecterror(reject, 0)
       })
     })
   }
   rejecterror(reject, key) {
     // console.log(key);
+    this.loadend()
     this.connectkey = this.rand()
     switch (key) {
       case 1:

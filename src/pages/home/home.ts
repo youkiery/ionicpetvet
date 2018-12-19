@@ -101,17 +101,6 @@ export class HomePage {
         this.getnewnotice()
       }
     }, 5000);
-
-    // this.platform.registerBackButtonAction(() => {
-    //   if (this.counter == 0) {
-    //     this.counter++;
-    //     this.service.showMsg(this.lang["exitclick"]);
-    //     setTimeout(() => { this.counter = 0 }, 2000)
-    //     } else {
-    //     // console.log(“exitapp”);
-    //     this.platform.exitApp();
-    //     }
-    //   }, 1);
   }
   init(uid) {
     if (!uid) uid = 0;
@@ -132,6 +121,13 @@ export class HomePage {
       // console.log(this.service.newpet);
       
     }, (e) => {})
+  }
+
+  gotocate(type) {
+    var x = [false, false, false, false]
+    x[type] = true
+    this.filter["type"] = x
+    this.filterall()
   }
 
   reconnect() {

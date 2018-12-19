@@ -102,8 +102,14 @@ export class DetailPage {
           this.ratedisabled = true
         } else if (this.rate) {
           this.rated = true
+          this.ratedisabled = false
           this.onhover(this.rate)
+          this.ratedisabled = true
           // this.ratedisabled = true
+        }
+        else {
+          this.rated = false
+          this.ratedisabled = false
         }
         // console.log(this.data);
         // console.log(this.owner);
@@ -119,12 +125,14 @@ export class DetailPage {
   }
 
   onhover(index) {
-    if (!this.rated) {
+    console.log(index);
+    
+    if (!this.ratedisabled) {
       this.shover.fill(0)
       for (let i = 0; i < index; i++) {
         this.shover[i] = 1;
       }
-      // console.log(index);
+      console.log(index);
     }
   }
 
@@ -157,8 +165,12 @@ export class DetailPage {
                 // console.log(response);
                   // success
                   this.service.showMsg(this.lang["thank"])
+                  this.averagerate = response["average"]
+                  this.totalrate = response["total"]
+
                   this.onhover(index)
                   this.rated = true
+                  this.ratedisabled = true
               }, (e) => {})
             }
           }

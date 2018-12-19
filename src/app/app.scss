@@ -86,6 +86,22 @@
   border-radius: 50%;
   color: deepskyblue;
 }
+.cate {
+  margin: 4px;
+  padding: 4px;
+  border-radius: 4px;
+  color: white;
+  display: inline-block;
+}
+.salepage {
+  right: inherit;
+  left: 0px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  width: fit-content
+}
 .close:hover {
   color: white;
   background: deepskyblue;

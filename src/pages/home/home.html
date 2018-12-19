@@ -133,12 +133,11 @@
       </div>
     
       <div *ngIf="activebar[0]">
-        <div *ngIf="service.config && service.config.banner">
-          <img src="{{service.baseurl + service.config.banner}}" class="banner">
+        <span> {{lang.cate}}: </span>
+        <div *ngFor="let cate of service.type; let i = index" class="cate i{{i}}" (click)="gotocate(i)">
+          {{cate}}
         </div>
-        <div *ngIf="!(service.config && service.config.banner)">
-          <img src="/assets/imgs/lg-noimage.png" class="banner">
-        </div>
+        <div></div>
         <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
           <div class="petboxintro i{{pet.typeid}}">
             {{service.type[pet.typeid]}}

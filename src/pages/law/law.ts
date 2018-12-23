@@ -1,12 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-/**
- * Generated class for the LawPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { LangProvider } from '../../providers/lang/lang';
 
 @IonicPage()
 @Component({
@@ -15,11 +9,13 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 })
 export class LawPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private lag: LangProvider) {
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad LawPage');
   }
-
+  back() {
+    this.navCtrl.pop()
+  }
 }

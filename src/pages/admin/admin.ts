@@ -54,8 +54,9 @@ export class AdminPage {
     }, (err) => { })
   }
   edit_user(user: object) {
-    user["province"] = this.service.config["province"].indexOf(user["province"]);
-    let modal = this.modal.create(EditUser, {"user": user, "page": this.user_page})
+    var x = JSON.parse(JSON.stringify(user))
+    x["province"] = this.service.config["province"].indexOf(user["province"]);
+    let modal = this.modal.create(EditUser, {"user": user, "page": x})
     modal.present()
   }
   add_user() {
@@ -411,7 +412,7 @@ export class AddUser {
   template: `
     <form (ngSubmit)="create()" class="panel" *ngIf="user">
     <ion-item>
-      {{user.username}}
+      {{lang.username}} {{user.username}}
     </ion-item>
     <ion-item>
       <ion-label> {{lang.password}} </ion-label>

@@ -227,11 +227,31 @@ export class DetailPage {
           {
             text: this.lang["order"],
             handler: (data) => {
-              this.service.fetch(this.service.url + "&action=order&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&" + this.service.toparam(data)).then(response => {
-                // insert success
-                this.service.showMsg(this.lang["ordersuccess"])
-                document.getElementById("buy").setAttribute("disabled", "true")
-              }, (e) => {})
+              var msg = ""
+              if (!data["name"]) {
+                msg = this.lang["nonameallow"]
+              }
+              else if (!data["phone"]) {
+                msg = this.lang["notphoneallow"]
+              }
+              else if (this.service.validphone(data["phone"])) {
+                msg = this.lang["phoneformat"]
+              }
+              else {
+                this.service.fetch(this.service.url + "&action=order&pid=" + this.data["id"] + "&uid=" + this.service.uid + "&" + this.service.toparam(data)).then(response => {
+                  // insert success
+                  switch (response["status"]) {
+                    case 1:
+                    this.service.showMsg(this.lang["ordersuccess"])
+                    document.getElementById("buy").setAttribute("disabled", "true")
+                    break;
+                    case 2:
+                    this.service.showMsg(this.lang["existphone"])
+                    break;
+                  }
+                }, (e) => {})
+              }
+              this.service.showMsg(msg)
             }
           }
         ]

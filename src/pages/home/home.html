@@ -10,7 +10,10 @@
       <ion-item (click)="about()" class="clickable">
         {{lang.contact}}
       </ion-item>
-    </ion-list>
+      <ion-item (click)="tos()" class="clickable">
+        {{lang.tos}}
+    </ion-item>
+  </ion-list>
     <ion-list *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
       <ion-item color="secondary" (click)="admin()" class="clickable" *ngIf="service.p && service.p.admin">
         {{lang.admin}}
@@ -29,6 +32,9 @@
       </ion-item>
       <ion-item (click)="about()" class="clickable">
           {{lang.support}}
+      </ion-item>
+      <ion-item (click)="tos()" class="clickable">
+          {{lang.private}}
       </ion-item>
       <ion-item (click)="support()" class="clickable">
         {{lang.contact}}
@@ -244,6 +250,9 @@
               </ion-option>
             </ion-select>
           </ion-item>
+          <p *ngIf="submitType">
+            {{lang.tos}} <span (click)="tos()"> {{lang.private}}</span>
+          </p>
           <button ion-button color="secondary" type="submit" class="button-half"> {{submitButton[submitType]}} </button>
           <button ion-button type="button" class="button-half" *ngIf="!submitType" (click)="nousername()">
             {{lang.nousername}}
@@ -276,10 +285,13 @@
                 {{lang.noti5}}
               </span>
               <span *ngIf="noti.type == '6'">
-                {{lang.noti6}}
+                {{lang.noti6}} {{noti.name}}
               </span>
               <span *ngIf="noti.type == '7'">
                 {{lang.noti7}}
+              </span>
+              <span *ngIf="noti.type == '8'">
+                {{lang.noti8}}
               </span>
               <span>
                 : {{noti.title}}

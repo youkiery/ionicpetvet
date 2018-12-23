@@ -54,6 +54,7 @@ export class ServiceProvider {
   // vaccine: string[] = ["Chưa tiêm", "1 Mũi", "2 Mũi", "3 Mũi", "4 Mũi", "5 Mũi", "6 Mũi", "7 Mũi", "8 Mũi", "9 Mũi", "10 Mũi", "Nhiều hơn"]
   constructor(public toastCtrl: ToastController, public storage: Storage, public event: Events,
     public loadCtrl: LoadingController, public http: HttpClient, public lang: LangProvider) {
+
   }
   cancelconnect() {
     this.connectkey = this.rand()
@@ -88,11 +89,10 @@ export class ServiceProvider {
       }, 30000)
       this.http.get(url + "&ck=" + this.connectkey).subscribe(response => {
         // console.log(this.isconnect);
-        // console.log(response);
         this.loadend()
         this.isconnect = true
         if (response["status"]) {
-          console.log(response["data"]["key"], this.connectkey);
+          
           if (response["data"]["key"] == this.connectkey) {
             this.connectkey = this.rand()
             resolve(response["data"])
@@ -150,9 +150,7 @@ export class ServiceProvider {
     }
   }
   logged(logdata, navCtrl = null, redirect = true) {
-    console.log(logdata);
-    
-    this.setData("login", logdata["uid"]);
+    this.setData("login", logdata["id"]);
     this.uid = logdata["id"];
     this.name = logdata["name"];
     this.phone = logdata["phone"];
@@ -192,6 +190,14 @@ export class ServiceProvider {
     this.phone = ""
     this.address = ""
   }
+  validphone(phone: string) {
+    var length = phone.length
+    var nphone = Number(phone)
+    if (!(length < 4 || length > 12 || isNaN(nphone))) {
+      return false
+    }
+    return true;
+  }
   
   b64toBlob(b64Data, contentType, sliceSize) {
     contentType = contentType || '';
@@ -229,6 +235,9 @@ export class ServiceProvider {
           enableBackdropDismiss: true
         })
       }
+      // setInterval(() => {
+      //   this.loadend()
+      // }, 30000)
       this.loading.onDidDismiss(() => {
         this.cancelconnect()
       })

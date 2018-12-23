@@ -11,6 +11,7 @@ import { SalePage } from '../sale/sale';
 import { AdminPage } from '../admin/admin';
 import { SupportPage } from '../support/support';
 import { AboutPage } from '../about/about';
+import { LawPage } from '../law/law';
 
 @Component({
   selector: 'page-home',
@@ -87,7 +88,6 @@ export class HomePage {
     public http: HttpClient, public service: ServiceProvider, public event: Events,
     public alertCtrl: AlertController, public platform: Platform) {
       this.submitButton = [lang.login, lang.signup];
-      // console.log(this.filter);
       this.storage.get("login").then(uid => {
         this.init(uid)
       })
@@ -110,7 +110,6 @@ export class HomePage {
       if (response["logininfo"]) {
         this.service.logged(response["logininfo"], this.navCtrl, false);
       }
-      // console.log(this.service.uid);
       this.service.kind = response["kind"]
       this.service.species = response["species"]
       this.service.config = response["config"]
@@ -119,8 +118,6 @@ export class HomePage {
       this.isnext = response["next"]
       this.new = response["new"]
       this.banner = this.service.baseurl + this.service.config["banner"]
-      // console.log(this.service.newpet);
-      console.log(this.service);
       
     }, (e) => {})
   }
@@ -190,7 +187,6 @@ export class HomePage {
         {
           text: this.lang.save,
           handler: (data) => {
-            // console.log(data);
             var msg = ""
             if (!this.user.name) {
               msg = "Chưa nhập tên"
@@ -225,11 +221,8 @@ export class HomePage {
 
   search() {
     if (this.service.isconnect) {
-      // console.log(1);
       this.issearch = true
       this.setActive(4)
-      console.log(this.temp);
-      
       setTimeout(() => {
         this.filter["type"] = this.temp
         this.myInput.setFocus()
@@ -237,14 +230,11 @@ export class HomePage {
     }
   }
   bsearch() {
-    // console.log(2);
     this.issearch = false
     this.setActive(this.prvindex)
   }
 
   setActive(index) {
-    // console.log(index);
-    // console.log(this.filter);
     this.service.newpet = []
     this.activebar[this.actindex] = 0
     this.prvindex = this.actindex
@@ -257,8 +247,6 @@ export class HomePage {
   }
 
   login() {
-    // console.log(this.service.province);
-    
     if (this.service.isconnect) {
 
       this.setActive(1)
@@ -267,8 +255,6 @@ export class HomePage {
   }
 
   admin() {
-    console.log(this.service);
-
     this.navCtrl.push(AdminPage)
   }
 
@@ -294,6 +280,10 @@ export class HomePage {
     else {
       this.service.showMsg("waitactive")
     }
+  }
+
+  tos() {
+      this.navCtrl.push(LawPage);
   }
 
   unit(price) {
@@ -372,7 +362,6 @@ export class HomePage {
     if (Number(this.service.uid) > 0) {
       if (this.service.uid) {
         this.service.fetch(this.service.url + "&action=getnotify&uid=" + this.service.uid + "&page=" + this.npage).then((response) => {
-          // console.log(response);
             this.notifice = response["notify"]
             this.isnnext = response["next"]
             this.new = response["new"]
@@ -394,8 +383,6 @@ export class HomePage {
     if (!this.refreshkey) {
       this.refreshkey = this.service.rand()
       this.http.get(this.service.url + "&action=getnewnotice&uid=" + this.service.uid + "&ck=" + this.refreshkey).subscribe(response => {
-        // console.log(this.service.isconnect);
-        // console.log(this.service.uid);
         if (response["status"]) {
           this.new = response["data"]["new"]
         }
@@ -432,17 +419,19 @@ export class HomePage {
       case 6:
         // to bought
         this.navCtrl.push(SalePage, {type: {
-          value: 4,
+          value: 2,
           pid: pid
         }})
         break;
       case 7:
         // to sold
         this.navCtrl.push(SalePage, {type: {
-          value: 3,
+          value: 1,
           pid: pid
         }})
         break;
+      case 8:
+        this.navCtrl.push(SalePage, {type: {value: 3, pid: pid}})
     }
   }
 
@@ -453,7 +442,6 @@ export class HomePage {
   }
 
   filterall() {
-    // console.log(this.service.province);
       this.service.fetch(this.service.url + "&action=filter&keyword=" + this.filter["keyword"] + "&kind=" + this.filter["kind"] + "&species=" + this.filter["species"] + "&sort=" + this.filter["sort"] + "&type=" + this.filter["type"].join(",") + "&province=" + this.filter["province"] +  "&page=" + this.page + "&price=" + (this.service.price[this.filter["price"]["lower"]] * 1000) + "-" + (this.service.price[this.filter["price"]["upper"]] * 1000)).then(response => {
         this.setActive(0)
         this.service.newpet = response["newpet"]
@@ -501,7 +489,6 @@ export class HomePage {
     } else {
         // login        
         this.service.fetch(this.service.url + "&action=login&" + this.service.toparam(this.user)).then(response => {
-          // console.log(data);
           switch (response["status"]) {
             case 1: // no username
               this.service.showMsg(this.lang["haventusername"]);
@@ -510,7 +497,6 @@ export class HomePage {
               this.service.showMsg(this.lang["incorrectpassword"]);            
             break;
             case 3: // success
-              // console.log(data);
               this.service.logged(response["logininfo"])
               this.province = response["logininfo"]["province"]
             break;

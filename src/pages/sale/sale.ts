@@ -28,7 +28,7 @@ export class SalePage {
     keyword: "",
     sort: 0,
     type: 0,
-    sold: 0
+    sold: 1
   }
   type: number = 0
   active: string[] = ["", "active"]
@@ -147,6 +147,14 @@ reconnect() {
 
   filterall() {
     this.page = 1;
+    console.log(this.filter);
+    if (this.filter["sold"]) {
+      this.filter["sold"] = 1
+    }
+    else {
+      this.filter["sold"] = 0
+    }
+    
     this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
       this.activebar[this.actindex] = 0
       this.prvindex = this.actindex
@@ -197,10 +205,9 @@ reconnect() {
   }
 
   viewdetail(oid) {
-    if (!this.clickIndex) {
-      this.service.fetch(this.service.url + "&action=getvender&oid=" + oid).then(response => {
-      // console.log(response);
-        this.modalCtrl.create(OrderDetail, {data: response}).present()
+      if (!this.clickIndex) {
+      this.service.fetch(this.service.url + "&action=getpostid&oid=" + oid).then(response => {
+        this.modalCtrl.create(OrderDetail, {data: response["order"]["pid"]}).present()
       }, (e) => {})
     }
     else {
@@ -214,8 +221,12 @@ reconnect() {
   }
 
   edit(id, name, timer, price, description, kind, species, type, age, vaccine, image, sold) {
-    if (sold) {
-      this.modalCtrl
+    console.log(id, name, timer, price, description, kind, species, type, age, vaccine, image, sold);
+    
+    if (sold > 0) {
+      console.log(id);
+      
+      this.modalCtrl.create(OrderDetail, {data: id}).present()
     }
     else {
       if (!this.clickIndex) {
@@ -256,12 +267,26 @@ reconnect() {
     alert.present()
   }
 
+  submitmate(oid) {
+    this.alert.create({
+      title: this.lang["submitquest"],
+      buttons: [
+        {
+          text: this.lang["cancel"]
+        },
+        {
+          text: this.lang["submit"],
+          handler: () => {
+            this.service.fetch(this.service.url + "&action=submitmate&oid=" + oid + "&page=" + this.page + "&uid=" + this.service.uid + "&" + this.service.toparam(this.filter)).then(response => {
+              this.service.userpet = response["userpet"]
+            }, (e) => {})
+          }
+        }
+      ]
+    }).present()
+  }
+
   orderdetail(pid) {
-    this.service.fetch(this.service.url + "&action=getorderlist&pid=" + pid).then(response => {
-      // console.log(response);
-        let modal = this.modalCtrl.create(OrderDetailList, {data: response, filter: this.filter, pid: pid, page: this.page})
-        modal.present()
-    }, (e) => {})
   }
 
 }
@@ -356,7 +381,7 @@ export class Post {
     var data = this.navParams.get("data")
     this.page = this.navParams.get("page")
     this.filter = this.navParams.get("filter")
-    // console.log(data);
+    console.log(this.page);
     // console.log(this.filter);
     
     if (data) {
@@ -529,6 +554,7 @@ export class Post {
       fd.append("sort", this.filter["sort"]);
       fd.append("type", this.filter["type"]);
       var page = "1"
+
       if (isFinite(this.page)) {
         page = this.page.toString();
       }
@@ -562,7 +588,7 @@ export class Post {
           }
         }
       };
-      xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter), true);
+      xhttp.open("POST", this.service.url + "&op=main&action=savepost&uid=" + this.service.uid + "&page=" + page + "&" + this.service.toparam(this.filter), true);
       xhttp.send(fd);
     }
   }
@@ -596,18 +622,13 @@ export class Post {
   `
 })
 export class OrderDetail {
-  vender: object = {
-    name: "",
-    phone: "",
-    address: ""
-  }
+  vender: object = {}
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider,
     private viewCtrl: ViewController) {
     var data = this.navParams.get("data")
-    // console.log(data);
-    if (data["vender"] && data["vender"]["name"]) {
-      this.vender = data["vender"]
-    }
+    this.service.fetch(this.service.url + "&action=getvenderinfo&id=" + data).then(response => {
+      this.vender = response["info"]
+    }, (e) => {})
   }
   close() {
     this.viewCtrl.dismiss()
@@ -621,7 +642,8 @@ export class OrderDetail {
       <div *ngFor="let vender of data">
         <ion-item color="primary">
           {{lang["orderdetail"]}}
-          <ion-icon class="cart" name="cart" (click)="submitorder(vender['oid'])"></ion-icon>
+          <ion-icon *ngIf="vender.status == 0" class="cart" name="cart" (click)="submitorder(vender['oid'])"></ion-icon>
+          <span *ngIf="vender.status > 0">{{lang["done"]}}</span>
         </ion-item>
         <ion-item>
           <b> {{lang["customer"]}} </b>
@@ -660,7 +682,7 @@ export class OrderDetailList {
     this.filter = this.navParams.get("filter")
     this.pid = this.navParams.get("pid")
     this.page = this.navParams.get("page")
-    // console.log(data);
+    console.log(data);
     // console.log(this.filter);
     if (data["vender"] && data["vender"].length) {
       this.data = data["vender"]
@@ -671,10 +693,15 @@ export class OrderDetailList {
   }
   submitorder(oid) {
     this.service.fetch(this.service.url + "&action=submitorder&oid=" + oid + "&pid=" + this.pid + "&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
-      // console.log(response);
-          // success
-          this.ev.publish("submitorder-finish", response)
-          this.viewCtrl.dismiss()
+      switch (response["status"]) {
+        case 1:
+        this.ev.publish("submitorder-finish", response)
+        this.viewCtrl.dismiss()
+        break;
+        case 2:
+        this.data = response["list"]
+        break;
+      }
     }, (e) => {})
   }
 }

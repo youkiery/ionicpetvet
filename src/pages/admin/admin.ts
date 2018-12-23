@@ -508,8 +508,18 @@ export class EditUser {
         }
         this.user["roles"] = x
         this.service.fetch(this.service.url + "&action=edituser&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.user)).then(response => {
-          this.event.publish("add-user", response["list"], response["next"]);
-          this.close()
+          switch (response["status"]) {
+            case 1:
+            this.event.publish("add-user", response["list"], response["next"]);
+            this.close()
+            break;
+            case 2:
+            this.service.showMsg(this.lang["existedusername"])
+            break;
+            case 3:
+            this.service.showMsg(this.lang[""])
+            break;
+          }
         }, (e) => {})
       }
     this.service.showMsg(msg)

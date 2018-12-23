@@ -19,6 +19,7 @@ export class LangProvider {
   phone: string = "Số điện thoại";
   address: string = "Địa chỉ";
   save: string = "Lưu";
+  existphone: string = "Số điện thoại đã đang được sử dụng";
   notallowed: string = "Không đủ quyền để thực hiện hành động này";
   index: string = "STT";
   role: string = "Chức vụ";

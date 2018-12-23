@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-row>
+    <ion-col col-6 (click)="back()" class="navback clickable" style="color: white;">
+      <ion-icon name="arrow-round-back"></ion-icon>
+      Admin Panel
+    </ion-col>
+  </ion-row>
+</ion-header>
+
+<ion-content>
+  <div class="nav_box">
+    <div class="nav_box_item" *ngFor="let item of func_list; let i = index" (click)="set_nav(i)">
+      {{item}}
+    </div>
+  </div>
+  <div class="admin_content" *ngIf="nav_index == 0">
+    <div class="admin_content_list_title">
+      {{lang.admin_title}}
+      <ion-icon name="create" (click)="add_kind()"></ion-icon>
+    </div>
+    <div *ngFor="let kind of species_list">
+      <div class="kind_title">
+        {{kind.name}}
+        <ion-icon name="create" (click)="add_species(kind.id)"></ion-icon>
+        <ion-icon name="trash" (click)="remove_kind(kind.id)"></ion-icon>
+      </div>
+      <div *ngFor="let species of kind.list" class="species_title">
+        {{species.name}}
+        <ion-icon name="trash" (click)="remove_species(species.id)"></ion-icon>
+      </div>
+    </div>
+  </div>
+  <div class="admin_content" *ngIf="nav_index == 1">
+    <!-- user -->
+    <table border="1" style="width: 100%">
+      <tr>
+        <th>
+          {{lang.admin_title2}}
+        </th>
+      </tr>
+      <tr>
+        <td>
+          {{lang.index}}
+        </td>
+        <td>
+          {{lang.username}}
+        </td>
+        <td>
+          {{lang.name}}
+        </td>
+        <td>
+          {{lang.role}}
+        </td>
+        <td>
+          {{lang.roles}}
+        </td>
+        <td>
+          {{lang.phone}}
+        </td>
+        <td>
+          {{lang.address}}
+        </td>
+        <td>
+          {{lang.province}}
+        </td>
+      </tr>
+      <tr *ngFor="let user of user_list">
+        <td>
+          {{user.index}}
+        </td>
+        <td>
+          {{user.username}}
+        </td>
+        <td>
+          {{user.name}}
+        </td>
+        <td>
+          {{user.role_s}}
+        </td>
+        <td>
+          {{user.roles_s}}
+        </td>
+        <td>
+          {{user.phone}}
+        </td>
+        <td>
+          {{user.address}}
+        </td>
+        <td>
+          {{user.province}}
+        </td>
+        <td>
+          <ion-icon name="trash" (click)="remove_user(user.id)"></ion-icon>
+          <ion-icon name="create" (click)="edit_user(user)"></ion-icon>
+          <ion-icon name="people" (click)="change_role(user.id, user.role)"></ion-icon>
+        </td>
+      </tr>
+    </table>
+    <button ion-button (click)="moreuser()" *ngIf="isusernext">
+      {{lang.loadmore}}
+    </button>
+    <button ion-button (click)="add_user()">
+      {{lang.add}}
+    </button>
+  </div>
+</ion-content>

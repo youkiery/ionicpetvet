@@ -8,6 +8,7 @@ import { Storage } from '@ionic/storage';
 
 import { DetailPage } from '../detail/detail'
 import { SalePage } from '../sale/sale';
+import { AdminPage } from '../admin/admin';
 import { SupportPage } from '../support/support';
 import { AboutPage } from '../about/about';
 
@@ -81,6 +82,7 @@ export class HomePage {
   configInterval: any
   counter: number = 0
   refreshkey: string = ""
+  type: string[] = []
   constructor(public navCtrl: NavController, public lang: LangProvider, public storage: Storage,
     public http: HttpClient, public service: ServiceProvider, public event: Events,
     public alertCtrl: AlertController, public platform: Platform) {
@@ -89,7 +91,6 @@ export class HomePage {
       this.storage.get("login").then(uid => {
         this.init(uid)
       })
-      
   }
   ionViewWillLeave() {
     clearInterval(this.interval)
@@ -119,6 +120,7 @@ export class HomePage {
       this.new = response["new"]
       this.banner = this.service.baseurl + this.service.config["banner"]
       // console.log(this.service.newpet);
+      console.log(this.service);
       
     }, (e) => {})
   }
@@ -264,6 +266,12 @@ export class HomePage {
     }
   }
 
+  admin() {
+    console.log(this.service);
+
+    this.navCtrl.push(AdminPage)
+  }
+
   detail(index) {
     this.navCtrl.push(DetailPage, {data: this.service.newpet[index]});
   }
@@ -280,7 +288,12 @@ export class HomePage {
   }
 
   sale() {
-    this.navCtrl.push(SalePage);
+    if (this.service.p["sale"]) {
+      this.navCtrl.push(SalePage);
+    }
+    else {
+      this.service.showMsg("waitactive")
+    }
   }
 
   unit(price) {

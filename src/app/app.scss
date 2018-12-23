@@ -60,13 +60,13 @@
   text-align: center;
 }
 .image_add_box span, .image_add_box ion-icon {
-  color: deepskyblue;
+  color: lightblue;
 }
 // .image_add_box ion-icon {
 //   te
 // }
 .image_add_box:hover {
-  background: deepskyblue;
+  background: lightblue;
   transition-duration: 500ms;
 }
 .image_add_box:hover span, .image_add_box:hover ion-icon {
@@ -86,6 +86,21 @@
   border-radius: 50%;
   color: deepskyblue;
 }
+.thumb_wrap {
+  position: relative;
+  border: 1px dashed lightseagreen;
+  float: left;
+  border-radius: 10px;
+  width: 120px;
+  height: 120px;
+  margin: 0px 2px;
+}
+.thumb_wrap img {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
 .cate {
   margin: 4px;
   padding: 4px;
@@ -93,6 +108,7 @@
   color: white;
   display: inline-block;
 }
+
 .salepage {
   right: inherit;
   left: 0px;
@@ -104,7 +120,7 @@
 }
 .close:hover {
   color: white;
-  background: deepskyblue;
+  background: lightblue;
   transition: 500ms;
 }
 .image_add, .image_camera {
@@ -206,7 +222,7 @@
   color: deepskyblue;
 }
 
-.petboxintro {
+.petboxintro, .petboxintro2, .petboxintro3 {
   opacity: 0.85;
   top: 0px;
   right: 0px;
@@ -218,17 +234,81 @@
   border-bottom-left-radius: 10px;
 }
 
-.i0 {
+.petboxintro2 span {
+  color: white;
+}
+.petboxintro2 {
+  right: inherit;
+  left: 0px;
+  margin: 10px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.petboxintro3 {
+  right: inherit;
+  left: 0px;
+  margin: 40px 10px 10px 10px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background: #333;
+}
+
+td {
+  padding: 4px;
+}
+
+.nav_box_item {
+  padding: 4px;
+  background: #0a0;
+  border-radius: 10px;
+  display: inline-block;
+  color: white;
+  margin: 4px;
+}
+
+.admin_content {
+  border: 1px dotted #3aa;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.admin_content_list_title {
   background: #3a0;
+  font-size: 2em;
+  color: black;
+  text-align: center;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+.kind_title {
+  color: green;
+  margin-left: 20px;
+}
+.species_title {
+  color: blue;
+  margin-left: 40px;
+}
+.i0 {
+  background: #a30;
 }
 .i1 {
-  background: #a30;
+  background: #3a0;
 }
 .i2 {
   background: #30a;
 }
 .i3 {
-  background: #a03;
+  background: #aa3;
+}
+.i4 {
+  background: #a3a;
+}
+.i5 {
+  background: #3aa;
 }
 
 .green {

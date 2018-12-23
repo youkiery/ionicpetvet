@@ -19,16 +19,19 @@ import { SupportPage } from '../pages/support/support';
 import { LangProvider } from '../providers/lang/lang';
 import { ServiceProvider } from '../providers/service/service';
 import { Base64 } from '@ionic-native/base64';
+import { AdminPage, AddUser, EditUser } from '../pages/admin/admin';
 
 @NgModule({
   declarations: [
     MyApp,
     Post, OrderDetail, OrderDetailList,
+    AddUser, EditUser,
     HomePage,
-    DetailPage, 
-    SalePage, 
-    ProviderPage,
-    AboutPage, SupportPage
+    // DetailPage, 
+    // SalePage, 
+    // ProviderPage,
+    // AboutPage, SupportPage,
+    // AdminPage, 
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { Base64 } from '@ionic-native/base64';
     DetailPage,
     SalePage, Post, OrderDetail, OrderDetailList,
     ProviderPage,
-    AboutPage, SupportPage
+    AboutPage, SupportPage,
+    AdminPage, AddUser, EditUser
   ],
   providers: [
     StatusBar,

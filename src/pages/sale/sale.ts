@@ -27,7 +27,8 @@ export class SalePage {
   filter: object = {
     keyword: "",
     sort: 0,
-    type: 0
+    type: 0,
+    sold: 0
   }
   type: number = 0
   active: string[] = ["", "active"]
@@ -130,11 +131,8 @@ reconnect() {
   order() {
     this.setActive(2)
   }
-  sold() {
+  mating() {
     this.setActive(3)
-  }
-  bought() {
-    this.setActive(4)
   }
 
   back() {
@@ -158,7 +156,7 @@ reconnect() {
       this.isnext = response["next"]
       this.new[response["newtype"]] = response["new"]
       this.type = this.filter["type"]
-    }, (e) => {})
+    }, (e) => { })
   }
 
   next() {
@@ -215,13 +213,18 @@ reconnect() {
     x.present()
   }
 
-  edit(id, name, timer, price, description, kind, species, type, age, vaccine, image) {
-    if (!this.clickIndex) {
-      let x = this.modalCtrl.create(Post, {data: {id: id, name: name, timer: timer, price: price, description: description, kind: kind, species: species, type: type, age: age, vaccine: vaccine, image: image}, filter: this.filter});
-      x.present()
+  edit(id, name, timer, price, description, kind, species, type, age, vaccine, image, sold) {
+    if (sold) {
+      this.modalCtrl
     }
     else {
-      this.clickIndex = 0
+      if (!this.clickIndex) {
+        let x = this.modalCtrl.create(Post, {data: {id: id, name: name, timer: timer, price: price, description: description, kind: kind, species: species, type: type, age: age, vaccine: vaccine, image: image}, filter: this.filter});
+        x.present()
+      }
+      else {
+        this.clickIndex = 0
+      }
     }
   }
 
@@ -316,13 +319,13 @@ reconnect() {
           <input class="upload-input" style="width: 120px; height: 120px;" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >
         </div>
         <span *ngFor="let image of post.image; let i = index">
-          <div style="position: relative; display: inline-block; border: 1px solid; float: left; width: 120px; height: 120px;">
+          <div class="thumb_wrap">
             <img src="{{image}}">
             <ion-icon style="position: absolute; top: 4px; right: 4px; " name="close" (click)="remove(i)"></ion-icon>
           </div>
         </span>
         <span *ngIf="!post.image.length">
-          <div style="position: relative; display: inline-block; border: 1px solid; float: left; width: 120px; height: 120px;">
+          <div class="thumb_wrap">
             <img src="assets/imgs/noimage.png">
           </div>
         </span>
@@ -407,19 +410,23 @@ export class Post {
       var x = document.getElementById("price");
       var child = x.children[0] as HTMLInputElement;
       var y = Number(child["selectionStart"]);
-      // console.log(y);
       
       var z = this.parse(child["value"])
-      if (Number(z)) {
+      var ck = Number.isInteger(Number(z))
+      if (ck) {
+        console.log(this.post.price);
         var d1 = (this.post.price.split(".")).length - 1
+        this.realprice = d1;
         this.post.price = this.format(z)
         this.changing = true
         var d2 = (this.post.price.split(".")).length - 1
           y += (d2 - d1);
-          // console.log(d2, d1, y);
           setTimeout(() => {
             child.setSelectionRange(y, y)
           }, 10);
+      }
+      else {
+        this.post.price = this.realprice
       }
     }
     else {
@@ -493,13 +500,6 @@ export class Post {
   }
 
   savepost() {
-    this.files = []
-    // this.post.image.forEach(imgURL => {
-    //   let blob = new Blob([imgURL], {type: "image/jpeg"});
-    //   this.files.push(blob)
-    // })
-    // console.log(this.post.image);
-    
     if (!this.post.name) {
       this.service.showMsg(this.lang["emptytitle"])
     }
@@ -621,7 +621,7 @@ export class OrderDetail {
       <div *ngFor="let vender of data">
         <ion-item color="primary">
           {{lang["orderdetail"]}}
-          <ion-icon name="cart"  (click)="submitorder(vender['oid'])" class="right"></ion-icon>
+          <ion-icon class="cart" name="cart" (click)="submitorder(vender['oid'])"></ion-icon>
         </ion-item>
         <ion-item>
           <b> {{lang["customer"]}} </b>

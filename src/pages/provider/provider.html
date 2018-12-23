@@ -9,12 +9,6 @@
     <ion-col col-4 class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]" (click)="refresh()">
       <ion-icon name="cart"></ion-icon>
     </ion-col>
-    <ion-col col-2 class="{{active[activebar[1]]}} navcol" *ngIf="!activebar[1]" (click)="info()">
-      <ion-icon name="information-circle"></ion-icon>
-    </ion-col>
-    <ion-col col-4 class="{{active[activebar[1]]}} navcol" *ngIf="activebar[1]" (click)="info()">
-      <ion-icon name="information-circle"></ion-icon>
-    </ion-col>
     <ion-col col-2 class="{{active[activebar[2]]}} navcol" *ngIf="!activebar[2]" (click)="crate()">
       <ion-icon name="star"></ion-icon>
     </ion-col>
@@ -46,25 +40,6 @@
           <button ion-button block (click)="next()" *ngIf="isnext">
             {{lang.loadmore}}
           </button>
-        </div>
-      
-        <div *ngIf="activebar[1]">
-          <ion-item>
-            <b> {{lang.provider}}: </b>
-            <p class="right"> {{provider.name}} </p>
-          </ion-item>
-          <ion-item>
-            <b> {{lang.phone}}: </b>
-            <p class="right"> {{provider.phone}} </p>
-          </ion-item>
-          <ion-item>
-            <b> {{lang.address}} </b>
-            <p class="right"> {{provider.address}} </p>
-          </ion-item>
-          <ion-item>
-            <b> {{lang.description}} </b>
-            <p class="right"> {{provider.description}} </p>
-          </ion-item>
         </div>
       
         <div *ngIf="activebar[2]">

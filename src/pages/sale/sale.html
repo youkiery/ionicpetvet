@@ -16,15 +16,10 @@
       <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
       <p class="subtitle"> {{lang.order}} </p>
     </ion-col>
-    <ion-col col-2 (click)="sold()" class="{{active[activebar[3]]}} navcol">
+    <ion-col col-2 (click)="mating()" class="{{active[activebar[3]]}} navcol">
          <ion-icon name="cart" class="passed"></ion-icon>
       <ion-badge item-end *ngIf="new[6] > 0" color="danger">{{new[6]}}</ion-badge>
-      <p class="subtitle"> {{lang.sold}} </p>
-    </ion-col>
-    <ion-col col-2 class="{{active[activebar[4]]}} navcol" (click)="bought()">
-      <ion-icon name="card" class="passed"></ion-icon>
-      <ion-badge item-end *ngIf="new[7] > 0" color="danger">{{new[7]}}</ion-badge>
-      <p class="subtitle"> {{lang.bought}} </p>
+      <p class="subtitle"> {{lang.mating}} </p>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -50,6 +45,10 @@
           </ion-option>
         </ion-select>
       </ion-item>
+      <ion-item>
+        <ion-label> {{lang.turn}} </ion-label>
+        <ion-toggle [(ngModel)]="filter.sold" name="sold"></ion-toggle>
+      </ion-item>
       <button ion-button block>
         {{lang.filter}}
       </button>
@@ -61,10 +60,18 @@
       <p>+</p>
     </div>
     <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
-      <div *ngIf="type == 0" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image)">
+      <div *ngIf="type == 0" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image, pet.sold)">
         <!-- sell -->
         <div class="pet-box-option">
           <ion-icon name="trash" (click)="remove(pet.id)"></ion-icon>
+        </div>
+        <div class="petboxintro2 i{{pet.typeid}}">
+            {{service.type[pet.typeid]}}
+          <!-- {{service.type[pet.typeid]}} -->
+        </div>
+        <div class="petboxintro3" *ngIf="pet.sold">
+          Đã giao dịch
+          <!-- {{service.type[pet.typeid]}} -->
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
@@ -76,6 +83,18 @@
         <!-- buy -->
         <div class="pet-box-option">
           <ion-icon name="trash" (click)="disorder(pet.oid)"></ion-icon>
+        </div>
+        <div class="petboxintro2 i{{pet.typeid}}" *ngIf="pet.status > 0">
+          <span *ngIf="pet.status == 1">
+            Đã giao dịch
+          </span>
+          <span *ngIf="pet.status == 2">
+            Đã bị giao dịch
+          </span>
+          <span *ngIf="pet.status == 3">
+            Bài đăng bị xóa
+          </span>
+          <!-- {{service.sold[pet.sold]}} -->
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
@@ -95,7 +114,8 @@
         <!-- sold -->
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
-        <p> &#9; {{pet.sold.name}} | {{pet.sold.phone}} </p>
+        <p *ngIf="pet.sold"> &#9; {{pet.sold.name}} | {{pet.sold.phone}} </p>
+        <p *ngIf="!pet.sold"> {{lang.guest}} </p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>

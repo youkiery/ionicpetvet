@@ -163,6 +163,7 @@ export class LangProvider {
   noti6: string = "đã giao dịch thành công với";
   noti7: string = "Bạn vừa giao dịch thành công";
   noti8: string = "vừa thêm yêu cầu phối giống";
+  noti9: string = "vừa hoàn thành phối giống";
   // home: string = "trang chủ";
   // user: string = "người dùng";
   // messenger: string = "thông báo";

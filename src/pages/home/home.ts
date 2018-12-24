@@ -474,12 +474,15 @@ export class HomePage {
         // signup
         this.service.fetch(this.service.url + "&action=signup&" + this.service.toparam(this.user)).then(response => {
           switch (response["status"]) {
-            case 1: // username existed
-              this.service.showMsg(this.lang["existedusername"]);            
+            case 1: // success
+            this.service.logged(response["info"])
+            this.province = response["info"]["province"]
             break;
-            case 2: // success
-              this.service.logged(response["info"])
-              this.province = response["info"]["province"]
+            case 2: // username existed
+            this.service.showMsg(this.lang["existedusername"]);            
+            break;
+            case 3: // phone existed
+            this.service.showMsg(this.lang["existphone"]);            
             break;
             default:
               // undefined error
@@ -498,6 +501,8 @@ export class HomePage {
               this.service.showMsg(this.lang["incorrectpassword"]);            
             break;
             case 3: // success
+              console.log(response);
+              
               this.service.logged(response["logininfo"])
               this.province = response["logininfo"]["province"]
             break;

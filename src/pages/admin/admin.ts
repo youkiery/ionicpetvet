@@ -295,7 +295,7 @@ export class AdminPage {
 
 @Component({
   template: `
-    <form (ngSubmit)="create()" class="panel" *ngIf="user">
+    <form (ngSubmit)="create()" *ngIf="user">
     <ion-item>
       <ion-label> {{lang.username}} </ion-label>
       <ion-input type="text" [(ngModel)]="this.user.username" name="username"></ion-input>
@@ -410,7 +410,7 @@ export class AddUser {
 }
 @Component({
   template: `
-    <form (ngSubmit)="create()" class="panel" *ngIf="user">
+    <form (ngSubmit)="create()" *ngIf="user">
     <ion-item>
       {{lang.username}} {{user.username}}
     </ion-item>

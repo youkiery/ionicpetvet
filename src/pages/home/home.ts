@@ -398,14 +398,29 @@ export class HomePage {
   tonotify(type, pid) {
     type = parseInt(type)
     switch (type) {
-      case 1:
-        // to order
-      case 2:
-        // to order
+      case 6:
+        this.navCtrl.push(SalePage, {type: {
+          value: 0,
+          pid: pid
+        }})
+        break;
       case 5:
-        // to order
+      case 7:
+        this.navCtrl.push(SalePage, {type: {
+          value: 1,
+          pid: pid
+        }})
+        break;
+      case 1:
+      case 2:
         this.navCtrl.push(SalePage, {type: {
           value: 2,
+          pid: pid
+        }})
+        break;
+      case 8:
+        this.navCtrl.push(SalePage, {type: {
+          value: 3,
           pid: pid
         }})
         break;
@@ -418,22 +433,6 @@ export class HomePage {
           pid: pid
         }})
         break;
-      case 6:
-        // to bought
-        this.navCtrl.push(SalePage, {type: {
-          value: 2,
-          pid: pid
-        }})
-        break;
-      case 7:
-        // to sold
-        this.navCtrl.push(SalePage, {type: {
-          value: 1,
-          pid: pid
-        }})
-        break;
-      case 8:
-        this.navCtrl.push(SalePage, {type: {value: 3, pid: pid}})
     }
   }
 

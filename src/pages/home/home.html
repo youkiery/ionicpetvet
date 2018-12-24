@@ -15,11 +15,11 @@
     </ion-item>
   </ion-list>
     <ion-list *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
-      <ion-item color="secondary" (click)="admin()" class="clickable" *ngIf="service.p && service.p.admin">
-        {{lang.admin}}
-      </ion-item>
       <ion-item color="secondary">
         {{lang.account}}
+      </ion-item>
+      <ion-item (click)="admin()" class="clickable" *ngIf="service.p && service.p.admin">
+        {{lang.admin}}
       </ion-item>
       <ion-item (click)="sale()" class="clickable">
         {{lang.sale_manager}}

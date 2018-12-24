@@ -287,8 +287,12 @@ reconnect() {
   }
 
   orderdetail(pid) {
+    this.service.fetch(this.service.url + "&action=getorderlist&pid=" + pid).then(response => {
+      // console.log(response);
+        let modal = this.modalCtrl.create(OrderDetailList, {data: response, filter: this.filter, pid: pid, page: this.page})
+        modal.present()
+    }, (e) => {})
   }
-
 }
 
 @Component({

@@ -7,19 +7,19 @@
          <ion-icon name="cart"></ion-icon>
       <p class="subtitle"> {{lang.sell}} </p>
     </ion-col>
-    <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
-         <ion-icon name="card"></ion-icon>
-      <p class="subtitle"> {{lang.buy}} </p>
+    <ion-col col-2 (click)="mating()" class="{{active[activebar[3]]}} navcol">
+      <ion-icon name="cart" class="passed"></ion-icon>
+      <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
+      <p class="subtitle"> {{lang.mating}} </p>
     </ion-col>
     <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
-         <ion-icon name="clipboard"></ion-icon>
+      <ion-icon name="clipboard"></ion-icon>
       <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
       <p class="subtitle"> {{lang.order}} </p>
     </ion-col>
-    <ion-col col-2 (click)="mating()" class="{{active[activebar[3]]}} navcol">
-         <ion-icon name="cart" class="passed"></ion-icon>
-      <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
-      <p class="subtitle"> {{lang.mating}} </p>
+    <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
+         <ion-icon name="card"></ion-icon>
+      <p class="subtitle"> {{lang.buy}} </p>
     </ion-col>
   </ion-row>
 </ion-header>
@@ -113,7 +113,7 @@
       <div *ngIf="type == 3">
         <!-- mate -->
         <div class="pet-box-option" *ngIf="pet.status == 0">
-          <ion-icon name="checkmark" (click)="submitmate(pet.id)"></ion-icon>
+          <ion-icon name="checkmark" (click)="submitmate(pet.oid)"></ion-icon>
         </div>
         <div class="petboxintro i0" *ngIf="pet.status > 0">
           <span>
@@ -122,8 +122,8 @@
           <!-- {{service.sold[pet.sold]}} -->
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
-        <p> &#9; {{pet.name}} </p>
-        <p> &#9; {{pet.count}} {{lang.ordercount}}</p>
+        <p> &#9; {{pet.title}} </p>
+        <p> &#9; {{pet.name}} {{pet.phone}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>

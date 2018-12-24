@@ -30,7 +30,7 @@
           <b> {{lang.phone}} </b>
           <span class="right"> {{owner.phone}} </span>
         </p> -->
-        <p (mouseout)="onuhover()" class="star {{ratedisabled && !rated ? 'disabled' : ''}}">
+        <p (mouseout)="onuhover()" class="star {{ratedisabled && rate < 0 ? 'disabled' : ''}}">
           {{lang.rate}}
           <span class="{{classhover[shover[0]]}}">
             <ion-icon name="star" (click)="crate(1)" (mouseover)="onhover(1)"> </ion-icon>

@@ -22,6 +22,9 @@ import { Base64 } from '@ionic-native/base64';
 import { AdminPage, AddUser, EditUser } from '../pages/admin/admin';
 import { LawPage } from '../pages/law/law';
 
+import { LocalNotifications } from '@ionic-native/local-notifications';
+
+
 @NgModule({
   declarations: [
     MyApp,
@@ -59,7 +62,8 @@ import { LawPage } from '../pages/law/law';
     LangProvider,
     ServiceProvider,
     Camera,
-    Base64
+    Base64,
+    LocalNotifications
   ]
 })
 export class AppModule {}

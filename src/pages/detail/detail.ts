@@ -95,12 +95,14 @@ export class DetailPage {
         this.totalrate = response["total"]
         this.averagerate = response["average"]
         var average = Math.ceil(this.averagerate);
+        console.log(this.rate);
+        
         for (var i = 0; i < average; i ++) {
           this.shover2[i] = 1
         }
-        if (!this.service.uid) {
+        if (!this.service.uid || this.rate < 0) {
           this.ratedisabled = true
-        } else if (this.rate) {
+        } else if (this.rate > 0) {
           this.rated = true
           this.ratedisabled = false
           this.onhover(this.rate)
@@ -125,15 +127,19 @@ export class DetailPage {
   }
 
   onhover(index) {
-    console.log(index);
-    
     if (!this.ratedisabled) {
       this.shover.fill(0)
       for (let i = 0; i < index; i++) {
         this.shover[i] = 1;
       }
-      console.log(index);
     }
+  }
+
+  onshover(index) {
+      this.shover2.fill(0)
+      for (let i = 0; i < index; i++) {
+        this.shover2[i] = 1;
+      }
   }
 
   onuhover() {

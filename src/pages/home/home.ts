@@ -109,6 +109,8 @@ export class HomePage {
       
       if (response["logininfo"]) {
         this.service.logged(response["logininfo"], this.navCtrl, false);
+        console.log(this.service.p);
+        
       }
       this.service.kind = response["kind"]
       this.service.species = response["species"]

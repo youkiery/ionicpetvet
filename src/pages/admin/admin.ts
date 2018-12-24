@@ -56,7 +56,7 @@ export class AdminPage {
   edit_user(user: object) {
     var x = JSON.parse(JSON.stringify(user))
     x["province"] = this.service.config["province"].indexOf(user["province"]);
-    let modal = this.modal.create(EditUser, {"user": user, "page": x})
+    let modal = this.modal.create(EditUser, {"user": x, "page": this.user_page})
     modal.present()
   }
   add_user() {

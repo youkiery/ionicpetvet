@@ -16,17 +16,17 @@
   <div class="admin_content" *ngIf="nav_index == 0">
     <div class="admin_content_list_title">
       {{lang.admin_title}}
-      <ion-icon name="create" (click)="add_kind()"></ion-icon>
+      <ion-icon name="create" (click)="add_kind()" *ngIf="service.p.kind"></ion-icon>
     </div>
     <div *ngFor="let kind of species_list">
       <div class="kind_title">
         {{kind.name}}
-        <ion-icon name="create" (click)="add_species(kind.id)"></ion-icon>
-        <ion-icon name="trash" (click)="remove_kind(kind.id)"></ion-icon>
+        <ion-icon name="create" (click)="add_species(kind.id)" *ngIf="service.p.kind"></ion-icon>
+        <ion-icon name="trash" (click)="remove_kind(kind.id)" *ngIf="service.p.kind"></ion-icon>
       </div>
       <div *ngFor="let species of kind.list" class="species_title">
         {{species.name}}
-        <ion-icon name="trash" (click)="remove_species(species.id)"></ion-icon>
+        <ion-icon name="trash" (click)="remove_species(species.id)" *ngIf="service.p.kind"></ion-icon>
       </div>
     </div>
   </div>
@@ -90,8 +90,8 @@
           {{user.province}}
         </td>
         <td>
-          <ion-icon name="trash" (click)="remove_user(user.id)"></ion-icon>
-          <ion-icon name="create" (click)="edit_user(user)"></ion-icon>
+          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user"></ion-icon>
+          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user"></ion-icon>
           <!-- <ion-icon name="people" (click)="change_role(user.id, user.role)"></ion-icon> -->
         </td>
       </tr>
@@ -99,7 +99,7 @@
     <button ion-button (click)="moreuser()" *ngIf="isusernext">
       {{lang.loadmore}}
     </button>
-    <button ion-button (click)="add_user()">
+    <button ion-button (click)="add_user()" *ngIf="service.p.user">
       {{lang.add}}
     </button>
   </div>

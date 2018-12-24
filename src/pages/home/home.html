@@ -140,10 +140,18 @@
     
       <div *ngIf="activebar[0]">
         <span> {{lang.cate}}: </span>
+        <div class="cate ij0" (click)="default()">
+          {{lang.default}}
+        </div>
         <div *ngFor="let cate of service.type; let i = index" class="cate i{{i}}" (click)="gotocate(i)">
           {{cate}}
         </div>
-        <div></div>
+        <div *ngFor="let cate of service.keyword" class="cate ij0" (click)="gotokeyword(cate)">
+          {{cate.name}}
+        </div>
+        <div>
+          {{lang.searchcount}}: {{searchcount}}
+        </div>
         <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
           <div class="petboxintro i{{pet.typeid}}">
             {{service.type[pet.typeid]}}

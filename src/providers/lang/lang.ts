@@ -135,6 +135,9 @@ export class LangProvider {
   done: string = "Hoàn thành";
   ordercount: string = "lượt đặt";
   noformat: string = "Ảnh không hợp lệ"
+  owner: string = "Chủ bài viết"
+  searchcount: string = "Tổng số bài viết"
+  default: string = "Mặc định"
   cate: string = "Danh mục"
   guest: string = "Khách"
   turn: string = "Ẩn/Hiện đã giao dịch"

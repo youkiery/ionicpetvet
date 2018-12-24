@@ -20,6 +20,10 @@ export class ServiceProvider {
   islogged: boolean = false
   loading: any
   isloading: boolean = false
+  keyword: object[] = [{
+    name: "poople",
+    species: "2",
+  }]
   // userpet: {
   //   name: string,
   //   price: string,

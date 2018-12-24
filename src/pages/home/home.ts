@@ -33,7 +33,7 @@ export class HomePage {
     species: 0,
     province: 0
   }
-  temp = [true, true, true, true]
+  temp = [true, true, true, true, true]
   rangeSettings: number = 20;
   setdage: any;
   banner: string = ""
@@ -43,6 +43,7 @@ export class HomePage {
   prvindex = 0
   issearch: boolean = false
   // user
+  searchcount: number = 0
   submitButton: string[]
   submitType: number = 0 // 0: login, 1: signup
   user: {
@@ -119,6 +120,7 @@ export class HomePage {
       this.service.newpet = response["newpet"]
       this.isnext = response["next"]
       this.new = response["new"]
+      this.searchcount = response["total"]
       this.banner = this.service.baseurl + this.service.config["banner"]
       
     }, (e) => {})
@@ -436,6 +438,37 @@ export class HomePage {
     }
   }
 
+  default() {
+    this.filter = {
+      keyword: "",
+      sort: 0,
+      price: {
+        lower: 0,
+        upper: 73
+      },
+      type: [true, true, true, true, true],
+      kind: 0,
+      species: 0,
+      province: 0
+    }
+  }
+
+  gotokeyword(keydata: object) {
+    var allowed = ["species", "kind", "keyword"]
+    var check = false;
+    for (const attr in keydata) {
+      if (keydata.hasOwnProperty(attr)) {
+        if (allowed.indexOf(attr) >= 0) {
+          check = true
+          this.filter[attr] = keydata[attr]
+        }
+      }
+    }
+    if (check) {
+      this.filterall()
+    }
+  }
+
   filtersuball() {
     this.bsearch()
     this.page = 1;
@@ -448,6 +481,7 @@ export class HomePage {
         this.service.newpet = response["newpet"]
         this.isnext = response["next"]
         this.temp = this.filter["type"];
+        this.searchcount = response["total"]
         this.filter["type"] = [false, false, false, false]
       }, (e) => {})
   }

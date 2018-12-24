@@ -206,9 +206,7 @@ reconnect() {
 
   viewdetail(oid) {
       if (!this.clickIndex) {
-      this.service.fetch(this.service.url + "&action=getpostid&oid=" + oid).then(response => {
-        this.modalCtrl.create(OrderDetail, {data: response["order"]["pid"]}).present()
-      }, (e) => {})
+        this.modalCtrl.create(OrderDetail, {data: oid}).present()
     }
     else {
       this.clickIndex = 0
@@ -605,7 +603,7 @@ export class Post {
         {{lang["orderdetail"]}}
       </ion-item>
       <ion-item>
-        <b> {{lang["customer"]}} </b>
+        <b> {{lang["owner"]}} </b>
         <span class="right">
           {{vender["name"]}}
         </span>

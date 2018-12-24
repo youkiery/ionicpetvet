@@ -30,7 +30,7 @@
           <b> {{lang.phone}} </b>
           <span class="right"> {{owner.phone}} </span>
         </p> -->
-        <p (mouseout)="onuhover()" class="star {{ratedisabled && rate < 0 ? 'disabled' : ''}}">
+        <p (mouseout)="onuhover()" *ngIf="rate >= 0" class="star {{ratedisabled && rate < 0 ? 'disabled' : ''}}">
           {{lang.rate}}
           <span class="{{classhover[shover[0]]}}">
             <ion-icon name="star" (click)="crate(1)" (mouseover)="onhover(1)"> </ion-icon>
@@ -115,7 +115,7 @@
       </div>
     </div>
     <div class="h3">
-      <button ion-button block (click)="order()" id="buy">
+      <button ion-button block (click)="order()" *ngIf="rate >= 0" id="buy">
         {{lang.buy}}
       </button>
       <div class="h3l">

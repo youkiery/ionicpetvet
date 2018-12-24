@@ -79,11 +79,8 @@
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>
       </div>
-      <div *ngIf="type == 1" (click)="viewdetail(pet.id)">
+      <div *ngIf="type == 1" (click)="viewdetail(pet.oid)">
         <!-- buy -->
-        <div class="pet-box-option">
-          <ion-icon name="trash" (click)="disorder(pet.id)"></ion-icon>
-        </div>
         <div class="petboxintro2 i{{pet.typeid}}" *ngIf="pet.status > 0">
           <span *ngIf="pet.status == 1">
             Đã giao dịch
@@ -97,7 +94,7 @@
           <!-- {{service.sold[pet.sold]}} -->
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
-        <p> &#9; {{pet.name}} </p>
+        <p> &#9; {{pet.title}} </p>
         <p> &#9; {{pet.owner}} | {{pet.province}} </p>
         <span class="price"> &#9; {{pet.price}} </span>
         <span class="timer right"> {{pet.timer}} </span>

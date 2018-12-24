@@ -36,7 +36,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     ProviderPage,
     AboutPage, SupportPage,
     AdminPage, 
-    LawPage
+    // LawPage
   ],
   imports: [
     BrowserModule,
@@ -53,7 +53,7 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     ProviderPage,
     AboutPage, SupportPage,
     AdminPage, AddUser, EditUser, 
-    LawPage
+    // LawPage
   ],
   providers: [
     StatusBar,

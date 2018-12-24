@@ -373,7 +373,7 @@ export class Post {
     sort: 0,
     type: 0
   }
-  realprice: number = 0
+  realprice: string = "0"
   page: number = 1
   files: any[]
   changing: boolean = false
@@ -435,32 +435,32 @@ export class Post {
   }
 
   formatprice(e) {
-    if (!this.changing) {
-      var x = document.getElementById("price");
-      var child = x.children[0] as HTMLInputElement;
-      var y = Number(child["selectionStart"]);
+      var ioninput = document.getElementById("price");
+      var input = ioninput.children[0] as HTMLInputElement;
+      var inputPos = Number(input["selectionStart"]);
       
-      var z = this.parse(child["value"])
-      var ck = Number.isInteger(Number(z))
-      if (ck) {
-        console.log(this.post.price);
-        var d1 = (this.post.price.split(".")).length - 1
-        this.realprice = d1;
-        this.post.price = this.format(z)
-        this.changing = true
-        var d2 = (this.post.price.split(".")).length - 1
-          y += (d2 - d1);
-          setTimeout(() => {
-            child.setSelectionRange(y, y)
-          }, 10);
-      }
-      else {
+      var value = input["value"]
+			var d1 = (value.split(".")).length - 1
+      var realvalue = this.parse(value)
+      var num = Number(realvalue)
+
+      // var val = input.value
+			// var real = this.parse(val)
+			// var num = Number(real)
+			// var inputPos = Number(input.selectionStart);
+
+      console.log("num: " + num + "real: " + this.realprice);
+      
+			if (Number.isFinite(num)) {
+				var parnum = this.format(num)
+        this.realprice = parnum
+				var d2 = (parnum.split(".")).length - 1
+				inputPos += (d2 - d1)
+			}
+      setTimeout(() => {
         this.post.price = this.realprice
-      }
-    }
-    else {
-      this.changing = false
-    }
+        input.setSelectionRange(inputPos, inputPos)
+      }, 10);
   }
 
     format(num) {

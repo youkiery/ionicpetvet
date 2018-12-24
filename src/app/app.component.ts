@@ -19,13 +19,13 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-      this.localNotifications.schedule({
-        text: 'Delayed ILocalNotification',
-        // sound: isAndroid ? 'file://sound.mp3': 'file://beep.caf',
-        data: { secret: "key" },
-        trigger: {at: new Date(new Date().getTime() + 3600)},
-        led: 'FF0000',
-     });
+    //   this.localNotifications.schedule({
+    //     text: 'Delayed ILocalNotification',
+    //     // sound: isAndroid ? 'file://sound.mp3': 'file://beep.caf',
+    //     data: { secret: "key" },
+    //     trigger: {at: new Date(new Date().getTime() + 3600)},
+    //     led: 'FF0000',
+    //  });
     });
   }
 }

@@ -9,7 +9,7 @@ import { LangProvider } from '../../providers/lang/lang';
 })
 export class LawPage {
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private lag: LangProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private lang: LangProvider) {
   }
 
   ionViewDidLoad() {

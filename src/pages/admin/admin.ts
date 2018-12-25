@@ -295,6 +295,7 @@ export class AdminPage {
 
 @Component({
   template: `
+    <ion-icon class="close" name="close" (click)="close()"></ion-icon>
     <form (ngSubmit)="create()" *ngIf="user">
     <ion-item>
       <ion-label> {{lang.username}} </ion-label>
@@ -412,6 +413,7 @@ export class AddUser {
 }
 @Component({
   template: `
+    <ion-icon class="close" name="close" (click)="close()"></ion-icon>
     <form (ngSubmit)="create()" *ngIf="user">
     <ion-item>
       {{lang.username}}: [{{user.username}}]
@@ -464,7 +466,7 @@ export class AddUser {
       </ion-item>
     </div>
     <div class="center">
-      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.create}} </button>
+      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.edituser}} </button>
     </div>
   </form>
   `

@@ -66,8 +66,13 @@ export class LangProvider {
   admin_title: string = "Danh sách loại thú cưng";
   vaccine: string = "Số lần tiêm phòng";
   timeago: string = "Đã đăng";
-  order: string = "Yêu cầu giao dịch";
-  buy: string = "Giao dịch ngoài";
+  order: string = "giao dịch đến";
+  buy: string = "Giao dịch đi";
+  edituser: string = "Sửa người dùng";
+  postat: string = "Đăng cách đây";
+  requestat: string = "Yêu cầu cách đây";
+  tractionat: string = "Giao dịch cách đây";
+  doneat: string = "Hoàn thành cách đây";
   sell: string = "Bài đăng";
   orderfail: string = "Lỗi mạng, chưa thể đặt";
   ordersuccess: string = "Đã đặt xong";

@@ -7,10 +7,10 @@ import { LangProvider } from '../lang/lang'
 
 @Injectable()
 export class ServiceProvider {
-  // baseurl: string = "http://localhost/"
-  // url: string = "http://localhost/index.php?nv=mobile"
-  baseurl: string = "https://petcoffee.com/"
-  url: string = "https://petcoffee.com/index.php?nv=mobile"
+  baseurl: string = "http://localhost/"
+  url: string = "http://localhost/index.php?nv=mobile"
+  // baseurl: string = "https://petcoffee.com/"
+  // url: string = "https://petcoffee.com/index.php?nv=mobile"
   uid: number = 0
   name: string = ""
   phone: string = ""

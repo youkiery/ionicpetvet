@@ -2,7 +2,6 @@
   <div (click)="back()" class="head-col-2">
     <div class="head-title">
       <ion-icon name="arrow-round-back"></ion-icon>
-      <span> {{data.name}} </span>
     </div>
   </div>
   <div (click)="back()" class="head-col-2" (click)="reload()">
@@ -89,42 +88,18 @@
         </button>
       </div>
       <div class="h1r">
-        <p>
-          <b> {{data.type}} </b>
-        </p>
-        <p>
-          <b>{{lang.species}}</b>
-          <span class="right">
-            {{data.typename}}
-          </span>
-        </p>
-        <p>
-          <b>{{lang.price}}</b>
-          <span class="right price">
-            {{data.price}}
-          </span>
-        </p>
-        <p>
-          <b>{{lang.timeago}}</b>
-          <span class="right">
-            {{data.timer}}
-          </span>
-        </p>
-        <p>
-          <b>{{lang.age}}</b>
-          <span class="right">
-            {{data.age}}
-          </span>
-        </p>
-        <p>
-          <b>{{lang.vaccine}}</b>
-          <span class="right">
-            {{data.vaccine}} {{lang.vaccine_per}}
-          </span>
-        </p>
-        <p>
-          <b>{{lang.description}}</b>
-        </p>
+        <p class="bold"> {{data.type}} </p>
+        <p class="bold"> {{lang.species}} </p>
+        <p> {{data.typename}} </p>
+        <p class="bold"> {{lang.price}} </p>
+        <p class="red"> {{data.price}} </p>
+        <p class="bold"> {{lang.timeago}} </p>
+        <p> {{data.timer}} </p>
+        <p class="bold"> {{lang.age}} </p>
+        <p> {{data.age}} </p>
+        <p class="bold"> {{lang.vaccine}} </p>
+        <p> {{data.vaccine}} {{lang.vaccine_per}} </p>
+        <p class="bold"> {{lang.description}} </p>
         <p> {{data.description}} </p>
       </div>
     </div>

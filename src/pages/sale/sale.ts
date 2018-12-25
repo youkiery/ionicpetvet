@@ -337,9 +337,9 @@ reconnect() {
       </ion-item>
       <ion-textarea [(ngModel)]="this.post.description" name="description" class="description" placeholder="{{lang.description}}"></ion-textarea>
       <div class="sale_right">
-        <div class="image_add_box">
+        <!--<div class="image_add_box">
           <ion-icon name="camera" (click)="takephoto()" class="image_camera"></ion-icon>
-        </div>
+        </div>-->
         <div class="image_add_box">
           <span class="image_add"> + </span>
           <input class="upload-input" style="width: 120px; height: 120px;" type="file" [(ngModel)]="post.files" id="files" name="files" multiple (change)="change()" >

@@ -453,6 +453,7 @@ export class HomePage {
       species: 0,
       province: 0
     }
+    this.filterall()
   }
 
   gotokeyword(keydata: object) {

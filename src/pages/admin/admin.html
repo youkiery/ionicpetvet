@@ -2,7 +2,6 @@
   <div class="head-col-2" (click)="back()">
     <div class="head-title">
       <ion-icon name="arrow-round-back"></ion-icon>
-      Admin Panel
     </div>
   </div>
 </div>
@@ -41,9 +40,7 @@
     </div>
   </div> -->
   <div class="admin_content" *ngIf="nav_index == 1">
-    <ion-fab middle right>
-      <button ion-fab mini><ion-icon name="add" (click)="add_user()" *ngIf="service.p.user"></ion-icon></button>
-    </ion-fab>
+    <button ion-button (click)="add_user()" *ngIf="service.p.user"> {{lang.add}} </button>
     <!-- user -->
     <ion-row>
       <ion-col col-1>
@@ -81,8 +78,8 @@
           {{user.roles_s}}
         </ion-col>
         <ion-col col-1>
-          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user"></ion-icon>
-          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user"></ion-icon>
+          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user && user.role < 3"></ion-icon>
+          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user && user.role < 3"></ion-icon>
         </ion-col>
       </ion-row>
     </div>

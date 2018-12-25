@@ -1,61 +1,3 @@
-<div class="head-navbar">
-  <div (click)="filterall()" class="{{active[activebar[0]]}} navcol head-col-5">
-    <ion-icon name="home"></ion-icon>
-  </div>
-  <div class="searchbar {{active[activebar[4]]}} navcol head-col-5" (click)="search()">
-    <ion-icon name="search"></ion-icon>
-  </div>
-  <div class="head-col-5" (click)="login()" class="{{active[activebar[1]]}} navcol head-col-5">
-    <ion-icon name="contact"></ion-icon>
-  </div>
-  <div class="head-col-5" (click)="inbox()" class="{{active[activebar[2]]}} navcol head-col-5">
-    <ion-icon name="mail"></ion-icon>
-  </div>
-  <div class="head-col-5" (click)="open()" class="{{active[activebar[3]]}} navcol head-col-5">
-    <ion-icon name="menu"></ion-icon>
-  </div>
-  <div class="relay" (click)="close()" *ngIf="menu"></div>
-  <ion-list *ngIf="!this.service.islogged && menu" class="menu" (click)="close()">
-    <ion-item color="secondary">
-      {{lang.support}}
-    </ion-item>
-    <ion-item (click)="support()" class="clickable item_hover">
-      {{lang.about}}
-    </ion-item>
-    <ion-item (click)="about()" class="clickable item_hover">
-      {{lang.contact}}
-    </ion-item>
-    <ion-item (click)="tos()" class="clickable item_hover">
-      {{lang.private}}
-    </ion-item>
-  </ion-list>
-  <ion-list *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
-    <ion-item color="secondary">
-      {{lang.account}}
-    </ion-item>
-    <ion-item (click)="admin()" class="clickable item_hover" *ngIf="service.p && service.p.admin">
-      {{lang.admin}}
-    </ion-item>
-    <ion-item (click)="sale()" class="clickable item_hover">
-      {{lang.sale_manager}}
-    </ion-item>
-    <ion-item (click)="service.logout()" class="clickable item_hover">
-      {{lang.logout}}
-    </ion-item>
-    <ion-item color="secondary">
-        {{lang.about}}
-    </ion-item>
-    <ion-item (click)="support()" class="clickable item_hover">
-      {{lang.about}}
-    </ion-item>
-    <ion-item (click)="about()" class="clickable item_hover">
-      {{lang.contact}}
-    </ion-item>
-    <ion-item (click)="tos()" class="clickable item_hover">
-        {{lang.private}}
-    </ion-item>
-  </ion-list>
-</div>
 <!-- <ion-header>
   <ion-row>
     <ion-col col-4 (click)="filterall()" class="{{active[activebar[0]]}} navcol" *ngIf="activebar[0]">
@@ -92,9 +34,66 @@
     </ion-col>
   </ion-row>
 </ion-header> -->
-
+<div class="head-navbar">
+  <div (click)="filterall()" class="{{active[activebar[0]]}} navcol head-col-5">
+    <ion-icon name="home"></ion-icon>
+  </div>
+  <div class="searchbar {{active[activebar[4]]}} navcol head-col-5" (click)="search()">
+    <ion-icon name="search"></ion-icon>
+  </div>
+  <div class="head-col-5" (click)="login()" class="{{active[activebar[1]]}} navcol head-col-5">
+    <ion-icon name="contact"></ion-icon>
+  </div>
+  <div class="head-col-5" (click)="inbox()" class="{{active[activebar[2]]}} navcol head-col-5">
+    <ion-icon name="mail"></ion-icon>
+  </div>
+  <div class="head-col-5" (click)="open()" class="{{active[activebar[3]]}} navcol head-col-5">
+    <ion-icon name="menu"></ion-icon>
+  </div>
+</div>
+<div class="relay" (click)="close()" *ngIf="menu"></div>
+<ion-scroll *ngIf="!this.service.islogged && menu" class="menu" (click)="close()" scrollY="true">
+  <ion-item color="secondary">
+    {{lang.support}}
+  </ion-item>
+  <ion-item (click)="support()" class="clickable item_hover">
+    {{lang.about}}
+  </ion-item>
+  <ion-item (click)="about()" class="clickable item_hover">
+    {{lang.contact}}
+  </ion-item>
+  <ion-item (click)="tos()" class="clickable item_hover">
+    {{lang.private}}
+  </ion-item>
+</ion-scroll>
+<ion-scroll *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
+  <ion-item color="secondary">
+    {{lang.account}}
+  </ion-item>
+  <ion-item (click)="admin()" class="clickable item_hover" *ngIf="service.p && service.p.admin">
+    {{lang.admin}}
+  </ion-item>
+  <ion-item (click)="sale()" class="clickable item_hover">
+    {{lang.sale_manager}}
+  </ion-item>
+  <ion-item (click)="service.logout()" class="clickable item_hover">
+    {{lang.logout}}
+  </ion-item>
+  <ion-item color="secondary">
+      {{lang.about}}
+  </ion-item>
+  <ion-item (click)="support()" class="clickable item_hover">
+    {{lang.about}}
+  </ion-item>
+  <ion-item (click)="about()" class="clickable item_hover">
+    {{lang.contact}}
+  </ion-item>
+  <ion-item (click)="tos()" class="clickable item_hover">
+      {{lang.private}}
+  </ion-item>
+</ion-scroll>
 <ion-content>
-  <div *ngIf="service.isconnect">
+    <div *ngIf="service.isconnect">
       <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
       <div class="searchpanel" *ngIf="activebar[4]">
         <!-- search -->
@@ -147,27 +146,31 @@
     
       <div *ngIf="activebar[0]">
         <span> {{lang.cate}}: </span>
-        <div class="cate ij0" (click)="default()">
+        <div class="cate ij0 item_hover" (click)="default()">
           {{lang.default}}
         </div>
-        <div *ngFor="let cate of service.type; let i = index" class="cate i{{i}}" (click)="gotocate(i)">
+        <div *ngFor="let cate of service.type; let i = index" class="cate i{{i}} item_hover" (click)="gotocate(i)">
           {{cate}}
         </div>
-        <div *ngFor="let cate of service.keyword" class="cate ij0" (click)="gotokeyword(cate)">
+        <div *ngFor="let cate of service.keyword" class="cate ij0 item_hover" (click)="gotokeyword(cate)">
           {{cate.name}}
         </div>
         <div>
           {{lang.searchcount}}: {{searchcount}}
         </div>
-        <div *ngFor="let pet of service.newpet; let i = index" class="pet_box" (click)="detail(i)">
+        <div *ngFor="let pet of service.newpet; let i = index" class="pet_box item_hover" (click)="detail(i)">
           <div class="petboxintro i{{pet.typeid}}">
             {{service.type[pet.typeid]}}
           </div>
           <img class="thumb" src="{{pet.image[0]}}">
           <p> &#9; {{pet.name}} </p>
           <p> &#9; {{pet.owner}} | {{pet.province}} </p>
-          <span class="price"> &#9; {{pet.price}} </span>
-          <span class="timer right"> {{pet.timer}} </span>
+          <p class="price">
+            &#9; {{pet.price}}
+          </p>
+          <p>
+            {{lang.postat}} {{pet.timer}}
+          </p>
         </div>
         <button ion-button block *ngIf="isnext" (click)="next()">
           Tải thêm
@@ -222,10 +225,10 @@
               <ion-item color="primary">
                 {{lang.account_manager}}
               </ion-item>
-              <ion-item (click)="changepass()" class="clickable">
+              <ion-item (click)="changepass()" class="clickable item_hover">
                 {{lang.changepass}}
               </ion-item>
-              <ion-item (click)="service.logout()" class="clickable">
+              <ion-item (click)="service.logout()" class="clickable item_hover">
                 {{lang.logout}}
               </ion-item>
             </ion-list>
@@ -279,7 +282,7 @@
       </div>
       <ion-list *ngIf="activebar[2]">
         <div *ngIf="service.uid">
-          <ion-item *ngFor="let noti of notifice" (click)="tonotify(noti.type, noti.pid)">
+          <ion-item *ngFor="let noti of notifice" (click)="tonotify(noti.type, noti.pid)" class="item_hover">
             <div class="clickable">
               <span *ngIf="noti.type < 6">
                 {{noti.name}}

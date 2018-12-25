@@ -82,7 +82,7 @@
         <p> &#9; {{pet.name}} </p>
         <p> &#9; {{pet.count}} {{lang.ordercount}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
-        <span class="timer right"> {{pet.timer}} </span>
+        <p> {{lang.postat}} {{pet.timer}} </p>
       </div>
       <div *ngIf="type == 1" (click)="viewdetail(pet.oid)">
         <!-- buy -->
@@ -94,15 +94,23 @@
         <p> &#9; {{pet.title}} </p>
         <p> &#9; {{pet.owner}} | {{pet.province}} </p>
         <span class="price"> &#9; {{pet.price}} </span>
-        <span class="timer right"> {{pet.timer}} </span>
+        <p>
+          {{lang.tractionat}} {{pet.timer}}
+        </p>
       </div>
       <div *ngIf="type == 2" (click)="orderdetail(pet.pid)">
         <!-- order -->
+        <div class="petboxintro i{{pet.typeid}}" *ngIf="pet.status > 0">
+          Đã giao dịch
+          <!-- {{service.sold[pet.sold]}} -->
+        </div>
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.name}} </p>
         <p> &#9; {{pet.count}} {{lang.ordercount}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
-        <span class="timer right"> {{pet.timer}} </span>
+        <p>
+          {{lang.requestat}} {{pet.timer}}
+        </p>
       </div>
       <div *ngIf="type == 3">
         <!-- mate -->
@@ -117,7 +125,9 @@
         <p> &#9; {{pet.title}} </p>
         <p> &#9; {{pet.name}} {{pet.phone}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
-        <span class="timer right"> {{pet.timer}} </span>
+        <p>
+          {{lang.doneat}} {{pet.timer}}
+        </p>
       </div>
       <div *ngIf="type == 4" (click)="venderdetail(pet.bought)">
         <!-- bought -->

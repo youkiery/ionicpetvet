@@ -38,7 +38,7 @@
   float: left;
 }
 .right {
-  float: right;
+  float: right !important;
 }
 .timer {
   right: 20px;
@@ -286,6 +286,70 @@ td {
 .species_title {
   color: blue;
   margin-left: 40px;
+}
+.catbox {
+  margin: -4px;
+}
+.navback {
+  float: left;
+  text-align: left;
+  color: white;
+}
+.head-title {
+  float: left;
+  text-align: left;
+  padding: 0px 10px;
+}
+.head-title * {
+  color: white;
+}
+.head-navbar {
+  font-size: 0px;
+  position: fixed;
+  z-index: 1;
+  background: limegreen;
+  width: -webkit-fill-available;
+  border-bottom: 2px solid green;
+}
+.head-col-2, .head-col-3, .head-col-5 {
+  display: inline-block;
+  font-size: 20px;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+.head-col-5 {
+  width: 20%;
+}
+.head-col-3 {
+  width: 33.3%;
+}
+.head-col-2 {
+  width: 50%;
+}
+
+// .head-navbar {
+//   font-size: 0px;
+// }
+// .col-5 {
+//   width: 20%;
+//   display: inline-block;
+//   text-align: center;
+// }
+// .caticon {
+//   font-size: 20px;
+// }
+
+// .head-content {
+//   position: fixed;
+//   z-index: 1;
+//   background: lawngreen;
+//   width: -webkit-fill-available;
+//   line-height: 30px;
+//   border-bottom: 2px solid green;
+// }
+ion-content {
+  top: 40px;
 }
 
 .i0 {

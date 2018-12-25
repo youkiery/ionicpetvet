@@ -267,6 +267,8 @@ export class HomePage {
   }
 
   open() {
+    console.log(1);
+    
     if (this.service.isconnect) {
       this.menu = !this.menu
     } else {

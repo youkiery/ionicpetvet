@@ -1,28 +1,70 @@
-<ion-header>
+<ion-header><div class="head-navbar">
+  <div class="head-col-5" (click)="back()">
+    <div class="head-title">
+      <ion-icon name="arrow-round-back"></ion-icon>
+    </div>
+  </div>
+  <div class="{{active[activebar[0]]}} head-col-5" (click)="sell()">
+    <div class="head-title">
+      <ion-icon name="cart"></ion-icon>
+      <p class="subtitle"> {{lang.sell}} </p>
+    </div>
+  </div>
+  <div class="{{active[activebar[3]]}} head-col-5" (click)="mating()">
+    <div class="head-title">
+      <ion-icon name="cart" class="passed"></ion-icon>
+      <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
+      <p class="subtitle"> {{lang.mating}} </p>
+    </div>
+  </div>
+  <div class="{{active[activebar[2]]}} head-col-5" (click)="order()">
+    <div class="head-title">
+      <ion-icon name="clipboard"></ion-icon>
+      <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
+      <p class="subtitle"> {{lang.order}} </p>
+    </div>
+  </div>
+  <div class="{{active[activebar[1]]}} head-col-5" (click)="buy()">
+    <div class="head-title">
+      <ion-icon name="card"></ion-icon>
+      <p class="subtitle"> {{lang.buy}} </p>
+    </div>
+  </div>
+</div>
+
+<!-- <ion-header>
   <ion-row>
     <ion-col (click)="back()" class="navcol">
       <ion-icon name="arrow-round-back"></ion-icon>
     </ion-col>
     <ion-col col-2 (click)="sell()" class="{{active[activebar[0]]}} navcol">
-         <ion-icon name="cart"></ion-icon>
-      <p class="subtitle"> {{lang.sell}} </p>
+      <div class="catbox">
+        <ion-icon name="cart"></ion-icon>
+        <p class="subtitle"> {{lang.sell}} </p>
+      </div>
     </ion-col>
     <ion-col col-2 (click)="mating()" class="{{active[activebar[3]]}} navcol">
-      <ion-icon name="cart" class="passed"></ion-icon>
+        <div class="catbox">
+            <ion-icon name="cart" class="passed"></ion-icon>
       <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
       <p class="subtitle"> {{lang.mating}} </p>
-    </ion-col>
+    </div>
+  </ion-col>
     <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
-      <ion-icon name="clipboard"></ion-icon>
+        <div class="catbox">
+            <ion-icon name="clipboard"></ion-icon>
       <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
       <p class="subtitle"> {{lang.order}} </p>
-    </ion-col>
+    </div>
+  </ion-col>
     <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
-         <ion-icon name="card"></ion-icon>
+        <div class="catbox">
+            <ion-icon name="card"></ion-icon>
       <p class="subtitle"> {{lang.buy}} </p>
-    </ion-col>
+    </div>
+  </ion-col>
   </ion-row>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
   <div *ngIf="service.isconnect">

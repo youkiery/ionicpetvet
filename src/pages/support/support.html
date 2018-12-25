@@ -1,11 +1,19 @@
-<ion-header>
+<ion-header><div class="head-navbar">
+  <div class="head-col-3" (click)="back()">
+    <div class="head-title">
+      <ion-icon name="arrow-round-back"></ion-icon>
+      {{lang.contact}}
+    </div>
+  </div>
+</div>
+<!-- <ion-header>
   <ion-row>
     <ion-col col-6 (click)="back()" class="navback clickable">
       <ion-icon name="arrow-round-back"></ion-icon>
       {{lang.contact}}
     </ion-col>
   </ion-row>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
   <ion-card>

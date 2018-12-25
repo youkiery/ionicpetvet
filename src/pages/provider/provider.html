@@ -1,4 +1,21 @@
-<ion-header>
+<ion-header><div class="head-navbar">
+  <div class="head-col-3" (click)="back()">
+    <div class="head-title">
+      <ion-icon name="arrow-round-back"></ion-icon>
+    </div>
+  </div>
+  <div class="{{active[activebar[0]]}} head-col-3" (click)="refresh()">
+    <div class="head-title">
+      <ion-icon name="cart"></ion-icon>
+    </div>
+  </div>
+  <div class="{{active[activebar[2]]}} head-col-3" *ngIf="activebar[2]" (click)="crate()">
+    <div class="head-title">
+      <ion-icon name="star"></ion-icon>
+    </div>
+  </div>
+</div>
+<!-- 
   <ion-row>
     <ion-col col-2 class="navcol" (click)="back()">
       <ion-icon name="arrow-round-back"></ion-icon>
@@ -16,7 +33,7 @@
       <ion-icon name="star"></ion-icon>
     </ion-col>
   </ion-row>
-</ion-header>
+</ion-header> -->
 
 <ion-content>
   <div *ngIf="service.isconnect">

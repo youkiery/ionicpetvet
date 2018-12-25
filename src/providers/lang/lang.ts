@@ -148,7 +148,8 @@ export class LangProvider {
   member: string = "Thành viên"
   mod: string = "Mod"
   supermod: string = "SMod"
-  add_species: string = "Thêm Loài"
+  add_species: string = "Thêm giống"
+  add_kind: string = "Thêm loài"
   txphone: string = "Hotline: 02626.290.609";
   txaddress: string = "Địa chỉ: 12-14 Lê Đại Hành, Buôn Ma Thuột";
   txdescription: string = "Cửa hàng thú cưng: Kinh doanh thức ăn, đồ chơi, vật dụng, dầu tắm chó mèo";

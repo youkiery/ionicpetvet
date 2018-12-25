@@ -6,14 +6,6 @@
     </div>
   </div>
 </div>
-<!-- <ion-header>
-  <ion-row>
-    <ion-col col-6 (click)="back()" class="navback clickable" style="color: white;">
-      <ion-icon name="arrow-round-back"></ion-icon>
-      Admin Panel
-    </ion-col>
-  </ion-row>
-</ion-header> -->
 
 <ion-content>
   <div class="nav_box">
@@ -21,26 +13,80 @@
       {{item}}
     </div>
   </div>
-  <div class="admin_content" *ngIf="nav_index == 0">
+  <ion-card *ngIf="nav_index == 0">
+    <ion-card-header>
+        {{lang.admin_title}}
+        <ion-icon name="create" (click)="add_kind()" *ngIf="service.p.kind"></ion-icon>
+    </ion-card-header>
+    <ion-list>
+      <div *ngFor="let kind of species_list">
+        <ion-item *ngIf="kind.id != 0">
+          <div class="kind_title">
+            {{kind.name}}
+            <ion-icon name="create" (click)="add_species(kind.id)" *ngIf="service.p.kind"></ion-icon>
+            <ion-icon name="trash" (click)="remove_kind(kind.id)" *ngIf="service.p.kind"></ion-icon>
+          </div>
+          <div *ngFor="let species of kind.list" class="species_title">
+            {{species.name}}
+            <ion-icon name="trash" (click)="remove_species(species.id)" *ngIf="service.p.kind"></ion-icon>
+          </div>
+        </ion-item>
+      </div>
+    </ion-list>
+  </ion-card>
+  <!-- <div class="admin_content">
     <div class="admin_content_list_title">
-      {{lang.admin_title}}
-      <ion-icon name="create" (click)="add_kind()" *ngIf="service.p.kind"></ion-icon>
     </div>
     <div *ngFor="let kind of species_list">
-      <div class="kind_title">
-        {{kind.name}}
-        <ion-icon name="create" (click)="add_species(kind.id)" *ngIf="service.p.kind"></ion-icon>
-        <ion-icon name="trash" (click)="remove_kind(kind.id)" *ngIf="service.p.kind"></ion-icon>
-      </div>
-      <div *ngFor="let species of kind.list" class="species_title">
-        {{species.name}}
-        <ion-icon name="trash" (click)="remove_species(species.id)" *ngIf="service.p.kind"></ion-icon>
-      </div>
     </div>
-  </div>
+  </div> -->
   <div class="admin_content" *ngIf="nav_index == 1">
+    <ion-fab middle right>
+      <button ion-fab mini><ion-icon name="add" (click)="add_user()" *ngIf="service.p.user"></ion-icon></button>
+    </ion-fab>
     <!-- user -->
-    <table border="1" style="width: 100%">
+    <ion-row>
+      <ion-col col-1>
+        {{lang.index}}
+      </ion-col>
+      <ion-col col-2>
+        {{lang.username}}
+      </ion-col>
+      <ion-col col-2>
+        {{lang.name}}
+      </ion-col>
+      <ion-col col-2>
+        {{lang.role}}
+      </ion-col>
+      <ion-col col-4>
+        {{lang.roles}}
+      </ion-col>
+      <ion-col col-1> </ion-col>
+    </ion-row>
+    <div class="hover_list">
+      <ion-row *ngFor="let user of user_list">
+        <ion-col col-1>
+          {{user.index}}
+        </ion-col>
+        <ion-col col-2>
+          {{user.username}}
+        </ion-col>
+        <ion-col col-2>
+          {{user.name}}
+        </ion-col>
+        <ion-col col-2>
+          {{user.role_s}}
+        </ion-col>
+        <ion-col col-4>
+          {{user.roles_s}}
+        </ion-col>
+        <ion-col col-1>
+          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user"></ion-icon>
+          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </div>
+    <!-- <table border="1" style="width: 100%">
       <tr>
         <th>
           {{lang.admin_title2}}
@@ -100,15 +146,11 @@
         <td>
           <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user"></ion-icon>
           <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user"></ion-icon>
-          <!-- <ion-icon name="people" (click)="change_role(user.id, user.role)"></ion-icon> -->
         </td>
       </tr>
-    </table>
+    </table> -->
     <button ion-button (click)="moreuser()" *ngIf="isusernext">
       {{lang.loadmore}}
-    </button>
-    <button ion-button (click)="add_user()" *ngIf="service.p.user">
-      {{lang.add}}
     </button>
   </div>
 </ion-content>

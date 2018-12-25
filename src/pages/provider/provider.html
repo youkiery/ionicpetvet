@@ -1,18 +1,12 @@
-<ion-header><div class="head-navbar">
+<div class="head-navbar">
   <div class="head-col-3" (click)="back()">
-    <div class="head-title">
       <ion-icon name="arrow-round-back"></ion-icon>
-    </div>
   </div>
   <div class="{{active[activebar[0]]}} head-col-3" (click)="refresh()">
-    <div class="head-title">
       <ion-icon name="cart"></ion-icon>
-    </div>
   </div>
-  <div class="{{active[activebar[2]]}} head-col-3" *ngIf="activebar[2]" (click)="crate()">
-    <div class="head-title">
+  <div class="{{active[activebar[2]]}} head-col-3" (click)="crate()">
       <ion-icon name="star"></ion-icon>
-    </div>
   </div>
 </div>
 <!-- 

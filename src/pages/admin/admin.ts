@@ -347,7 +347,9 @@ export class AdminPage {
         <ion-checkbox [(ngModel)]="roles[option.key]" name="i"></ion-checkbox>
       </ion-item>
     </div>
-    <button ion-button color="secondary" type="submit" class="button-half"> {{lang.create}} </button>
+    <div class="center">
+      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.create}} </button>
+    </div>
   </form>
   `
 })
@@ -412,7 +414,7 @@ export class AddUser {
   template: `
     <form (ngSubmit)="create()" *ngIf="user">
     <ion-item>
-      {{lang.username}} {{user.username}}
+      {{lang.username}}: [{{user.username}}]
     </ion-item>
     <ion-item>
       <ion-label> {{lang.password}} </ion-label>
@@ -461,7 +463,9 @@ export class AddUser {
         <ion-checkbox [(ngModel)]="roles[option.key]" name="i"></ion-checkbox>
       </ion-item>
     </div>
-    <button ion-button color="secondary" type="submit" class="button-half"> {{lang.create}} </button>
+    <div class="center">
+      <button ion-button color="secondary" type="submit" class="button-half"> {{lang.create}} </button>
+    </div>
   </form>
   `
 })
@@ -529,3 +533,4 @@ export class EditUser {
     this.viewCtrl.dismiss()
   }
 }
+

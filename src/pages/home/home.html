@@ -19,13 +19,13 @@
     <ion-item color="secondary">
       {{lang.support}}
     </ion-item>
-    <ion-item (click)="support()" class="clickable">
+    <ion-item (click)="support()" class="clickable item_hover">
       {{lang.about}}
     </ion-item>
-    <ion-item (click)="about()" class="clickable">
+    <ion-item (click)="about()" class="clickable item_hover">
       {{lang.contact}}
     </ion-item>
-    <ion-item (click)="tos()" class="clickable">
+    <ion-item (click)="tos()" class="clickable item_hover">
       {{lang.private}}
     </ion-item>
   </ion-list>
@@ -33,26 +33,26 @@
     <ion-item color="secondary">
       {{lang.account}}
     </ion-item>
-    <ion-item (click)="admin()" class="clickable" *ngIf="service.p && service.p.admin">
+    <ion-item (click)="admin()" class="clickable item_hover" *ngIf="service.p && service.p.admin">
       {{lang.admin}}
     </ion-item>
-    <ion-item (click)="sale()" class="clickable">
+    <ion-item (click)="sale()" class="clickable item_hover">
       {{lang.sale_manager}}
     </ion-item>
-    <ion-item (click)="service.logout()" class="clickable">
+    <ion-item (click)="service.logout()" class="clickable item_hover">
       {{lang.logout}}
     </ion-item>
     <ion-item color="secondary">
         {{lang.about}}
     </ion-item>
-    <ion-item (click)="about()" class="clickable">
-        {{lang.support}}
+    <ion-item (click)="support()" class="clickable item_hover">
+      {{lang.about}}
     </ion-item>
-    <ion-item (click)="tos()" class="clickable">
-        {{lang.private}}
-    </ion-item>
-    <ion-item (click)="support()" class="clickable">
+    <ion-item (click)="about()" class="clickable item_hover">
       {{lang.contact}}
+    </ion-item>
+    <ion-item (click)="tos()" class="clickable item_hover">
+        {{lang.private}}
     </ion-item>
   </ion-list>
 </div>
@@ -96,7 +96,7 @@
 <ion-content>
   <div *ngIf="service.isconnect">
       <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
-      <div class="searchpanel" *ngIf="activebar[4]" style="background: white; z-index: 5;">
+      <div class="searchpanel" *ngIf="activebar[4]">
         <!-- search -->
         <form (ngSubmit)="filtersuball()">
           <ion-item>

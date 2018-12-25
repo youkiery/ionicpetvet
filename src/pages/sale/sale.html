@@ -1,73 +1,36 @@
-<ion-header><div class="head-navbar">
+<div class="head-navbar">
   <div class="head-col-5" (click)="back()">
-    <div class="head-title">
       <ion-icon name="arrow-round-back"></ion-icon>
-    </div>
   </div>
   <div class="{{active[activebar[0]]}} head-col-5" (click)="sell()">
-    <div class="head-title">
+    <div class="catbox">
       <ion-icon name="cart"></ion-icon>
-      <p class="subtitle"> {{lang.sell}} </p>
+      <div class="subtitle">{{lang.sell}}</div>
     </div>
   </div>
   <div class="{{active[activebar[3]]}} head-col-5" (click)="mating()">
-    <div class="head-title">
+    <div class="catbox">
       <ion-icon name="cart" class="passed"></ion-icon>
       <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
-      <p class="subtitle"> {{lang.mating}} </p>
+      <div class="subtitle">{{lang.mating}}</div>
     </div>
   </div>
   <div class="{{active[activebar[2]]}} head-col-5" (click)="order()">
-    <div class="head-title">
+    <div class="catbox">
       <ion-icon name="clipboard"></ion-icon>
       <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
-      <p class="subtitle"> {{lang.order}} </p>
+      <div class="subtitle">{{lang.order}}</div>
     </div>
   </div>
   <div class="{{active[activebar[1]]}} head-col-5" (click)="buy()">
-    <div class="head-title">
+    <div class="catbox">
       <ion-icon name="card"></ion-icon>
-      <p class="subtitle"> {{lang.buy}} </p>
+      <div class="subtitle">{{lang.buy}}</div>
     </div>
   </div>
 </div>
 
-<!-- <ion-header>
-  <ion-row>
-    <ion-col (click)="back()" class="navcol">
-      <ion-icon name="arrow-round-back"></ion-icon>
-    </ion-col>
-    <ion-col col-2 (click)="sell()" class="{{active[activebar[0]]}} navcol">
-      <div class="catbox">
-        <ion-icon name="cart"></ion-icon>
-        <p class="subtitle"> {{lang.sell}} </p>
-      </div>
-    </ion-col>
-    <ion-col col-2 (click)="mating()" class="{{active[activebar[3]]}} navcol">
-        <div class="catbox">
-            <ion-icon name="cart" class="passed"></ion-icon>
-      <ion-badge item-end *ngIf="new[8] > 0" color="danger">{{new[8]}}</ion-badge>
-      <p class="subtitle"> {{lang.mating}} </p>
-    </div>
-  </ion-col>
-    <ion-col col-2 (click)="order()" class="{{active[activebar[2]]}} navcol">
-        <div class="catbox">
-            <ion-icon name="clipboard"></ion-icon>
-      <ion-badge item-end *ngIf="new[1] > 0" color="danger">{{new[1]}}</ion-badge>
-      <p class="subtitle"> {{lang.order}} </p>
-    </div>
-  </ion-col>
-    <ion-col col-2 (click)="buy()" class="{{active[activebar[1]]}} navcol">
-        <div class="catbox">
-            <ion-icon name="card"></ion-icon>
-      <p class="subtitle"> {{lang.buy}} </p>
-    </div>
-  </ion-col>
-  </ion-row>
-</ion-header> -->
-
 <ion-content>
-  <div *ngIf="service.isconnect">
     <div>
       <!-- <div class="h2l"> -->
       <form (ngSubmit)="filterall()">
@@ -124,17 +87,9 @@
       <div *ngIf="type == 1" (click)="viewdetail(pet.oid)">
         <!-- buy -->
         <div class="petboxintro2 i{{pet.typeid}}" *ngIf="pet.status > 0">
-          <span *ngIf="pet.status == 1">
-            Đã giao dịch
-          </span>
-          <span *ngIf="pet.status == 2">
-            Đã bị giao dịch
-          </span>
-          <span *ngIf="pet.status == 3">
-            Bài đăng bị xóa
-          </span>
-          <!-- {{service.sold[pet.sold]}} -->
+          {{status[pet.status]}}
         </div>
+          <!-- {{service.sold[pet.sold]}} -->
         <img class="thumb" src="{{pet.image[0]}}">
         <p> &#9; {{pet.title}} </p>
         <p> &#9; {{pet.owner}} | {{pet.province}} </p>
@@ -155,9 +110,7 @@
           <ion-icon name="checkmark" (click)="submitmate(pet.oid)"></ion-icon>
         </div>
         <div class="petboxintro i0" *ngIf="pet.status > 0">
-          <span>
-            {{lang.done}}
-          </span>
+          {{lang.done}}
           <!-- {{service.sold[pet.sold]}} -->
         </div>
         <img class="thumb" src="{{pet.image[0]}}">
@@ -179,13 +132,4 @@
   <button ion-button block (click)="next()" *ngIf="isnext">
     {{lang.loadmore}}
   </button>
-</div>
-<div *ngIf="!service.isconnect">
-  <p>
-    {{lang.nointernet}}
-  </p>
-  <button ion-button (click)="reconnect()">
-      {{lang.reload}}
-</button>
-</div>
 </ion-content>

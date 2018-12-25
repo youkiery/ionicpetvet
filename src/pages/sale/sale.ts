@@ -9,8 +9,6 @@ import { DomSanitizer } from '@angular/platform-browser';
 
 import { ProviderPage } from '../provider/provider'
 
-
-
 @IonicPage()
 @Component({
   selector: 'page-sale',
@@ -41,6 +39,7 @@ export class SalePage {
     6: 0,
     7: 0
   }
+  status: object = {1: "Đã giao dịch", 2: "Đã bị giao dịch", 3: "Bài đăng bị xóa"}
   page: number = 1;
   isnext: boolean = false
   interval: any
@@ -117,7 +116,7 @@ reconnect() {
         }
         setTimeout(() => {
           this.refreshkey = ""
-        }, 3000);
+        }, 5000);
       })
     }
   }

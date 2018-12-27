@@ -208,14 +208,14 @@ export class DetailPage {
             name: "name",
             type: "text",
             value: this.service.name,
-            placeholder: this.lang["name"],
+            placeholder: this.lang["name"] + " (*)",
             disabled: true
           },
           {
             name: "phone",
             type: "text",
             value: this.service.phone,
-            placeholder: this.lang["phone"],
+            placeholder: this.lang["phone"] + " (*)",
             disabled: this.disabled
           },
           {
@@ -231,7 +231,7 @@ export class DetailPage {
             text: this.lang["cancel"]
           },
           {
-            text: this.lang["order"],
+            text: this.lang["orderrequest"],
             handler: (data) => {
               var msg = ""
               if (!data["name"]) {

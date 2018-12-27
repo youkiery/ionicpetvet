@@ -11,7 +11,7 @@ import { SalePage } from '../sale/sale';
 import { AdminPage } from '../admin/admin';
 import { SupportPage } from '../support/support';
 import { AboutPage } from '../about/about';
-// import { LawPage } from '../law/law';
+import { LawPage } from '../law/law';
 
 @Component({
   selector: 'page-home',
@@ -289,7 +289,7 @@ export class HomePage {
   }
 
   tos() {
-      this.navCtrl.push('LawPage');
+      this.navCtrl.push(LawPage);
   }
 
   unit(price) {

@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { LangProvider } from '../../providers/lang/lang';
 import { ServiceProvider } from '../../providers/service/service';
-import { HttpClient } from '@angular/common/http';
 import { DetailPage } from '../detail/detail';
 
 @IonicPage()
@@ -36,9 +35,8 @@ export class ProviderPage {
   isnext: boolean = false
   rpage: number = 1
   isrnext: boolean = false
-  constructor(public service: ServiceProvider, public http: HttpClient,
-    public lang: LangProvider, public alert: AlertController, public navCtrl: NavController,
-    public navParam: NavParams) {
+  constructor(public service: ServiceProvider, public lang: LangProvider, public alert: AlertController,
+    public navCtrl: NavController, public navParam: NavParams) {
       this.provider = this.navParam.get('provider')
       this.propet = Array.apply(null, Array(12)).map(() => {
         return {

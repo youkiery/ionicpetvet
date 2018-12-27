@@ -66,7 +66,7 @@ export class LangProvider {
   admin_title: string = "Danh sách loại thú cưng";
   vaccine: string = "Số lần tiêm phòng";
   timeago: string = "Đã đăng";
-  order: string = "giao dịch đến";
+  order: string = "giao dịch";
   buy: string = "Giao dịch đi";
   edituser: string = "Sửa người dùng";
   postat: string = "Đăng cách đây";
@@ -109,6 +109,8 @@ export class LangProvider {
   totalrate: string = "Tổng lượt đánh giá";
   averagerate: string = "Đánh giá";
   totalsale: string = "Tổng giao dịch thành công";
+  orderrequest: string = "Yêu cầu giao dịch";
+  request: string = "Yêu cầu";
   review: string = "Đánh giá từ khách hàng";
   province: string = "Vùng";
   pleaselogin: string = "Xin hãy đăng nhập để xem thông báo";

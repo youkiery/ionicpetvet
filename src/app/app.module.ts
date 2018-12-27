@@ -28,16 +28,15 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
 @NgModule({
   declarations: [
     MyApp,
+    HomePage,
     Post, OrderDetail, OrderDetailList,
     AddUser, EditUser,
-    HomePage,
     DetailPage, 
     SalePage, 
     ProviderPage,
     AboutPage, SupportPage,
     AdminPage, 
-
-    // LawPage
+    LawPage
   ],
   imports: [
     BrowserModule,
@@ -50,11 +49,12 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
     MyApp,
     HomePage,
     DetailPage,
-    SalePage, Post, OrderDetail, OrderDetailList,
+    SalePage,
+    Post, OrderDetail, OrderDetailList,
     ProviderPage,
     AboutPage, SupportPage,
     AdminPage, AddUser, EditUser, 
-    // LawPage
+    LawPage
   ],
   providers: [
     StatusBar,

@@ -61,9 +61,9 @@
   </div>
   <!-- <div class="h2r"> -->
   <div style="font-size: 0px;">
-    <div class="pet_box pet_box_create" *ngIf="type == 0" (click)="post()">
+    <!-- <div class="pet_box pet_box_create" *ngIf="type == 0" (click)="post()">
       <p>+</p>
-    </div>
+    </div> -->
     <div *ngFor="let pet of service.userpet; let i = index" class="pet_box">
       <div *ngIf="type == 0" (click)="edit(pet.id, pet.name, pet.timer, pet.pricevalue, pet.description, pet.kindid, pet.speciesid, pet.typeid, pet.ageid, pet.vaccine, pet.image, pet.sold)">
         <!-- sell -->
@@ -125,8 +125,11 @@
         <p> &#9; {{pet.title}} </p>
         <p> &#9; {{pet.name}} {{pet.phone}}</p>
         <span class="price"> &#9; {{pet.price}} </span>
-        <p>
+        <p *ngIf="pet.status > 0">
           {{lang.doneat}} {{pet.timer}}
+        </p>
+        <p *ngIf="pet.status == 0">
+          {{lang.requestat}} {{pet.timer}}
         </p>
       </div>
       <div *ngIf="type == 4" (click)="venderdetail(pet.bought)">

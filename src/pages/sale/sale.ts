@@ -432,47 +432,47 @@ export class Post {
   }
 
   formatprice(e) {
+    if (!this.changing)  {
       var ioninput = document.getElementById("price");
       var input = ioninput.children[0] as HTMLInputElement;
       var inputPos = Number(input["selectionStart"]);
       
       var value = input["value"]
-			var d1 = (value.split(".")).length - 1
+			var d1 = (value.split(",")).length
       var realvalue = this.parse(value)
       var num = Number(realvalue)
 
-      // var val = input.value
-			// var real = this.parse(val)
-			// var num = Number(real)
-			// var inputPos = Number(input.selectionStart);
-
-      console.log("num: " + num + "real: " + this.realprice);
+      console.log("1: " + inputPos);
       
 			if (Number.isFinite(num)) {
 				var parnum = this.format(num)
         this.realprice = parnum
-				var d2 = (parnum.split(".")).length - 1
-				inputPos += (d2 - d1)
+        var d2 = (parnum.split(",")).length
+        inputPos += (d2 - d1)
+        console.log("2: " + inputPos);
 			}
+      this.post.price = this.realprice
+      this.changing = true
       setTimeout(() => {
-        this.post.price = this.realprice
         input.setSelectionRange(inputPos, inputPos)
       }, 10);
+    }
+    else {this.changing = false}
   }
-
-    format(num) {
-      var formatter = new Intl.NumberFormat('vi-VI', {
-        style: 'currency',
-        currency: 'VND',
-      });
-      var result = formatter.format(num)
-      result = result.slice(0, result.length - 2)
-      return result
-    }
-
-    parse(val) {
-      return val.replace(/\./g, "")
-    }
+  
+  format(num) {
+    // var formatter = new Intl.NumberFormat('vi-VI', {
+    //   style: 'currency',
+    //   currency: 'VND',
+    // });
+    // var result = formatter.format(num)
+    // result = result.slice(0, result.length - 2)
+    return String(num).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,")
+  }
+  
+  parse(val) {
+    return val.replace(/\,/g, "")
+  }
 
   remove(index: number) {
     this.post.image = this.post.image.filter((image: object, i: number) => { return i !== index})
@@ -678,7 +678,7 @@ export class OrderDetailList {
   filter: object = {}
   page: number
   constructor(public navParams: NavParams, public lang: LangProvider, public service: ServiceProvider,
-    public http: HttpClient, public ev: Events, public viewCtrl: ViewController) {
+    public ev: Events, public viewCtrl: ViewController) {
     var data = this.navParams.get("data")
     this.filter = this.navParams.get("filter")
     this.pid = this.navParams.get("pid")

@@ -74,7 +74,7 @@ export class SalePage {
           this.isnext = data["next"]
         }
         else {
-          this.page --
+          this.page = data["page"]
         }
       })
       this.ev.subscribe("save-post", (data) => {
@@ -84,7 +84,7 @@ export class SalePage {
           this.isnext = data["next"]
         }
         else {
-          this.page --
+          this.page = data["page"]
         }
       })
       // setInterval(() => {
@@ -155,12 +155,15 @@ reconnect() {
     }
     
     this.service.fetch(this.service.url + "&action=salefilter&uid=" + this.service.uid + "&page=" + this.page + "&" + this.service.toparam(this.filter)).then(response => {
+      console.log(response);
+      
       this.activebar[this.actindex] = 0
       this.prvindex = this.actindex
       this.actindex = this.filter["type"]
       this.activebar[this.actindex] = 1
       this.service.userpet = response["userpet"]
       this.isnext = response["next"]
+      this.page = response["page"]
       this.new[response["newtype"]] = response["new"]
       this.type = this.filter["type"]
     }, (e) => { })
@@ -213,6 +216,8 @@ reconnect() {
   }
 
   post() {
+    console.log(this.page);
+    
     let x = this.modalCtrl.create(Post, {filter: this.filter, page: this.page});
     x.present()
   }
@@ -254,7 +259,7 @@ reconnect() {
                     this.isnext = response["next"]
                   }
                   else {
-                    this.page --
+                    this.page = response["page"]
                   }
             }, (e) => {})
           }
@@ -540,6 +545,7 @@ export class Post {
           length ++;
         } else check = false;
       }
+      
       fd.append("uid", String(this.service.uid));
       fd.append("ck", this.service.rand());
       fd.append("name", this.post.name);
@@ -556,7 +562,9 @@ export class Post {
       fd.append("type", this.filter["type"]);
       var page = "1"
 
+      console.log(this.page);
       if (isFinite(this.page)) {
+        
         page = this.page.toString();
       }
       fd.append("page", page);

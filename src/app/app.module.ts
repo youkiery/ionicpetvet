@@ -10,17 +10,19 @@ import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { DetailPage } from '../pages/detail/detail';
-import { SalePage, Post, OrderDetail, OrderDetailList } from '../pages/sale/sale';
-import { ProviderPage } from '../pages/provider/provider';
-import { AboutPage } from '../pages/about/about';
-import { SupportPage } from '../pages/support/support';
+import { SignupPage } from '../pages/signup/signup';
+import { StartPage } from '../pages/start/start';
+// import { DetailPage } from '../pages/detail/detail';
+// import { SalePage, Post, OrderDetail, OrderDetailList } from '../pages/sale/sale';
+// import { ProviderPage } from '../pages/provider/provider';
+// import { AboutPage } from '../pages/about/about';
+// import { SupportPage } from '../pages/support/support';
+// import { AdminPage, AddUser, EditUser } from '../pages/admin/admin';
+// import { LawPage } from '../pages/law/law';
 
 import { LangProvider } from '../providers/lang/lang';
 import { ServiceProvider } from '../providers/service/service';
 import { Base64 } from '@ionic-native/base64';
-import { AdminPage, AddUser, EditUser } from '../pages/admin/admin';
-import { LawPage } from '../pages/law/law';
 
 import { LocalNotifications } from '@ionic-native/local-notifications';
 
@@ -29,14 +31,15 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   declarations: [
     MyApp,
     HomePage,
-    Post, OrderDetail, OrderDetailList,
-    AddUser, EditUser,
-    DetailPage, 
-    SalePage, 
-    ProviderPage,
-    AboutPage, SupportPage,
-    AdminPage, 
-    LawPage
+    SignupPage, StartPage
+    // Post, OrderDetail, OrderDetailList,
+    // AddUser, EditUser,
+    // DetailPage, 
+    // SalePage, 
+    // ProviderPage,
+    // AboutPage, SupportPage,
+    // AdminPage, 
+    // LawPage
   ],
   imports: [
     BrowserModule,
@@ -48,13 +51,14 @@ import { LocalNotifications } from '@ionic-native/local-notifications';
   entryComponents: [
     MyApp,
     HomePage,
-    DetailPage,
-    SalePage,
-    Post, OrderDetail, OrderDetailList,
-    ProviderPage,
-    AboutPage, SupportPage,
-    AdminPage, AddUser, EditUser, 
-    LawPage
+    SignupPage, StartPage
+    // DetailPage,
+    // SalePage,
+    // Post, OrderDetail, OrderDetailList,
+    // ProviderPage,
+    // AboutPage, SupportPage,
+    // AdminPage, AddUser, EditUser, 
+    // LawPage
   ],
   providers: [
     StatusBar,

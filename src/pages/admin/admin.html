@@ -83,69 +83,58 @@
         </ion-col>
       </ion-row>
     </div>
-    <!-- <table border="1" style="width: 100%">
-      <tr>
-        <th>
-          {{lang.admin_title2}}
-        </th>
-      </tr>
-      <tr>
-        <td>
-          {{lang.index}}
-        </td>
-        <td>
-          {{lang.username}}
-        </td>
-        <td>
-          {{lang.name}}
-        </td>
-        <td>
-          {{lang.role}}
-        </td>
-        <td>
-          {{lang.roles}}
-        </td>
-        <td>
-          {{lang.phone}}
-        </td>
-        <td>
-          {{lang.address}}
-        </td>
-        <td>
-          {{lang.province}}
-        </td>
-      </tr>
-      <tr *ngFor="let user of user_list">
-        <td>
-          {{user.index}}
-        </td>
-        <td>
-          {{user.username}}
-        </td>
-        <td>
-          {{user.name}}
-        </td>
-        <td>
-          {{user.role_s}}
-        </td>
-        <td>
-          {{user.roles_s}}
-        </td>
-        <td>
-          {{user.phone}}
-        </td>
-        <td>
-          {{user.address}}
-        </td>
-        <td>
-          {{user.province}}
-        </td>
-        <td>
-          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user"></ion-icon>
-          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user"></ion-icon>
-        </td>
-      </tr>
-    </table> -->
+    <button ion-button (click)="moreuser()" *ngIf="isusernext">
+      {{lang.loadmore}}
+    </button>
+  </div>
+  <div class="admin_content" *ngIf="nav_index == 2">
+    <ion-row>
+      <ion-col col-1>
+        {{lang.index}}
+      </ion-col>
+      <ion-col col-3>
+        {{lang.title}}
+      </ion-col>
+      <ion-col col-3>
+        {{lang.name}}
+      </ion-col>
+      <ion-col col-1>
+        {{lang.posttype}}
+      </ion-col>
+      <ion-col col-2>
+        {{lang.phone}}
+      </ion-col>
+      <ion-col col-2>
+        {{lang.address}}
+      </ion-col>
+      <ion-col col-1> </ion-col>
+    </ion-row>
+    <div class="hover_list">
+      <ion-row *ngFor="let post of post_list">
+        <ion-col col-1>
+          {{post.index}}
+        </ion-col>
+        <ion-col col-3>
+          {{post.title}}
+        </ion-col>
+        <ion-col col-2>
+          {{post.name}}
+        </ion-col>
+        <ion-col col-1>
+          {{post.type}}
+        </ion-col>
+        <ion-col col-2>
+          {{post.phone}}
+        </ion-col>
+        <ion-col col-2>
+          {{post.address}}
+        </ion-col>
+        <ion-col col-1>
+          <ion-icon name="trash" (click)="remove_user(user.id)" *ngIf="service.p.user && user.role < 3"></ion-icon>
+          <ion-icon name="create" (click)="edit_user(user)" *ngIf="service.p.user && user.role < 3"></ion-icon>
+        </ion-col>
+      </ion-row>
+    </div>
     <button ion-button (click)="moreuser()" *ngIf="isusernext">
       {{lang.loadmore}}
     </button>

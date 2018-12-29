@@ -61,6 +61,7 @@ export class LangProvider {
   editsuccess: string = "Đã sửa";
   title: string = "Tiêu đề";
   age: string = "Tuổi";
+  posttype: string = "Phân loại";
   description: string = "Giới thiệu";
   species: string = "Loài";
   admin_title: string = "Danh sách loại thú cưng";

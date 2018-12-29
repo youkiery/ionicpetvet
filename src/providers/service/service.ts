@@ -11,6 +11,53 @@ export class ServiceProvider {
   url: string = "http://localhost/index.php?nv=mobile"
   // baseurl: string = "https://petcoffee.com/"
   // url: string = "https://petcoffee.com/index.php?nv=mobile"
+  signInfo: {
+    username: string,
+    password: string,
+    vpassword: string,
+    name: string,
+    phone: string,
+    address: string,
+    area: number,
+    role: number,
+    sale: number,
+    active: number
+  } = {
+    username: "",
+    password: "",
+    vpassword: "",
+    name: "",
+    phone: "",
+    address: "",
+    area: 0,
+    role: 0,
+    sale: 0,
+    active: 0
+  }
+  user: {
+    username: string,
+    password: string,
+    vpassword: string,
+    name: string,
+    phone: string,
+    address: string,
+    area: number,
+    role: number,
+    sale: number,
+    active: number
+  } = {
+    username: "",
+    password: "",
+    vpassword: "",
+    name: "",
+    phone: "",
+    address: "",
+    area: 0,
+    role: 0,
+    sale: 0,
+    active: 0
+  }
+
   uid: number = 0
   name: string = ""
   phone: string = ""
@@ -48,10 +95,13 @@ export class ServiceProvider {
   connectkey: string = "000000"
   prvfetch: any
   p: object = {
+    use: false,
     sale: false,
     admin: false,
-    kind: false,
-    user: false
+    p: false,
+    kind: 0,
+    user: 0,
+    post: 0
   }
   // provides: string[] = ["An Giang","Bà Rịa Vũng Tàu","Bạc Liêu","Bắc Kạn","Bắc Giang","Bắc Ninh","Bến Tre","Bình Dương","Bình Định","Bình Phước","Bình Thuận","Cà Mau","Cao Bằng","Cần Thơ – Hậu Giang","TP. Đà Nẵng","ĐắkLắk – Đắc Nông","Đồng Nai","Đồng Tháp","Gia Lai","Hà Giang","Hà Nam","TP. Hà Nội","Hà Tĩnh","Hải Dương","TP. Hải Phòng","Hoà Bình","Hưng Yên","TP. Hồ Chí Minh","Khánh Hoà","Kiên Giang","Kon Tum","Lai Châu – Điện Biên","Lạng Sơn","Lao Cai","Lâm Đồng","Long An","Nam Định","Nghệ An","Ninh Bình","Ninh Thuận","Phú Thọ","Phú Yên","Quảng Bình","Quảng Nam","Quảng Ngãi","Quảng Ninh","Quảng Trị","Sóc Trăng","Sơn La","Tây Ninh","Thái Bình","Thái Nguyên","Thanh Hoá","Thừa Thiên Huế","Tiền Giang","Trà Vinh","Tuyên Quang","Vĩnh Long","Vĩnh Phúc","Yên Bái"]
   // date: string[] = ["1 ngày", "2 ngày", "3 ngày", "4 ngày", "5 ngày", "6 ngày", "1 tuần", "2 tuần", "3 tuần", "1 tháng", "2 tháng", "3 tháng", "4 tháng", "5 tháng", "6 tháng", "7 tháng", "8 tháng", "9 tháng", "10 tháng", "11 tháng", "1 năm", "2 năm", "3 năm", "4 năm", "5 năm", "6 năm", "7 năm", "8 năm", "9 năm", "10 năm", "11 năm", "12 năm", "13 năm", "14 năm", "15 năm", "16 năm", "17 năm", "18 năm", "19 năm", "20 năm", "Nhiều hơn"]
@@ -154,37 +204,76 @@ export class ServiceProvider {
     }
   }
   logged(logdata, navCtrl = null, redirect = true) {
-    this.setData("login", logdata["id"]);
-    this.uid = logdata["id"];
-    this.name = logdata["name"];
-    this.phone = logdata["phone"];
-    this.address = logdata["address"];
-    this.province = logdata["province"];
-
-    this.setrole(logdata["role"], logdata["roles"], logdata["active"])
+    this.setData("login", logdata["uid"]);
+    this.user = logdata
+    this.setrole(logdata["role"], logdata["active"], logdata["sale"])
 
     this.islogged = true;
     if (navCtrl && redirect) navCtrl.pop();
   }
-  setrole(role, roles, active) {
-    if (role == 3) {
-      this.p["admin"] = true
-      this.p["user"] = true
-      this.p["kind"] = true
+  setrole(role: string, active: number, sale: number) {
+    if (active > 0) {
+      this.p["use"] = true
+    }
+    if (sale > 0) {
       this.p["sale"] = true
     }
-    if (active) {
-      this.p["sale"] = true
-    }
-    if (role == 2) {
-      if (roles.search("a") >= 0) {
-        this.p["admin"] = true;
-      } else if (roles.search("u") >= 0) {
-        this.p["user"] = true;
-      } else if (roles.search("k") >= 0) {
-        this.p["kind"] = true;
+    
+    var roles = role.split(",")
+    if (roles.length) {
+      roles.forEach((role_key: string) => {
+        switch (role_key) {
+          case "1":
+            this.p["user"] = 1
+          break;
+          case "2":
+            this.p["user"] = 2
+          break;
+          case "3":
+            this.p["post"] = 1
+          break;
+          case "4":
+            this.p["post"] = 2
+          break;
+          case "5":
+            this.p["menu"] = 1
+          break;
+          case "6":
+            this.p["menu"] = 2
+          break;
+          case "7":
+            this.p["species"] = 1
+          break;
+          case "8":
+            this.p["species"] = 2
+          break;
+          case "9":
+            this.p["area"] = 1
+          break;
+          case "10":
+            this.p["area"] = 2
+          break;
+          case "7":
+            this.p["p"] = 1
+          break;
+        }
+      });
+      if (this.p["user"]) {
+        this.p["admin"] = true
+      } else if (this.p["post"]) {
+        this.p["admin"] = true
+      } else if (this.p["menu"]) {
+        this.p["admin"] = true
+      } else if (this.p["p"]) {
+        this.p["admin"] = true
+      } else if (this.p["area"]) {
+        this.p["admin"] = true
+      } else if (this.p["kind"]) {
+        this.p["admin"] = true
       }
     }
+    console.log(this.p);
+    
   }
   logout() {
     this.storage.remove("login");

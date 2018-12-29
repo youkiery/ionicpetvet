@@ -34,8 +34,11 @@
     </ion-col>
   </ion-row>
 </ion-header> -->
-<div class="head-navbar">
-  <div (click)="filterall()" class="{{active[activebar[0]]}} navcol head-col-5">
+<!-- <div class="head-navbar"> -->
+<ion-header>
+  <button ion-button (click)="signup()">signup</button>  
+</ion-header>
+  <!-- <div (click)="filterall()" class="{{active[activebar[0]]}} navcol head-col-5">
     <ion-icon name="home"></ion-icon>
   </div>
   <div class="searchbar {{active[activebar[4]]}} navcol head-col-5" (click)="search()">
@@ -53,9 +56,6 @@
 </div>
 <div class="relay" (click)="close()" *ngIf="menu"></div>
 <ion-scroll *ngIf="!this.service.islogged && menu" class="menu" (click)="close()" scrollY="true">
-  <ion-item color="secondary">
-    {{lang.support}}
-  </ion-item>
   <ion-item (click)="support()" class="clickable item_hover">
     {{lang.about}}
   </ion-item>
@@ -67,10 +67,7 @@
   </ion-item>
 </ion-scroll>
 <ion-scroll *ngIf="this.service.islogged && menu" class="menu" (click)="close()">
-  <ion-item color="secondary">
-    {{lang.account}}
-  </ion-item>
-  <ion-item (click)="admin()" class="clickable item_hover" *ngIf="service.p && service.p.admin">
+  <ion-item (click)="admin()" class="clickable item_hover" *ngIf="service.p && service.p.admin == true">
     {{lang.admin}}
   </ion-item>
   <ion-item (click)="sale()" class="clickable item_hover">
@@ -78,9 +75,6 @@
   </ion-item>
   <ion-item (click)="service.logout()" class="clickable item_hover">
     {{lang.logout}}
-  </ion-item>
-  <ion-item color="secondary">
-      {{lang.about}}
   </ion-item>
   <ion-item (click)="support()" class="clickable item_hover">
     {{lang.about}}
@@ -91,12 +85,11 @@
   <ion-item (click)="tos()" class="clickable item_hover">
       {{lang.private}}
   </ion-item>
-</ion-scroll>
+</ion-scroll> -->
 <ion-content>
-    <div *ngIf="service.isconnect">
+    <!-- <div *ngIf="service.isconnect">
       <div class="remand" *ngIf="activebar[4]" (click)="bsearch()"></div>
       <div class="searchpanel" *ngIf="activebar[4]">
-        <!-- search -->
         <form (ngSubmit)="filtersuball()">
           <ion-item>
             <ion-label> {{lang.keyword}} </ion-label>
@@ -334,5 +327,6 @@
         <button ion-button (click)="reconnect()">
           {{lang.reload}}
         </button>
-      </div>
-    </ion-content>
+      </div> -->
+</ion-content>
+      

@@ -16,11 +16,14 @@ import { ServiceProvider } from '../../providers/service/service';
   templateUrl: 'admin.html',
 })
 export class AdminPage {
-  func_list: string[] = ["Danh sách giống thú cưng", "Danh sách thành viên"]
+  func_list: string[] = ["Danh sách giống thú cưng", "Danh sách thành viên", "Danh sách bài đăng"]
   nav_index: number = 0
   species_list: object[] = []
-  user_list: object[] = []
+  post_page: number = 1;
+  post_list: object[] = []
+  ispostnext: boolean = false
   user_page: number = 1;
+  user_list: object[] = []
   isusernext: boolean = false
   constructor(public navCtrl: NavController, public navParams: NavParams, public alert: AlertController,
     private lang: LangProvider, private service: ServiceProvider, private event: Events,
@@ -37,6 +40,9 @@ export class AdminPage {
       case 1:
         this.user(1)
       break;
+      case 2:
+      this.post(1)
+      break;
       default:
         this.species()
     }
@@ -51,6 +57,13 @@ export class AdminPage {
       this.user_page = page
       this.user_list = response["list"]
       this.isusernext = response["next"]
+    }, (err) => { })
+  }
+  post(page: number) {
+    this.service.fetch(this.service.url + "&action=getpost&page=" + page).then((response) => {
+      this.post_page = page
+      this.post_list = response["list"]
+      this.ispostnext = response["next"]
     }, (err) => { })
   }
   edit_user(user: object) {

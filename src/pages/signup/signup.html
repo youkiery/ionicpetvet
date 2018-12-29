@@ -1,0 +1,43 @@
+<ion-header>
+  signup
+</ion-header>
+
+<ion-content>
+  <form (ngSubmit)="submit()" class="panel" *ngIf="!service.uid">
+    <img src="../../assets/imgs/logo.png" class="logo">
+    <ion-item>
+      <ion-label> {{lang.username}} </ion-label>
+      <ion-input type="text" [(ngModel)]="service.signInfo.username" name="username"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label> {{lang.password}} </ion-label>
+      <ion-input type="password" [(ngModel)]="service.signInfo.password" name="password"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.vpassword}} </ion-label>
+      <ion-input type="password" [(ngModel)]="service.signInfo.vpassword" name="vpassword"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.fullname}} </ion-label>
+      <ion-input type="text" [(ngModel)]="service.signInfo.name" name="name"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.phone}} </ion-label>
+      <ion-input type="text" [(ngModel)]="service.signInfo.phone" name="phone"></ion-input>
+    </ion-item>
+    <ion-item *ngIf="submitType">
+      <ion-label> {{lang.address}} </ion-label>
+      <ion-input type="text" [(ngModel)]="service.signInfo.address" name="address"></ion-input>
+    </ion-item>
+    <p *ngIf="submitType">
+      {{lang.tos}} <span (click)="tos()"> {{lang.private}}</span>
+    </p>
+    <button ion-button color="secondary" type="submit" class="button-half"> {{submitButton[submitType]}} </button>
+    <button ion-button type="button" class="button-half" *ngIf="!submitType" (click)="change(1)">
+      {{lang.nousername}}
+    </button>
+    <button ion-button type="button" class="button-half" *ngIf="submitType" (click)="change(0)">
+      {{lang.haveusername}}
+    </button>
+  </form>
+</ion-content>
